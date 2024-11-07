@@ -119,7 +119,7 @@ class Hybridauth
         $config = $this->getProviderConfig($name);
 
         $adapter = isset($config['adapter']) ? $config['adapter'] : sprintf('Hybridauth\\Provider\\%s', $name);
-
+        $this->logger->error('getAdapter', $config);
         if (!class_exists($adapter)) {
             $adapter = null;
             $fs = new \FilesystemIterator(__DIR__ . '/Provider/');

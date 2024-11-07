@@ -109,7 +109,53 @@
           <display_style>list</display_style>
         </field>
 			</fields>
-			<methods/>
+			<methods>
+        <method id="DisplayBareHeader">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+  public function DisplayBareHeader(WebPage $oPage, $bEditMode = false)
+  {
+		$aHeaderBlocks = parent::DisplayBareHeader($oPage, $bEditMode);
+
+    $oOauthConnectButton = Combodo\iTop\Application\UI\Base\Component\Button\ButtonUIBlockFactory::MakeIconAction('fas fa-book-open', 'Connect', null, null, false, 'oath2-client-connect');
+
+    // Prepare button callback
+    $sOauthConnectCallbackName = 'OauthConnectCallback_'.utils::Sanitize($oOauthConnectButton->GetId(), '', utils::ENUM_SANITIZATION_FILTER_VARIABLE_NAME);
+    $oOauthConnectButton->SetOnClickJsCode($sOauthConnectCallbackName.'();');
+
+    $sName = urlencode($this->Get('name'));
+    $sProvider = base64_encode($this->Get('provider'));
+    $sUrl = utils::GetAbsoluteUrlModulesRoot() . Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper::MODULE_NAME."/connect.php?name=$sName&provider=$sProvider";
+    $oPage->add_script(
+      <<<JS
+const $sOauthConnectCallbackName = function() {
+window.location.assign('$sUrl');
+};
+JS
+    );
+
+		// Add the buttons in the existing toolbar
+		reset($aHeaderBlocks['toolbar']);
+		$sToolbarContainerKey = key($aHeaderBlocks['toolbar']);
+		foreach ($aHeaderBlocks['toolbar'][$sToolbarContainerKey]->GetSubBlocks() as $sSubBlockId => $oSubBlock) {
+			if (!($oSubBlock instanceof Combodo\iTop\Application\UI\Base\Component\Toolbar\Toolbar)) {
+				continue;
+			}
+			// Look for the actions menu toolbar by checking if its ID starts with the good prefix
+			if (stripos($sSubBlockId, MenuBlock::ACTIONS_TOOLBAR_ID_PREFIX) === 0) {
+				$oSubBlock->PrependSubBlock($oOauthConnectButton);
+				break;
+			}
+		}
+
+		return $aHeaderBlocks;
+
+   }
+        ]]></code>
+        </method>
+      </methods>
 			<presentation>
 				<search>
 					<items>
@@ -157,17 +203,23 @@
             <attribute id="provider"/>
           </attributes>
         </reconciliation>
-        <uniqueness_rules>
-          <rule id="no_duplicate">
-            <attributes>
-              <attribute id="name"/>
-              <attribute id="provider"/>
-            </attributes>
-          </rule>
-        </uniqueness_rules>
       </properties>
       <fields/>
-      <methods/>
+      <methods>
+        <method id="PrefillCreationForm">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+	public function PrefillCreationForm(&$aContextParam)
+	{
+		$this->Set('provider', 'Hybridauth\\Provider\\Github');
+
+		parent::PrefillCreationForm($aContextParam);
+	}
+            ]]></code>
+        </method>
+      </methods>
       <presentation>
         <details>
           <items>

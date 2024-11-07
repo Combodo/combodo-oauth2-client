@@ -11,8 +11,19 @@ use Throwable;
 
 class Oauth2ClientException extends Exception
 {
-	public function __construct($message = '', $code = 0, Throwable $previous = null)
+	public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null, array $aContext=[])
 	{
-		parent::__construct(Oauth2ClientHelper::MODULE_NAME.': '.$message, $code, $previous);
+		if (!is_null($previous)) {
+			$sStack = $previous->getTraceAsString();
+			$sError = $previous->getMessage();
+		} else {
+			$sStack = $this->getTraceAsString();
+			$sError = '';
+		}
+
+		$aContext['error'] = $sError;
+		$aContext['stack'] = $sStack;
+		Oauth2ClientLog::Error($message, null, $aContext);
+		parent::__construct($message, $code, $previous);
 	}
 }

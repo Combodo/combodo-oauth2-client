@@ -10,7 +10,15 @@ use LogAPI;
 
 class Oauth2ClientLog extends LogAPI
 {
-	const CHANNEL_DEFAULT = 'Oauth2ClientLog';
+	const CHANNEL_DEFAULT = 'Oauth';
 
 	protected static $m_oFileLog = null;
+
+	public static function Enable($sTargetFile = null)
+	{
+		if (empty($sTargetFile)) {
+			$sTargetFile = APPROOT.'log/error.log';
+		}
+		parent::Enable($sTargetFile);
+	}
 }

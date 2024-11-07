@@ -10,6 +10,7 @@ return array(
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientException' => $baseDir . '/src/Helper/Oauth2ClientException.php',
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientHelper' => $baseDir . '/src/Helper/Oauth2ClientHelper.php',
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientLog' => $baseDir . '/src/Helper/Oauth2ClientLog.php',
+    'Combodo\\iTop\\Oauth2Client\\Model\\ConfigService' => $baseDir . '/src/Model/ConfigService.php',
     'Combodo\\iTop\\Oauth2Client\\Service\\Oauth2ClientService' => $baseDir . '/src/Service/Oauth2ClientService.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Hybridauth\\Adapter\\AbstractAdapter' => $vendorDir . '/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php',

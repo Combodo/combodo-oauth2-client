@@ -20,11 +20,10 @@ SetupWebPage::AddModule(
 		// Setup
 		//
 		'dependencies' => [
-			
+
 		],
 		'mandatory' => true,
 		'visible' => true,
-		'installer' => '',
 
 		// Components
 		//

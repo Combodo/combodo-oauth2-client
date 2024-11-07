@@ -33,6 +33,7 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientException' => __DIR__ . '/../..' . '/src/Helper/Oauth2ClientException.php',
         'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientHelper' => __DIR__ . '/../..' . '/src/Helper/Oauth2ClientHelper.php',
         'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientLog' => __DIR__ . '/../..' . '/src/Helper/Oauth2ClientLog.php',
+        'Combodo\\iTop\\Oauth2Client\\Model\\ConfigService' => __DIR__ . '/../..' . '/src/Model/ConfigService.php',
         'Combodo\\iTop\\Oauth2Client\\Service\\Oauth2ClientService' => __DIR__ . '/../..' . '/src/Service/Oauth2ClientService.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Hybridauth\\Adapter\\AbstractAdapter' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php',
