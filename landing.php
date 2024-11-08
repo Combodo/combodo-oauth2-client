@@ -5,10 +5,12 @@
  *
  */
 
-namespace Combodo\iTop\HybridAuth;
+namespace Combodo\iTop\Oauth2Client;
 
+use Combodo\iTop\Application\Helper\Session;
+use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
-use Hybridauth\Hybridauth;
+use Combodo\iTop\Oauth2Client\Service\Oauth2ClientService;
 use Hybridauth\Logger\Logger;
 
 /**
@@ -18,20 +20,22 @@ require_once('../../approot.inc.php');
 require_once (APPROOT.'bootstrap.inc.php');
 require_once (APPROOT.'application/startup.inc.php');
 
+Oauth2ClientLog::Enable();
 Oauth2ClientLog::Info('---------------------------------');
 Oauth2ClientLog::Info($_SERVER['REQUEST_URI']);
 
+Oauth2ClientLog::Info("--> Entering Oauth2 landing page");
+$sSessionLog = session_id() . ' ' . \utils::GetSessionLog();
+Oauth2ClientLog::Info("SESSION: $sSessionLog");
+
 try{
-	$oLogger = new Logger(Logger::DEBUG, APPROOT.'log/hybridauth.log');
+	$sName = Session::Get('oauth2_client_name');
+	$sProvider = Session::Get('oauth2_client_provider');
 
-	//$sOauth2ClientClass =
-	//$sObjectId = ;
-
-
-	Combodo\iTop\Oauth2Client\Service\Oauth2ClientService::GetInstance()->Connect($sName, $sProvider);
-	//$oHybridAuth = new Hybridauth($aConfig, null, null, $oLogger);
-	//$oAuthAdapter = $oHybridAuth->authenticate($sName);
+	/** @var \Hybridauth\Adapter\AdapterInterface $oAdapter */
+	$oAdapter = Oauth2ClientService::GetInstance()->StoreTokens($sName, $sProvider);
+	var_dump($oAdapter->getUserProfile());
 } catch(\Exception $e){
-	//already logged
+	throw new Oauth2ClientException($e);
 
 }

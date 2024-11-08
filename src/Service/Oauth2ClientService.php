@@ -8,6 +8,7 @@ namespace Combodo\iTop\Oauth2Client\Service;
 
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
+use Hybridauth\Adapter\AdapterInterface;
 use Hybridauth\Hybridauth;
 use Hybridauth\Logger\Logger;
 
@@ -18,6 +19,7 @@ class Oauth2ClientService
 
 	private function __construct()
 	{
+		Oauth2ClientLog::Enable();
 	}
 
 	public static function GetInstance(): Oauth2ClientService
@@ -29,13 +31,50 @@ class Oauth2ClientService
 		return static::$oInstance;
 	}
 
-	public function Connect(string $sName, string $sProvider)
+	/**
+	 * @param string $sName
+	 * @param string $sProvider
+	 *
+	 * @return \Hybridauth\Adapter\AdapterInterface: when already connected returns the object. otherwise redirection occurs to IDP
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
+	 * @throws \Hybridauth\Exception\InvalidArgumentException
+	 * @throws \Hybridauth\Exception\RuntimeException
+	 * @throws \Hybridauth\Exception\UnexpectedValueException
+	 */
+	public function Connect(string $sName, string $sProvider) : AdapterInterface
 	{
-		Oauth2ClientLog::Info("Connect", null, [$sName, $sProvider]);
-		$aConfig = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
-		Oauth2ClientLog::Info("Connect", null, $aConfig);
+		Oauth2ClientLog::Info(__FUNCTION__, null, [$sName, $sProvider]);
+		list($sProviderName, $aConfig) = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
+		Oauth2ClientLog::Info(__FUNCTION__, null, $aConfig);
 		$oLogger = new Logger(Logger::DEBUG, APPROOT.'log/hybridauth.log');
 		$oHybridAuth = new Hybridauth($aConfig, null, null, $oLogger);
-		$oHybridAuth->authenticate($sName);
+		/** @var \Hybridauth\Storage\Session $aStorage */
+		//$aStorage = $oHybridAuth->getAdapter($sProviderName)->getStorage();
+		//$aTokenInfo = $oHybridAuth->getAdapter($sProviderName)->getStoredData('access_token');
+
+		$oAdapter = $oHybridAuth->getAdapter($sProviderName);
+		if ($oAdapter->isConnected()){
+			//clear inside session
+			$oAdapter->disconnect();
+		}
+		//Oauth2ClientLog::Info("Connect aStorage", null, ['hybridauth_access_token' => $aTokenInfo]);
+		$oHybridAuth->authenticate($sProviderName);
+		return $oAdapter;
 	}
+
+	public function StoreTokens(string $sName, string $sProvider) : AdapterInterface
+	{
+		Oauth2ClientLog::Info(__FUNCTION__, null, [$sName, $sProvider]);
+		list($sProviderName, $aConfig) = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
+		Oauth2ClientLog::Info(__FUNCTION__, null, $aConfig);
+		$oLogger = new Logger(Logger::DEBUG, APPROOT.'log/hybridauth.log');
+		$oHybridAuth = new Hybridauth($aConfig, null, null, $oLogger);
+		$oAdapter = $oHybridAuth->authenticate($sProviderName);
+
+		ConfigService::GetInstance()->SetTokens($sName, $sProvider, $oAdapter, $aConfig);
+
+		Oauth2ClientLog::Info(__FUNCTION__, null, $oAdapter->getUserProfile());
+		return $oAdapter;
+	}
+
 }

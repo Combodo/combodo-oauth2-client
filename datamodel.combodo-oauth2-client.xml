@@ -108,8 +108,48 @@
           <is_null_allowed>true</is_null_allowed>
           <display_style>list</display_style>
         </field>
+        <field id="access_token_secret" xsi:type="AttributeString">
+          <sql>access_token_secret</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+        </field>
+        <field id="token_type" xsi:type="AttributeString">
+          <sql>token_type</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+        </field>
 			</fields>
 			<methods>
+        <method id="GetAccessTokenModelToHybridauthMapping">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+
+        /**
+        * Provide the acces_token fields mapping between hybridauth and iTop model
+        * @return array
+        */
+        public function GetAccessTokenModelToHybridauthMapping() : array {
+          return Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetAccessTokenModelToHybridauthMapping();
+        }
+        ]]></code>
+        </method>
+        <method id="GetModelToHybridauthMapping">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+
+        /**
+        * Provide the mapping between hybridauth and iTop model
+        * @return array
+        */
+        public function GetModelToHybridauthMapping() : array {
+          return Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetModelToHybridauthMapping();
+        }
+        ]]></code>
+        </method>
         <method id="DisplayBareHeader">
           <static>false</static>
           <access>public</access>
@@ -117,6 +157,8 @@
           <code><![CDATA[
   public function DisplayBareHeader(WebPage $oPage, $bEditMode = false)
   {
+
+		$this::SetSessionMessage(get_class($this), $this->GetKey(), 1, Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetLandingURL($this), 'INFO', 1);
 		$aHeaderBlocks = parent::DisplayBareHeader($oPage, $bEditMode);
 
     $oOauthConnectButton = Combodo\iTop\Application\UI\Base\Component\Button\ButtonUIBlockFactory::MakeIconAction('fas fa-book-open', 'Connect', null, null, false, 'oath2-client-connect');
@@ -125,9 +167,7 @@
     $sOauthConnectCallbackName = 'OauthConnectCallback_'.utils::Sanitize($oOauthConnectButton->GetId(), '', utils::ENUM_SANITIZATION_FILTER_VARIABLE_NAME);
     $oOauthConnectButton->SetOnClickJsCode($sOauthConnectCallbackName.'();');
 
-    $sName = urlencode($this->Get('name'));
-    $sProvider = base64_encode($this->Get('provider'));
-    $sUrl = utils::GetAbsoluteUrlModulesRoot() . Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper::MODULE_NAME."/connect.php?name=$sName&provider=$sProvider";
+    $sUrl = Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetConnectUrl($this);
     $oPage->add_script(
       <<<JS
 const $sOauthConnectCallbackName = function() {
@@ -252,6 +292,12 @@ JS
             </item>
             <item id="refresh_token_expiration">
               <rank>100</rank>
+            </item>
+            <item id="token_type">
+              <rank>110</rank>
+            </item>
+            <item id="access_token_secret">
+              <rank>120</rank>
             </item>
           </items>
         </details>
