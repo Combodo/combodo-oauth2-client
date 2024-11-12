@@ -26,7 +26,14 @@ try{
 
 	/** @var \Hybridauth\Adapter\AdapterInterface $oAdapter */
 	$oAdapter = Oauth2ClientService::GetInstance()->Connect($sName, $sProvider);
-	var_dump($oAdapter->getUserProfile());
+	$sJson = json_encode($oAdapter->getUserProfile(), JSON_PRETTY_PRINT);
+
+	$sHTML = <<<HTML
+<pre>
+$sJson
+</pre>
+HTML;
+	echo $sHTML;
 } catch(\Exception $e){
 	throw new Oauth2ClientException($e);
 	//already logged

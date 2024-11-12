@@ -51,7 +51,7 @@ class ConfigService
 				'secret' => $oOaut2Client->Get('client_secret'),
 			],
 			//'expires_in' => date_format(new \DateTime($oExpireAt), 'U') - time(),
-			'callback' => \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME.'/landing.php',
+			'callback' => $this->GetLandingURL($oOaut2Client),
 			'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 		];
 
@@ -92,7 +92,7 @@ class ConfigService
 		$oOaut2Client = $oSet->Fetch();
 		$aTokens = $oAdapter->getAccessToken();
 		Oauth2ClientLog::Info(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'aTokens' => $aTokens ]);
-		$aMapping = $oOaut2Client->GetModelToHybridauthMapping();
+		$aMapping = $oOaut2Client->GetAccessTokenModelToHybridauthMapping();
 
 		$sScope = $aConfig['scope'] ?? '';
 		if (\utils::IsNullOrEmptyString($sScope)){
@@ -102,7 +102,15 @@ class ConfigService
 			$oProperty->setAccessible(true);
 			$sScope = $oProperty->getValue($oAdapter);
 			$oOaut2Client->Set('scope', $sScope);
-			Oauth2ClientLog::Info(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'scope' => $sScope, 'oClass' => var_export($oAdapter , true)]);
+			$sClass = get_class($oAdapter);
+			var_dump($sClass);
+			if (false !== strpos( $sClass, 'Mock')){
+				//to avoid following error: var_export does not handle circular references
+				$aAdapterLogData = $sClass;
+			} else {
+				$aAdapterLogData = var_export($oAdapter, true);
+			}
+			Oauth2ClientLog::Info(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'scope' => $sScope, 'oClass' => $aAdapterLogData]);
 		}
 
 		foreach ($aTokens as $sHybridauthKey => $sVal){
@@ -148,8 +156,6 @@ class ConfigService
 
 	public function GetLandingURL(Oauth2Client $oObj) : string
 	{
-		$sName = urlencode($oObj->Get('name'));
-		$sProvider = urlencode(base64_encode($oObj->Get('provider')));
 		return \utils::GetAbsoluteUrlModulesRoot() . Oauth2ClientHelper::MODULE_NAME."/landing.php";
 	}
 

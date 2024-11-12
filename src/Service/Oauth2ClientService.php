@@ -56,9 +56,17 @@ class Oauth2ClientService
 		if ($oAdapter->isConnected()){
 			//clear inside session
 			$oAdapter->disconnect();
+
+			// refresh tokens if needed
+			$oAdapter->maintainToken();
+			if ($oAdapter->hasAccessTokenExpired() === true) {
+				$oAdapter->refreshAccessToken();
+			}
+		} else {
+			//Oauth2ClientLog::Info("Connect aStorage", null, ['hybridauth_access_token' => $aTokenInfo]);
+			$oHybridAuth->authenticate($sProviderName);
+			//redirection to the IDP
 		}
-		//Oauth2ClientLog::Info("Connect aStorage", null, ['hybridauth_access_token' => $aTokenInfo]);
-		$oHybridAuth->authenticate($sProviderName);
 		return $oAdapter;
 	}
 
@@ -73,7 +81,7 @@ class Oauth2ClientService
 
 		ConfigService::GetInstance()->SetTokens($sName, $sProvider, $oAdapter, $aConfig);
 
-		Oauth2ClientLog::Info(__FUNCTION__, null, $oAdapter->getUserProfile());
+		Oauth2ClientLog::Info(__FUNCTION__, null, [$oAdapter->getUserProfile()]);
 		return $oAdapter;
 	}
 

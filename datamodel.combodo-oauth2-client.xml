@@ -119,7 +119,53 @@
           <is_null_allowed>true</is_null_allowed>
         </field>
 			</fields>
+      <event_listeners>
+        <event_listener id="EVENT_DB_BEFORE_WRITE">
+          <event>EVENT_DB_BEFORE_WRITE</event>
+          <callback>EvtBeforeWriteOauthClient2</callback>
+          <rank>0</rank>
+        </event_listener>
+      </event_listeners>
 			<methods>
+        <method id="GetHybridauthProvider">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+        public abstract function GetHybridauthProvider() : string ;]]></code>
+        </method>
+        <method id="PrefillCreationForm">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+	public function PrefillCreationForm(&$aContextParam)
+	{
+		$this->Set('provider', $this->GetHybridauthProvider());
+
+		parent::PrefillCreationForm($aContextParam);
+	}
+            ]]></code>
+        </method>
+        <method id="EvtBeforeWriteOauthClient2">
+          <comment>/**
+            * Event Listener for EVENT_DB_BEFORE_WRITE
+            * An object is about to be written into the database.
+            * The object can be modified.
+            *
+            * @param Combodo\iTop\Service\Events\EventData $oEventData Event data object
+            */
+          </comment>
+          <static>false</static>
+          <access>public</access>
+          <type>EventListener</type>
+          <code><![CDATA[	public function EvtBeforeWriteOauthClient2(Combodo\iTop\Service\Events\EventData $oEventData)
+          {
+            if ($oEventData->Get('is_new')) {
+							$this->Set('provider', $this->GetHybridauthProvider());
+            }
+          }]]></code>
+        </method>
         <method id="GetAccessTokenModelToHybridauthMapping">
           <static>false</static>
           <access>public</access>
@@ -246,18 +292,15 @@ JS
       </properties>
       <fields/>
       <methods>
-        <method id="PrefillCreationForm">
+        <method id="GetHybridauthProvider">
           <static>false</static>
           <access>public</access>
           <type>Overload-DBObject</type>
           <code><![CDATA[
-	public function PrefillCreationForm(&$aContextParam)
-	{
-		$this->Set('provider', 'Hybridauth\\Provider\\Github');
-
-		parent::PrefillCreationForm($aContextParam);
-	}
-            ]]></code>
+        public function GetHybridauthProvider() : string
+        {
+          return 'Hybridauth\\Provider\\Github';
+          }]]></code>
         </method>
       </methods>
       <presentation>
