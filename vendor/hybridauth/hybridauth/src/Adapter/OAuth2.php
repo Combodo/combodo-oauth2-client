@@ -260,7 +260,7 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         if ($this->config->exists('tokens')) {
             $this->setAccessToken($this->config->get('tokens'));
         }
-        
+
         if ($this->config->exists('supportRequestState')) {
             $this->supportRequestState = $this->config->get('supportRequestState');
         }
@@ -291,6 +291,8 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         $refreshToken = $this->getStoredData('refresh_token');
         if (!empty($refreshToken)) {
             $this->tokenRefreshParameters = [
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
                 'grant_type' => 'refresh_token',
                 'refresh_token' => $refreshToken,
             ];
@@ -566,6 +568,10 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         $data = (new Data\Parser())->parse($response);
 
         $collection = new Data\Collection($data);
+        $this->logger->error('validateAccessTokenExchange DATA',
+            $collection->toArray()
+        );
+
 
         if (!$collection->exists('access_token')) {
             throw new InvalidAccessTokenException(
@@ -627,6 +633,15 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         if (!$this->isRefreshTokenAvailable()) {
             return null;
         }
+
+        $this->logger->error('refreshAccessToken PARAMS',
+            [
+                $this->accessTokenUrl,
+                $this->tokenRefreshMethod,
+                $this->tokenRefreshParameters,
+                $this->tokenRefreshHeaders
+            ]
+        );
 
         $response = $this->httpClient->request(
             $this->accessTokenUrl,
