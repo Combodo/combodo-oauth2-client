@@ -127,12 +127,24 @@
         </event_listener>
       </event_listeners>
 			<methods>
+				<method id="GetHybridauthProvider">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+        public function GetToken(Oauth2Client $oOauth2Client) : string
+        {
+          return Combodo\iTop\Oauth2Client\Service\Oauth2ClientService::GetInstance()->GetToken($this);
+        }
+]]></code>
+        </method>
         <method id="GetHybridauthProvider">
           <static>false</static>
           <access>public</access>
           <type>Overload-DBObject</type>
           <code><![CDATA[
-        public abstract function GetHybridauthProvider() : string ;]]></code>
+        public abstract function GetHybridauthProvider() : string ;
+]]></code>
         </method>
         <method id="PrefillCreationForm">
           <static>false</static>
@@ -145,7 +157,7 @@
 
 		parent::PrefillCreationForm($aContextParam);
 	}
-            ]]></code>
+]]></code>
         </method>
         <method id="EvtBeforeWriteOauthClient2">
           <comment>/**
