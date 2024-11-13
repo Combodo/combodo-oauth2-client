@@ -99,7 +99,7 @@ class ConfigServiceTest extends ItopDataTestCase
 						'access_token' => 'access_token7',
 		                'token_type' => 'bearer',
 		                'refresh_token' => 'refresh_token8',
-		                'expires_at' => '2024-11-13 00:37:48',
+		                'expires_at' => 1731454668,
 					],
 				]
 			]
@@ -126,7 +126,7 @@ class ConfigServiceTest extends ItopDataTestCase
 					//'access_token_secret' => '',
 					'token_type' => 'bearer',
 					'refresh_token' => 'ghr_yyy',
-					'expires_at' => '2024-11-12 00:37:48',
+					'expires_at' => 1731454668,
 				]
 			);
 		ConfigService::GetInstance()->SetTokens($sName, 'Hybridauth\Provider\Github', $oGithubAdapter, $aConfig);
@@ -136,7 +136,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token'));
 		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
 		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token'));
-		$this->assertEquals('2024-11-12 00:37:48', $oOauth2Client->Get('access_token_expiration'));
+		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
 	}
 
 	public function testSetTokens_Github_ScopeNotSet_UseProviderScope() {
@@ -158,7 +158,7 @@ class ConfigServiceTest extends ItopDataTestCase
 					//'access_token_secret' => '',
 					'token_type' => 'bearer',
 					'refresh_token' => 'ghr_yyy',
-					'expires_at' => '2024-11-12 00:37:48',
+					'expires_at' => 1731454668,
 				]
 			);
 		ConfigService::GetInstance()->SetTokens($sName, 'Hybridauth\Provider\Github', $oGithubAdapter, $aConfig);
@@ -168,7 +168,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token'));
 		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
 		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token'));
-		$this->assertEquals('2024-11-12 00:37:48', $oOauth2Client->Get('access_token_expiration'));
+		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
 	}
 
 }

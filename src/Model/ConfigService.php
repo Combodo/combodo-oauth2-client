@@ -6,6 +6,7 @@
 
 namespace Combodo\iTop\Oauth2Client\Model;
 
+use AttributeDateTime;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
@@ -60,6 +61,11 @@ class ConfigService
 		foreach ($oOaut2Client->GetModelToHybridauthMapping() as $sHybridauthId => $siTopId){
 			$sVal = $oOaut2Client->Get($siTopId);
 			if (\utils::IsNotNullOrEmptyString($sVal)){
+				if (is_a(\MetaModel::GetAttributeDef(Oauth2Client::class, $siTopId), AttributeDateTime::class)){
+					$oDateTime = \DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $sVal);
+					$sVal = $oDateTime->getTimestamp();
+				}
+
 				if (array_key_exists($sHybridauthId, $aTokenFieldMapping)){
 					$aTokens[$sHybridauthId] = $sVal;
 				} else {
@@ -102,19 +108,27 @@ class ConfigService
 			$oProperty->setAccessible(true);
 			$sScope = $oProperty->getValue($oAdapter);
 			$oOaut2Client->Set('scope', $sScope);
-			$sClass = get_class($oAdapter);
-			var_dump($sClass);
-			if (false !== strpos( $sClass, 'Mock')){
-				//to avoid following error: var_export does not handle circular references
-				$aAdapterLogData = $sClass;
-			} else {
-				$aAdapterLogData = var_export($oAdapter, true);
-			}
-			Oauth2ClientLog::Info(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'scope' => $sScope, 'oClass' => $aAdapterLogData]);
+			Oauth2ClientLog::Info(__FUNCTION__, null,
+				[
+					'name' => $sName,
+					'provider' => $sProvider,
+					'scope' => $sScope
+				]
+			);
 		}
 
 		foreach ($aTokens as $sHybridauthKey => $sVal){
 			$siTopFieldCode = $aMapping[$sHybridauthKey] ?? '';
+			Oauth2ClientLog::Info(__FUNCTION__, null,
+				[
+					'name' => $sName,
+					'provider' => $sProvider,
+					'sHybridauthKey' => $sHybridauthKey,
+					'siTopFieldCode' => $siTopFieldCode,
+					'sVal' => $sVal,
+				]
+			);
+
 			if (\utils::IsNotNullOrEmptyString($siTopFieldCode)){
 				$oOaut2Client->Set($siTopFieldCode, $sVal);
 			}
