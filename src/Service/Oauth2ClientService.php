@@ -95,6 +95,7 @@ class Oauth2ClientService {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, ['hasAccessTokenExpired' => true ]);
 			$oAdapter->refreshAccessToken();
 			ConfigService::GetInstance()->SetTokens($sName, $sProvider, $oAdapter, $aConfig);
+			$oOauth2Client->Reload();
 		}
 
 		return $oOauth2Client->Get('access_token');
