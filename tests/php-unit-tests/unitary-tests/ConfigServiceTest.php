@@ -33,7 +33,8 @@ class ConfigServiceTest extends ItopDataTestCase
 	 * @dataProvider GetHybridauthProviderNameProvider
 	 */
 	public function testGetHybridauthProviderName($sProvider, $sExpectedRes){
-		$this->assertEquals($sExpectedRes, ConfigService::GetInstance()->GetHybridauthProviderName($sProvider), $sProvider);
+		$sProviderName = $this->InvokeNonPublicMethod(ConfigService::class, 'GetHybridauthProviderName', ConfigService::GetInstance(), [$sProvider]);
+		$this->assertEquals($sExpectedRes, $sProviderName, $sProvider);
 	}
 
 	public function testGetConfig_Github_NoTokenYet() {
