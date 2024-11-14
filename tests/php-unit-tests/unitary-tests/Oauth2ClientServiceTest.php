@@ -2,10 +2,10 @@
 
 namespace Combodo\iTop\MFATotp\Test;
 
+use Combodo\iTop\Application\Helper\Session;
 use Combodo\iTop\Oauth2Client\Service\Oauth2ClientService;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
 use GithubOauth2Client;
-use Combodo\iTop\Application\Helper\Session;
 use MetaModel;
 
 /**
@@ -37,7 +37,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase
 		$_SERVER['REMOTE_ADDR'] = '1.2.3.4';
 
 		$oGithubOauth2Client = MetaModel::GetObject(GithubOauth2Client::class, 4);
-		$sToken = $oGithubOauth2Client->Get('access_token');
+		$sToken = $oGithubOauth2Client->Get('access_token')->GetPassword();
 		$this->assertEquals($sToken, Oauth2ClientService::GetInstance()->GetToken($oGithubOauth2Client));
 	}
 }

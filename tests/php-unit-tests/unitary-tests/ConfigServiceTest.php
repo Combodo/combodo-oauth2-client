@@ -45,7 +45,7 @@ class ConfigServiceTest extends ItopDataTestCase
 			['name' => $sName, 'client_id' => $sClientId, 'client_secret' => $sClientSecret]
 		);
 
-		list($sProviderName, $aConfig) = ConfigService::GetInstance()->GetConfig($sName, 'Hybridauth\Provider\Github');
+		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, 'Hybridauth\Provider\Github');
 		$this->assertEquals('github', $sProviderName);
 		$aExpected = [
 			'providers' => [
@@ -82,7 +82,7 @@ class ConfigServiceTest extends ItopDataTestCase
 			]
 		);
 
-		list($sProviderName, $aConfig) = ConfigService::GetInstance()->GetConfig($sName, 'Hybridauth\Provider\Github');
+		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, 'Hybridauth\Provider\Github');
 		$this->assertEquals('github', $sProviderName);
 		$aExpected = [
 			'providers' => [
@@ -133,9 +133,9 @@ class ConfigServiceTest extends ItopDataTestCase
 		$oOauth2Client->Reload();
 
 		$this->assertEquals('toto', $oOauth2Client->Get('scope'));
-		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token'));
+		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token')->GetPassword());
 		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
-		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token'));
+		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token')->GetPassword());
 		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
 	}
 
@@ -165,9 +165,9 @@ class ConfigServiceTest extends ItopDataTestCase
 		$oOauth2Client->Reload();
 
 		$this->assertEquals('user:email', $oOauth2Client->Get('scope'));
-		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token'));
+		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token')->GetPassword());
 		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
-		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token'));
+		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token')->GetPassword());
 		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
 	}
 

@@ -42,7 +42,7 @@ class Oauth2ClientService {
 	 */
 	public function Connect(string $sName, string $sProvider): AdapterInterface {
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
-		list($sProviderName, $aConfig) = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
+		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
 
 		$oHybridAuth = $this->GetHybridauth($aConfig);
 		/** @var \Hybridauth\Storage\Session $aStorage */
@@ -61,7 +61,7 @@ class Oauth2ClientService {
 	public function StoreTokens(string $sName, string $sProvider): AdapterInterface {
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 
-		list($sProviderName, $aConfig) = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
+		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
 		$oHybridAuth = $this->GetHybridauth($aConfig);
 
 		$oAdapter = $oHybridAuth->authenticate($sProviderName);
@@ -77,7 +77,7 @@ class Oauth2ClientService {
 		$sName = $oOauth2Client->Get('name');
 		$sProvider = $oOauth2Client->Get('provider');
 
-		list($sProviderName, $aConfig) = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
+		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
 		$oHybridAuth = $this->GetHybridauth($aConfig);
 
 		/** @var \Hybridauth\Storage\Session $aStorage */
@@ -98,7 +98,7 @@ class Oauth2ClientService {
 			$oOauth2Client->Reload();
 		}
 
-		return $oOauth2Client->Get('access_token');
+		return $oOauth2Client->Get('access_token')->GetPassword();
 	}
 
 	private function GetHybridauth(array $aConfig): Hybridauth

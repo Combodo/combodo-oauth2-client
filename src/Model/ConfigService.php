@@ -7,11 +7,11 @@
 namespace Combodo\iTop\Oauth2Client\Model;
 
 use AttributeDateTime;
+use Combodo\iTop\ItopAttributeEncryptedPassword\Model\ormEncryptedPassword;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Hybridauth\Adapter\AdapterInterface;
-use Hybridauth\Logger\Logger;
 use Oauth2Client;
 
 class ConfigService
@@ -49,7 +49,7 @@ class ConfigService
 			'enabled' => $oOaut2Client->Get('status') === 'active',
 			'keys' => [
 				'id' => $oOaut2Client->Get('client_id'),
-				'secret' => $oOaut2Client->Get('client_secret'),
+				'secret' => $oOaut2Client->Get('client_secret')->GetPassword(),
 			],
 			//'expires_in' => date_format(new \DateTime($oExpireAt), 'U') - time(),
 			'callback' => $this->GetLandingURL($oOaut2Client),
@@ -60,6 +60,9 @@ class ConfigService
 		$aTokenFieldMapping = $oOaut2Client->GetAccessTokenModelToHybridauthMapping();
 		foreach ($oOaut2Client->GetModelToHybridauthMapping() as $sHybridauthId => $siTopId){
 			$sVal = $oOaut2Client->Get($siTopId);
+			if ($sVal instanceof ormEncryptedPassword) {
+				$sVal = $sVal->GetPassword();
+			}
 			if (\utils::IsNotNullOrEmptyString($sVal)){
 				if (is_a(\MetaModel::GetAttributeDef(Oauth2Client::class, $siTopId), AttributeDateTime::class)){
 					$oDateTime = \DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $sVal);
