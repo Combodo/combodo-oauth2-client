@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.2">
-	<classes>
-		<class id="Oauth2Client" _delta="define">
-			<parent>cmdbAbstractObject</parent>
-			<properties>
-				<category>bizmodel,searchable</category>
-				<abstract>true</abstract>
-				<key_type>autoincrement</key_type>
-				<db_table>priv_oauth2_client</db_table>
-				<db_key_field>id</db_key_field>
+  <classes>
+    <class id="Oauth2Client" _delta="define">
+      <parent>cmdbAbstractObject</parent>
+      <properties>
+        <category>bizmodel,searchable</category>
+        <abstract>true</abstract>
+        <key_type>autoincrement</key_type>
+        <db_table>priv_oauth2_client</db_table>
+        <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
           <format>%1$s - %2$s</format>
@@ -17,14 +17,14 @@
             <attribute id="provider"/>
           </attributes>
         </naming>
-				<display_template/>
-				<icon>assets/img/itop-logo-square-64.png</icon>
-				<reconciliation>
-					<attributes>
-						<attribute id="name"/>
-						<attribute id="provider"/>
-					</attributes>
-				</reconciliation>
+        <display_template/>
+        <icon>assets/img/itop-logo-square-64.png</icon>
+        <reconciliation>
+          <attributes>
+            <attribute id="name"/>
+            <attribute id="provider"/>
+          </attributes>
+        </reconciliation>
         <uniqueness_rules>
           <rule id="no_duplicate">
             <attributes>
@@ -33,8 +33,8 @@
             </attributes>
           </rule>
         </uniqueness_rules>
-			</properties>
-			<fields>
+      </properties>
+      <fields>
         <field id="name" xsi:type="AttributeString">
           <sql>name</sql>
           <default_value/>
@@ -45,40 +45,40 @@
           <default_value/>
           <is_null_allowed>false</is_null_allowed>
         </field>
-				<field id="client_id" xsi:type="AttributeString">
-					<sql>client_id</sql>
-					<default_value/>
-					<is_null_allowed>false</is_null_allowed>
-				</field>
-				<field id="client_secret" xsi:type="AttributeEncryptedPassword">
-					<sql>client_secret</sql>
-					<default_value/>
-					<is_null_allowed>false</is_null_allowed>
-				</field>
-				<field id="refresh_token" xsi:type="AttributeEncryptedPassword">
-					<sql>refresh_token</sql>
-					<default_value/>
-					<is_null_allowed>true</is_null_allowed>
-					<tracking_level>none</tracking_level>
-				</field>
+        <field id="client_id" xsi:type="AttributeString">
+          <sql>client_id</sql>
+          <default_value/>
+          <is_null_allowed>false</is_null_allowed>
+        </field>
+        <field id="client_secret" xsi:type="AttributeEncryptedPassword">
+          <sql>client_secret</sql>
+          <default_value/>
+          <is_null_allowed>false</is_null_allowed>
+        </field>
+        <field id="refresh_token" xsi:type="AttributeEncryptedPassword">
+          <sql>refresh_token</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+          <tracking_level>none</tracking_level>
+        </field>
         <field id="refresh_token_expiration" xsi:type="AttributeDateTime">
           <sql>refresh_token_expiration</sql>
           <default_value/>
           <is_null_allowed>true</is_null_allowed>
           <tracking_level>none</tracking_level>
         </field>
-				<field id="access_token" xsi:type="AttributeEncryptedPassword">
-					<sql>access_token</sql>
-					<default_value/>
-					<is_null_allowed>true</is_null_allowed>
-					<tracking_level>none</tracking_level>
-				</field>
-				<field id="access_token_expiration" xsi:type="AttributeDateTime">
-					<sql>access_token_expiration</sql>
-					<default_value/>
-					<is_null_allowed>true</is_null_allowed>
-					<tracking_level>none</tracking_level>
-				</field>
+        <field id="access_token" xsi:type="AttributeEncryptedPassword">
+          <sql>access_token</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+          <tracking_level>none</tracking_level>
+        </field>
+        <field id="access_token_expiration" xsi:type="AttributeDateTime">
+          <sql>access_token_expiration</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+          <tracking_level>none</tracking_level>
+        </field>
         <field id="scope" xsi:type="AttributeString">
           <sql>scope</sql>
           <default_value/>
@@ -118,16 +118,26 @@
           <default_value/>
           <is_null_allowed>true</is_null_allowed>
         </field>
-			</fields>
+      </fields>
       <event_listeners>
         <event_listener id="EVENT_DB_BEFORE_WRITE">
           <event>EVENT_DB_BEFORE_WRITE</event>
           <callback>EvtBeforeWriteOauthClient2</callback>
           <rank>0</rank>
         </event_listener>
+        <event_listener id="EVENT_DB_SET_ATTRIBUTES_FLAGS">
+          <event>EVENT_DB_SET_ATTRIBUTES_FLAGS</event>
+          <callback>EvtSetAttributeFlagsOauthClient2</callback>
+          <rank>0</rank>
+        </event_listener>
+        <event_listener id="EVENT_DB_SET_INITIAL_ATTRIBUTES_FLAGS">
+          <event>EVENT_DB_SET_INITIAL_ATTRIBUTES_FLAGS</event>
+          <callback>EvtSetInitialAttributeFlagsOauthClient2</callback>
+          <rank>0</rank>
+        </event_listener>
       </event_listeners>
-			<methods>
-				<method id="GetHybridauthProvider">
+      <methods>
+        <method id="GetHybridauthProvider">
           <static>false</static>
           <access>public</access>
           <type>Overload-DBObject</type>
@@ -178,6 +188,42 @@
             }
           }]]></code>
         </method>
+        <method id="EvtSetAttributeFlagsOauthClient2">
+          <comment>/**
+            *
+            * @param Combodo\iTop\Service\Events\EventData $oEventData Event data object
+            */
+          </comment>
+          <static>false</static>
+          <access>public</access>
+          <type>EventListener</type>
+          <code><![CDATA[
+	        public function EvtSetAttributeFlagsOauthClient2(Combodo\iTop\Service\Events\EventData $oEventData)
+          {
+                $this->AddAttributeFlags('access_token', OPT_ATT_READONLY);
+                $this->AddAttributeFlags('access_token_expiration', OPT_ATT_READONLY);
+                $this->AddAttributeFlags('refresh_token', OPT_ATT_READONLY);
+                $this->AddAttributeFlags('refresh_token_expiration', OPT_ATT_READONLY);
+          }]]></code>
+        </method>
+        <method id="EvtSetInitialAttributeFlagsOauthClient2">
+          <comment>/**
+            *
+            * @param Combodo\iTop\Service\Events\EventData $oEventData Event data object
+            */
+          </comment>
+          <static>false</static>
+          <access>public</access>
+          <type>EventListener</type>
+          <code><![CDATA[
+	        public function EvtSetInitialAttributeFlagsOauthClient2(Combodo\iTop\Service\Events\EventData $oEventData)
+          {
+                $this->AddInitialAttributeFlags('access_token', OPT_ATT_READONLY);
+                $this->AddInitialAttributeFlags('access_token_expiration', OPT_ATT_READONLY);
+                $this->AddInitialAttributeFlags('refresh_token', OPT_ATT_READONLY);
+                $this->AddInitialAttributeFlags('refresh_token_expiration', OPT_ATT_READONLY);
+          }]]></code>
+        </method>
         <method id="GetAccessTokenModelToHybridauthMapping">
           <static>false</static>
           <access>public</access>
@@ -215,11 +261,9 @@
           <code><![CDATA[
   public function DisplayBareHeader(WebPage $oPage, $bEditMode = false)
   {
-
-		$this::SetSessionMessage(get_class($this), $this->GetKey(), 1, Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetLandingURL($this), 'INFO', 1);
 		$aHeaderBlocks = parent::DisplayBareHeader($oPage, $bEditMode);
 
-    $oOauthConnectButton = Combodo\iTop\Application\UI\Base\Component\Button\ButtonUIBlockFactory::MakeIconAction('fas fa-book-open', 'Connect', null, null, false, 'oath2-client-connect');
+    $oOauthConnectButton = Combodo\iTop\Application\UI\Base\Component\Button\ButtonUIBlockFactory::MakeIconAction('fas fa-user-check', 'Connect', null, null, false, 'oath2-client-connect');
 
     // Prepare button callback
     $sOauthConnectCallbackName = 'OauthConnectCallback_'.utils::Sanitize($oOauthConnectButton->GetId(), '', utils::ENUM_SANITIZATION_FILTER_VARIABLE_NAME);
@@ -254,29 +298,29 @@ JS
         ]]></code>
         </method>
       </methods>
-			<presentation>
-				<search>
-					<items>
-						<item id="name">
-							<rank>10</rank>
-						</item>
-						<item id="provider">
-							<rank>20</rank>
-						</item>
-					</items>
-				</search>
-				<list>
-					<items>
-						<item id="name">
-							<rank>10</rank>
-						</item>
-						<item id="provider">
-							<rank>20</rank>
-						</item>
-					</items>
-				</list>
-			</presentation>
-		</class>
+      <presentation>
+        <search>
+          <items>
+            <item id="name">
+              <rank>10</rank>
+            </item>
+            <item id="provider">
+              <rank>20</rank>
+            </item>
+          </items>
+        </search>
+        <list>
+          <items>
+            <item id="name">
+              <rank>10</rank>
+            </item>
+            <item id="provider">
+              <rank>20</rank>
+            </item>
+          </items>
+        </list>
+      </presentation>
+    </class>
     <class id="GithubOauth2Client" _delta="define">
       <parent>Oauth2Client</parent>
       <properties>
@@ -318,41 +362,51 @@ JS
       <presentation>
         <details>
           <items>
-            <item id="name">
+            <item id="col:col1">
               <rank>10</rank>
+              <items>
+                <item id="name">
+                  <rank>10</rank>
+                </item>
+                <item id="provider">
+                  <rank>20</rank>
+                </item>
+                <item id="status">
+                  <rank>30</rank>
+                </item>
+                <item id="client_id">
+                  <rank>40</rank>
+                </item>
+                <item id="client_secret">
+                  <rank>50</rank>
+                </item>
+                <item id="scope">
+                  <rank>60</rank>
+                </item>
+              </items>
             </item>
-            <item id="provider">
-              <rank>20</rank>
-            </item>
-            <item id="status">
-              <rank>30</rank>
-            </item>
-            <item id="client_id">
-              <rank>40</rank>
-            </item>
-            <item id="client_secret">
-              <rank>50</rank>
-            </item>
-            <item id="scope">
-              <rank>60</rank>
-            </item>
-            <item id="access_token">
-              <rank>70</rank>
-            </item>
-            <item id="access_token_expiration">
-              <rank>80</rank>
-            </item>
-            <item id="refresh_token">
-              <rank>90</rank>
-            </item>
-            <item id="refresh_token_expiration">
-              <rank>100</rank>
-            </item>
-            <item id="token_type">
-              <rank>110</rank>
-            </item>
-            <item id="access_token_secret">
-              <rank>120</rank>
+            <item id="col:col2">
+              <rank>10</rank>
+              <items>
+                <item id="access_token">
+                  <rank>70</rank>
+                </item>
+                <item id="access_token_expiration">
+                  <rank>80</rank>
+                </item>
+                <item id="refresh_token">
+                  <rank>90</rank>
+                </item>
+                <item id="refresh_token_expiration">
+                  <rank>100</rank>
+                </item>
+                <item id="token_type">
+                  <rank>110</rank>
+                </item>
+                <item id="access_token_secret">
+                  <rank>120</rank>
+                </item>
+              </items>
             </item>
           </items>
         </details>
@@ -378,5 +432,5 @@ JS
         </list>
       </presentation>
     </class>
-	</classes>
+  </classes>
 </itop_design>

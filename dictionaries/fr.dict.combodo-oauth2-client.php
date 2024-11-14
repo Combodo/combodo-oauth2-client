@@ -9,5 +9,7 @@
  */
 
 Dict::Add('FR FR', 'French', 'Français', [
-	// Dictionary entries go here
+	'Oauth2Client:UI:IDPParameters' => 'IDP Parameters',
+	'Oauth2Client:UI:AppURL' => 'Application URL',
+	'Oauth2Client:UI:LandingURL' => 'Landing URL',
 ]);
