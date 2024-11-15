@@ -37,16 +37,17 @@ class Oauth2ClientService
 	/**
 	 * @param string $sName
 	 * @param string $sProvider
+	 * @param bool $bResetToken
 	 *
 	 * @return \Hybridauth\Adapter\AdapterInterface: when already connected returns the object. otherwise redirection occurs to IDP
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function Connect(string $sName, string $sProvider): AdapterInterface
+	public function Connect(string $sName, string $sProvider, bool $bResetToken): AdapterInterface
 	{
 
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
-			[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
+			[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider, $bResetToken);
 			$oHybridAuth = $this->GetHybridauth($aConfig);
 			/** @var \Hybridauth\Storage\Session $aStorage */
 			$oAdapter = $oHybridAuth->getAdapter($sProviderName);

@@ -21,11 +21,12 @@ require_once (APPROOT.'application/startup.inc.php');
 try{
 	$sName = \utils::ReadParam('name');
 	$sProvider = base64_decode(\utils::ReadParam('provider'));
+	$bResetToken = 'true' === \utils::ReadParam('reset_token');
 	Session::Set('oauth2_client_name', $sName);
 	Session::Set('oauth2_client_provider', $sProvider);
 
 	/** @var \Hybridauth\Adapter\AdapterInterface $oAdapter */
-	$oAdapter = Oauth2ClientService::GetInstance()->Connect($sName, $sProvider);
+	$oAdapter = Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, $bResetToken);
 	$sJson = json_encode($oAdapter->getUserProfile(), JSON_PRETTY_PRINT);
 
 	$sHTML = <<<HTML
