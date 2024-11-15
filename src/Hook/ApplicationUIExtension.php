@@ -26,7 +26,7 @@ class ApplicationUIExtension extends \AbstractApplicationUIExtension
 		$oField = FieldUIBlockFactory::MakeSmall(Dict::S('Oauth2Client:UI:AppURL'), utils::GetAbsoluteUrlAppRoot());
 		$oFieldSet->AddSubBlock($oField);
 
-		$oField = FieldUIBlockFactory::MakeSmall(Dict::S('Oauth2Client:UI:LandingURL'), ConfigService::GetInstance()->GetLandingURL($oObject));
+		$oField = FieldUIBlockFactory::MakeSmall(Dict::S('Oauth2Client:UI:LandingURL'), ConfigService::GetInstance()->GetLandingURL());
 		$oFieldSet->AddSubBlock($oField);
 
 		$oPage->AddUiBlock($oFieldSet);

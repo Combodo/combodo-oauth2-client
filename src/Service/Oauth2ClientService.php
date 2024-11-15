@@ -90,24 +90,26 @@ class Oauth2ClientService
 	}
 
 	/**
-	 * @param \Oauth2Client $oOauth2Client
+	 * Get up to date token.if needed, refresh workflow is triggered first.
+	 * @param \Oauth2Client $oOauth2Client: object is reloaded afterwhile
 	 *
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetToken(Oauth2Client $oOauth2Client): string
+	public function GetToken(Oauth2Client &$oOauth2Client): string
 	{
 		try {
 			$sName = $oOauth2Client->Get('name');
 			$sProvider = $oOauth2Client->Get('provider');
 			[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
 			$oHybridAuth = $this->GetHybridauth($aConfig);
-			/** @var \Hybridauth\Storage\Session $aStorage *///$aStorage = $oHybridAuth->getAdapter($sProviderName)->getStorage();
-			//$aTokenInfo = $oHybridAuth->getAdapter($sProviderName)->getStoredData('access_token');
+			/** @var \Hybridauth\Storage\Session $aStorage */
 			$oAdapter = $oHybridAuth->getAdapter($sProviderName);
 			if (!$oAdapter->isConnected()) {
 				throw new Oauth2ClientException(__FUNCTION__.": Oauth not initialized");
-			}// refresh tokens if needed
+			}
+
+			// refresh tokens if needed
 			$oAdapter->maintainToken();
 			if ($oAdapter->hasAccessTokenExpired() === true) {
 				Oauth2ClientLog::Debug(__FUNCTION__, null, ['hasAccessTokenExpired' => true]);

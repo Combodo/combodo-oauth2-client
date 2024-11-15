@@ -67,7 +67,7 @@ class ConfigService
 					'secret' => $oOauth2Client->Get('client_secret')->GetPassword(),
 				],
 				//'expires_in' => date_format(new \DateTime($oExpireAt), 'U') - time(),
-				'callback' => $this->GetLandingURL($oOauth2Client),
+				'callback' => $this->GetLandingURL(),
 				'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 			];
 			$aTokens = [];
@@ -93,7 +93,7 @@ class ConfigService
 			if (count($aTokens) > 0) {
 				$aData['tokens'] = $aTokens;
 			}
-			$sProviderName = mb_strtolower($this->GetHybridauthProviderName($sProvider));
+			$sProviderName = mb_strtolower($this->GetClassName($sProvider));
 			$aConf = ['providers' => [$sProviderName => $aData]];
 			Oauth2ClientLog::Debug(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'hybridauth_provider_name' => $sProviderName, 'aConf' => $aConf]);
 
@@ -156,7 +156,7 @@ class ConfigService
 	}
 
 	/**
-	 * @param \Oauth2Client $oOauth2Client
+	 * @param \Oauth2Client $oOauth2Client: object is reloaded afterwhile
 	 *
 	 * @return void
 	 */
@@ -204,12 +204,10 @@ class ConfigService
 	}
 
 	/**
-	 * @param \Oauth2Client $oObj
-	 *
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetLandingURL(Oauth2Client $oObj) : string
+	public function GetLandingURL() : string
 	{
 		try {
 			return \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/landing.php";
@@ -225,14 +223,14 @@ class ConfigService
 	 * @return bool
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetConnectUrl(Oauth2Client $oObj, bool $bReset=false) : string
+	public function GetConnectUrl(Oauth2Client $oObj, bool $bResetTokens=false) : string
 	{
 		try {
 			$sName = urlencode($oObj->Get('name'));
 			$sProvider = urlencode(base64_encode($oObj->Get('provider')));
 
 			$sUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=$sName&provider=$sProvider";
-			if ($bReset){
+			if ($bResetTokens){
 				$sUrl .= "&reset_token=true";
 			}
 
