@@ -38,11 +38,12 @@ class ConfigService
 	 *
 	 * @param string $sName Name of the entry to get
 	 * @param string $sProvider Generic name of the provider (Hybridauth\Provider\Github for example)
+	 * @param bool $bResetTokens : reset tokens in DB before generating configuration
 	 *
 	 * @return array of parameters corresponding to the provider's configuration
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException*
 	 */
-	public function GetConfig(string $sName, string $sProvider) : array
+	public function GetConfig(string $sName, string $sProvider, bool $bResetTokens=false) : array
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
@@ -50,10 +51,15 @@ class ConfigService
 			$oSet = new \DBObjectSet($oSearch, [], ['name' => $sName, 'provider' => $sProvider]);
 			if ($oSet->Count() != 1) {
 				throw new Oauth2ClientException("Missing configuration", 0, null, ['name' => $sName, 'provider' => $sProvider]);
-			}//$aData = $oSet->FetchAssoc();
-			//$aData['adapter'] = $sProvider;
+			}
+
 			/** @var Oauth2Client $oOauth2Client */
 			$oOauth2Client = $oSet->Fetch();
+
+			if ($bResetTokens){
+				$this->ResetTokens($oOauth2Client);
+			}
+
 			$aData = [
 				'enabled' => $oOauth2Client->Get('status') === 'active',
 				'keys' => [
@@ -150,6 +156,22 @@ class ConfigService
 	}
 
 	/**
+	 * @param \Oauth2Client $oOauth2Client
+	 *
+	 * @return void
+	 */
+	public function ResetTokens(Oauth2Client &$oOauth2Client) : void
+	{
+		$aMapping = $oOauth2Client->GetAccessTokenModelToHybridauthMapping();
+
+		foreach ($aMapping as $sHybridauthKey => $siTopFieldCode){
+			$oOauth2Client->Set($siTopFieldCode, '');
+		}
+		$oOauth2Client->DBWrite();
+		$oOauth2Client->Reload();
+	}
+
+	/**
 	 * Provide the access_token fields mapping between hybridauth and iTop model
 	 * @return array
 	 */
@@ -200,15 +222,21 @@ class ConfigService
 	 * @param \Oauth2Client $oObj
 	 *
 	 * @return string
+	 * @return bool
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetConnectUrl(Oauth2Client $oObj) : string
+	public function GetConnectUrl(Oauth2Client $oObj, bool $bReset=false) : string
 	{
 		try {
 			$sName = urlencode($oObj->Get('name'));
 			$sProvider = urlencode(base64_encode($oObj->Get('provider')));
 
-			return \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=$sName&provider=$sProvider";
+			$sUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=$sName&provider=$sProvider";
+			if ($bReset){
+				$sUrl .= "&reset_token=true";
+			}
+
+			return $sUrl;
 		} catch (\Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
