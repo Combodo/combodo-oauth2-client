@@ -4,23 +4,36 @@
  * @license     http://opensource.org/licenses/AGPL-3.0
  */
 
-namespace Combodo\iTop\MFATotp\Test;
+namespace Combodo\iTop\Oauth2Client\Test;
 
 use Combodo\iTop\ItopAttributeEncryptedPassword\Model\ormEncryptedPassword;
+use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
+use Combodo\iTop\Oauth2Client\Service\HybridAuthService;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
-use GithubOauth2Client;
+use GitHubOauth2Client;
+use Hybridauth\Adapter\OAuth2;
 use MicrosoftGraphOauth2Client;
 use Hybridauth\Provider\GitHub;
-use Hybridauth\Provider\MicrosoftGraph;
 
 class ConfigServiceTest extends ItopDataTestCase
 {
+	private HybridAuthService $oHybridAuthService;
+
 	protected function setUp(): void {
 		parent::setUp();
 
 		$this->RequireOnceItopFile('env-production/combodo-oauth2-client/vendor/autoload.php');
+
+		$this->oHybridAuthService = $this->createMock(HybridAuthService::class);
+		HybridAuthService::SetInstance($this->oHybridAuthService);
+	}
+
+	protected function tearDown(): void {
+		parent::tearDown();
+
+		HybridAuthService::SetInstance(null);
 	}
 
 	public function GetClassNameProvider()
@@ -40,152 +53,9 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->assertEquals($sExpectedRes, $sProviderName, $sProvider);
 	}
 
-	public function testGetConfig_Github_NoTokenYet() {
-		$sClientId = 'client_123';
-		$sClientSecret = 'secret456';
-
-		$sName = 'webhook';
-		$oOauth2Client = $this->createObject(GithubOauth2Client::class,
-			['name' => $sName, 'client_id' => $sClientId, 'client_secret' => $sClientSecret]
-		);
-
-		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, 'Hybridauth\Provider\Github');
-		$this->assertEquals('github', $sProviderName);
-		$aExpected = [
-			'providers' => [
-				'github' => [
-					'enabled' => true,
-					'keys' => [
-						'id' => $sClientId,
-						'secret' => $sClientSecret,
-					],
-					'callback' => ConfigService::GetInstance()->GetLandingURL(),
-					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
-				],
-			],
-		];
-		$this->assertEquals($aExpected, $aConfig);
-	}
-
-	public function testGetConfig_Github_WithAccessAndRefreshTokensToken() {
-		$sClientId = 'client_123';
-		$sClientSecret = 'secret456';
-
-		$sName = 'webhook';
-		$oOauth2Client = $this->createObject(GithubOauth2Client::class,
-			[
-				'name' => $sName,
-				'client_id' => $sClientId,
-				'client_secret' => $sClientSecret,
-				'access_token' => 'access_token7',
-				'access_token_expiration' => '2024-11-13 00:37:48',
-				'refresh_token' => 'refresh_token8',
-				'refresh_token_expiration' => '2025-11-13 00:37:48',
-				'token_type' => 'bearer',
-				'scope' => 'any scope',
-			]
-		);
-
-		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, 'Hybridauth\Provider\Github');
-		$this->assertEquals('github', $sProviderName);
-		$aExpected = [
-			'providers' => [
-				'github' => [
-					'enabled' => true,
-					'keys' => [
-						'id' => $sClientId,
-						'secret' => $sClientSecret,
-					],
-					'callback' => ConfigService::GetInstance()->GetLandingURL(),
-					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
-					'scope' => 'any scope',
-					'tokens' => [
-						'access_token' => 'access_token7',
-		                'token_type' => 'bearer',
-		                'refresh_token' => 'refresh_token8',
-		                'expires_at' => 1731454668,
-					],
-				],
-			],
-		];
-		$this->assertEquals($aExpected, $aConfig);
-	}
-
-	public function testGetConfig_Github_WithAccessAndRefreshTokensToken_RefreshRequired() {
-		$sClientId = 'client_123';
-		$sClientSecret = 'secret456';
-
-		$sName = 'webhook';
-		$oOauth2Client = $this->createObject(GithubOauth2Client::class,
-			[
-				'name' => $sName,
-				'client_id' => $sClientId,
-				'client_secret' => $sClientSecret,
-				'access_token' => 'access_token7',
-				'access_token_expiration' => '2024-11-13 00:37:48',
-				'refresh_token' => 'refresh_token8',
-				'refresh_token_expiration' => '2025-11-13 00:37:48',
-				'token_type' => 'bearer',
-				'scope' => 'any scope',
-			]
-		);
-
-		[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, 'Hybridauth\Provider\Github', true);
-		$this->assertEquals('github', $sProviderName);
-		$aExpected = [
-			'providers' => [
-				'github' => [
-					'enabled' => true,
-					'keys' => [
-						'id' => $sClientId,
-						'secret' => $sClientSecret,
-					],
-					'callback' => ConfigService::GetInstance()->GetLandingURL(),
-					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
-					'scope' => 'any scope',
-				],
-			],
-		];
-		$this->assertEquals($aExpected, $aConfig);
-	}
-
-	public function testSetTokens_Github() {
-		$sClientId = 'client_123';
-		$sClientSecret = 'secret456';
-
-		$sName = 'webhook';
-		$oOauth2Client = $this->createObject(GithubOauth2Client::class,
-			['name' => $sName, 'client_id' => $sClientId, 'client_secret' => $sClientSecret, 'scope' => 'toto']
-		);
-
-		$aConfig = ['scope' => 'toto'];
-		$oGithubAdapter = $this->createMock(GitHub::class);
-		$oGithubAdapter->expects($this->once())
-			->method('getAccessToken')
-			->willReturn(
-				[
-					'access_token' => 'ghu_xxx',
-					//'access_token_secret' => '',
-					'token_type' => 'bearer',
-					'refresh_token' => 'ghr_yyy',
-					'expires_at' => 1731454668,
-				]
-			);
-		ConfigService::GetInstance()->SetTokens($sName, 'Hybridauth\Provider\Github', $oGithubAdapter, $aConfig);
-		$oOauth2Client->Reload();
-
-		$this->assertEquals('toto', $oOauth2Client->Get('scope'));
-		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token')->GetPassword());
-		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
-		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token')->GetPassword());
-		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
-	}
-
-
 	public function testResetTokens() {
 		$sClientId = 'client_123';
 		$sClientSecret = 'secret456';
-
 		$sName = 'webhook';
 		$aFields = [
 			'name' => $sName,
@@ -198,7 +68,8 @@ class ConfigServiceTest extends ItopDataTestCase
 			'access_token_expiration' => '2024-11-13 00:37:48',
 		];
 
-		$oOauth2Client = $this->createObject(GithubOauth2Client::class,
+		/** @var \Oauth2Client $oOauth2Client */
+		$oOauth2Client = $this->createObject(GitHubOauth2Client::class,
 			$aFields
 		);
 
@@ -233,16 +104,146 @@ class ConfigServiceTest extends ItopDataTestCase
 		}
 	}
 
-	public function testSetTokens_Github_ScopeNotSet_UseProviderScope() {
+	public function testGetOauth2Client_Github_NoTokenYet() {
 		$sClientId = 'client_123';
 		$sClientSecret = 'secret456';
 
 		$sName = 'webhook';
-		$oOauth2Client = $this->createObject(GithubOauth2Client::class,
+		$this->createObject(GitHubOauth2Client::class,
 			['name' => $sName, 'client_id' => $sClientId, 'client_secret' => $sClientSecret]
 		);
 
-		$aConfig = [];
+		$aExpected = [
+			'providers' => [
+				'github' => [
+					'enabled' => true,
+					'keys' => [
+						'id' => $sClientId,
+						'secret' => $sClientSecret,
+					],
+					'callback' => ConfigService::GetInstance()->GetLandingURL(),
+					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+				],
+			],
+		];
+
+		$oOauth2 = $this->createMock(OAuth2::class);
+		$this->oHybridAuthService->expects($this->once())
+			->method('GetOauth2')
+			->with($aExpected, 'github')
+			->willReturn($oOauth2);
+
+		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\Github');
+
+		$this->assertEquals($oOauth2, $oOauth2Client->GetOauth2());
+	}
+
+	public function testGetOauth2Client_Github_WithAccessAndRefreshTokensToken() {
+		$sClientId = 'client_123';
+		$sClientSecret = 'secret456';
+
+		$sName = 'webhook';
+		$this->createObject(GitHubOauth2Client::class,
+			[
+				'name' => $sName,
+				'client_id' => $sClientId,
+				'client_secret' => $sClientSecret,
+				'access_token' => 'access_token7',
+				'access_token_expiration' => '2024-11-13 00:37:48',
+				'refresh_token' => 'refresh_token8',
+				'refresh_token_expiration' => '2025-11-13 00:37:48',
+				'token_type' => 'bearer',
+				'scope' => 'any scope',
+			]
+		);
+
+		$aExpected = [
+			'providers' => [
+				'github' => [
+					'enabled' => true,
+					'keys' => [
+						'id' => $sClientId,
+						'secret' => $sClientSecret,
+					],
+					'callback' => ConfigService::GetInstance()->GetLandingURL(),
+					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'scope' => 'any scope',
+					'tokens' => [
+						'access_token' => 'access_token7',
+		                'token_type' => 'bearer',
+		                'refresh_token' => 'refresh_token8',
+		                'expires_at' => 1731454668,
+					],
+				],
+			],
+		];
+
+		$oOauth2 = $this->createMock(Oauth2::class);
+		$this->oHybridAuthService->expects($this->once())
+			->method('GetOauth2')
+			->with($aExpected, 'github')
+			->willReturn($oOauth2);
+
+		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\Github');
+
+		$this->assertEquals($oOauth2, $oOauth2Client->GetOauth2());
+	}
+
+	public function testGetOauth2Client_Github_WithAccessAndRefreshTokensToken_RefreshRequired() {
+		$sClientId = 'client_123';
+		$sClientSecret = 'secret456';
+
+		$sName = 'webhook';
+		$this->createObject(GitHubOauth2Client::class,
+			[
+				'name' => $sName,
+				'client_id' => $sClientId,
+				'client_secret' => $sClientSecret,
+				'access_token' => 'access_token7',
+				'access_token_expiration' => '2024-11-13 00:37:48',
+				'refresh_token' => 'refresh_token8',
+				'refresh_token_expiration' => '2025-11-13 00:37:48',
+				'token_type' => 'bearer',
+				'scope' => 'any scope',
+			]
+		);
+
+		$aExpected = [
+			'providers' => [
+				'github' => [
+					'enabled' => true,
+					'keys' => [
+						'id' => $sClientId,
+						'secret' => $sClientSecret,
+					],
+					'callback' => ConfigService::GetInstance()->GetLandingURL(),
+					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'scope' => 'any scope',
+				],
+			],
+		];
+
+		$oOauth2 = $this->createMock(Oauth2::class);
+		$this->oHybridAuthService->expects($this->once())
+			->method('GetOauth2')
+			->with($aExpected, 'github')
+			->willReturn($oOauth2);
+
+		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\Github', true);
+
+		$this->assertEquals($oOauth2, $oOauth2Client->GetOauth2());
+	}
+
+	public function testSetTokens_Github() {
+		$sClientId = 'client_123';
+		$sClientSecret = 'secret456';
+
+		$sName = 'webhook';
+		/** @var \Oauth2Client $oOauth2Client */
+		$oOauth2Client = $this->createObject(GitHubOauth2Client::class,
+			['name' => $sName, 'client_id' => $sClientId, 'client_secret' => $sClientSecret, 'scope' => 'toto']
+		);
+
 		$oGithubAdapter = $this->createMock(GitHub::class);
 		$oGithubAdapter->expects($this->once())
 			->method('getAccessToken')
@@ -255,7 +256,42 @@ class ConfigServiceTest extends ItopDataTestCase
 					'expires_at' => 1731454668,
 				]
 			);
-		ConfigService::GetInstance()->SetTokens($sName, 'Hybridauth\Provider\Github', $oGithubAdapter, $aConfig);
+		$oOauth2Client->SetOauth2($oGithubAdapter);
+
+		ConfigService::GetInstance()->SetTokens($oOauth2Client);
+		$oOauth2Client->Reload();
+
+		$this->assertEquals('toto', $oOauth2Client->Get('scope'));
+		$this->assertEquals('ghu_xxx', $oOauth2Client->Get('access_token')->GetPassword());
+		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
+		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token')->GetPassword());
+		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
+	}
+
+	public function testSetTokens_Github_ScopeNotSet_UseProviderScope() {
+		$sClientId = 'client_123';
+		$sClientSecret = 'secret456';
+
+		$sName = 'webhook';
+		/** @var \Oauth2Client $oOauth2Client */
+		$oOauth2Client = $this->createObject(GitHubOauth2Client::class,
+			['name' => $sName, 'client_id' => $sClientId, 'client_secret' => $sClientSecret]
+		);
+
+		$oGithubAdapter = $this->createMock(GitHub::class);
+		$oGithubAdapter->expects($this->once())
+			->method('getAccessToken')
+			->willReturn(
+				[
+					'access_token' => 'ghu_xxx',
+					//'access_token_secret' => '',
+					'token_type' => 'bearer',
+					'refresh_token' => 'ghr_yyy',
+					'expires_at' => 1731454668,
+				]
+			);
+		$oOauth2Client->SetOauth2($oGithubAdapter);
+		ConfigService::GetInstance()->SetTokens($oOauth2Client);
 		$oOauth2Client->Reload();
 
 		$this->assertEquals('user:email', $oOauth2Client->Get('scope'));
@@ -267,21 +303,25 @@ class ConfigServiceTest extends ItopDataTestCase
 
 	public function GetConnectUrlProvider() {
 		return [
-			'reset with Github' => [ 'class' => GithubOauth2Client::class, 'reset' => true,
-				'url' => 'https://odain.itop-saas.dev/iTopMFA/env-production/combodo-oauth2-client/connect.php?name=testname&provider=SHlicmlkYXV0aFxQcm92aWRlclxHaXRodWI%3D&reset_token=true' ],
-			'NO reset with MS' => [ 'class' => MicrosoftGraphOauth2Client::class, 'reset' => false,
-				'url' => 'https://odain.itop-saas.dev/iTopMFA/env-production/combodo-oauth2-client/connect.php?name=testname&provider=SHlicmlkYXV0aFxQcm92aWRlclxNaWNyb3NvZnRHcmFwaA%3D%3D' ],
+			'reset with GitHub' => [ 'class' => GitHubOauth2Client::class, 'reset' => true ],
+			'NO reset with MS' => [ 'class' => MicrosoftGraphOauth2Client::class, 'reset' => false ],
 		];
 	}
 
 	/**
 	 * @dataProvider GetConnectUrlProvider
 	 */
-	public function testGetConnectUrl(string $sClass, bool $bResetTokens, string $sExpectedUrl) {
+	public function testGetConnectUrl(string $sClass, bool $bResetTokens) {
 		$oOauth2Client = $this->createObject($sClass,
 			['name' => 'testname', 'client_id' => 'sClientId', 'client_secret' => 'sClientSecret']
 		);
+
+		$sProvider = urlencode(base64_encode($oOauth2Client->Get('provider')));
 		$sUrl = ConfigService::GetInstance()->GetConnectUrl($oOauth2Client, $bResetTokens);
+		$sExpectedUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=testname&provider=$sProvider";
+		if ($bResetTokens){
+			$sExpectedUrl .= "&reset_token=true";
+		}
 		$this->assertEquals($sExpectedUrl, $sUrl);
 	}
 

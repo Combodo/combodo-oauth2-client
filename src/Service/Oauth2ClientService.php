@@ -11,6 +11,7 @@ use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
 use Exception;
 use Hybridauth\Adapter\AdapterInterface;
+use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Hybridauth;
 use Hybridauth\Logger\Logger;
 use Oauth2Client;
@@ -39,25 +40,22 @@ class Oauth2ClientService
 	 * @param string $sProvider
 	 * @param bool $bResetToken
 	 *
-	 * @return \Hybridauth\Adapter\AdapterInterface: when already connected returns the object. otherwise redirection occurs to IDP
+	 * @return \Hybridauth\Adapter\OAuth2: when already connected returns the object. otherwise redirection occurs to IDP
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function Connect(string $sName, string $sProvider, bool $bResetToken): AdapterInterface
+	public function Connect(string $sName, string $sProvider, bool $bResetToken): OAuth2
 	{
-
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
-			[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider, $bResetToken);
-			$oHybridAuth = $this->GetHybridauth($aConfig);
-			/** @var \Hybridauth\Storage\Session $aStorage */
-			$oAdapter = $oHybridAuth->getAdapter($sProviderName);
-			if ($oAdapter->isConnected()) {
+			$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider, $bResetToken);
+			$oOAuth2 = $oOauth2Client->GetOauth2();
+			if ($oOAuth2->isConnected()) {
 				//clear inside session
-				$oAdapter->disconnect();
+				$oOAuth2->disconnect();
 			}
-			$oHybridAuth->authenticate($sProviderName);
+			$oOAuth2->authenticate();
 
-			return $oAdapter;
+			return $oOAuth2;
 		} catch (Oauth2ClientException $e) {
 			throw $e;
 		} catch (Exception $e) {
@@ -76,12 +74,12 @@ class Oauth2ClientService
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
-			[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
-			$oHybridAuth = $this->GetHybridauth($aConfig);
-			$oAdapter = $oHybridAuth->authenticate($sProviderName);
-			ConfigService::GetInstance()->SetTokens($sName, $sProvider, $oAdapter, $aConfig);
+			$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
+			$oOAuth2 = $oOauth2Client->GetOauth2();
+			$oOAuth2->authenticate();
+			ConfigService::GetInstance()->SetTokens($oOauth2Client);
 
-			return $oAdapter;
+			return $oOAuth2;
 		} catch (Oauth2ClientException $e) {
 			throw $e;
 		} catch (Exception $e) {
@@ -91,7 +89,7 @@ class Oauth2ClientService
 
 	/**
 	 * Get up to date token.if needed, refresh workflow is triggered first.
-	 * @param \Oauth2Client $oOauth2Client: object is reloaded afterwhile
+	 * @param \Oauth2Client $oOauth2Client
 	 *
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
@@ -101,44 +99,27 @@ class Oauth2ClientService
 		try {
 			$sName = $oOauth2Client->Get('name');
 			$sProvider = $oOauth2Client->Get('provider');
-			[$sProviderName, $aConfig] = ConfigService::GetInstance()->GetConfig($sName, $sProvider);
-			$oHybridAuth = $this->GetHybridauth($aConfig);
-			/** @var \Hybridauth\Storage\Session $aStorage */
-			$oAdapter = $oHybridAuth->getAdapter($sProviderName);
-			if (!$oAdapter->isConnected()) {
-				throw new Oauth2ClientException(__FUNCTION__.": Oauth not initialized");
+
+			$oOauth2ClientBisWithHybridauthOauth2Inside = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
+			$oAuth2 = $oOauth2ClientBisWithHybridauthOauth2Inside->GetOauth2();
+			if (! $oAuth2->isConnected()) {
+				throw new Oauth2ClientException(__FUNCTION__.": Oauth2 not initialized");
 			}
 
 			// refresh tokens if needed
-			$oAdapter->maintainToken();
-			if ($oAdapter->hasAccessTokenExpired() === true) {
+			$oAuth2->maintainToken();
+			if ($oAuth2->hasAccessTokenExpired() === true) {
 				Oauth2ClientLog::Debug(__FUNCTION__, null, ['hasAccessTokenExpired' => true]);
-				$oAdapter->refreshAccessToken();
-				ConfigService::GetInstance()->SetTokens($sName, $sProvider, $oAdapter, $aConfig);
+				$sRefreshResponse = $oAuth2->refreshAccessToken();
+				Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider, 'sRefreshResponse' => $sRefreshResponse]);
+
+				ConfigService::GetInstance()->SetTokens($oOauth2ClientBisWithHybridauthOauth2Inside);
 				$oOauth2Client->Reload();
 			}
 
 			return $oOauth2Client->Get('access_token')->GetPassword();
 		} catch (Oauth2ClientException $e) {
 			throw $e;
-		} catch (Exception $e) {
-			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
-		}
-	}
-
-	/**
-	 * @param array $aConfig
-	 *
-	 * @return \Hybridauth\Hybridauth
-	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
-	 */
-	private function GetHybridauth(array $aConfig): Hybridauth
-	{
-		try {
-			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
-			$oLogger = new Logger(Oauth2ClientLog::GetHybridauthDebugMode(), APPROOT.'log/hybridauth.log');
-
-			return new Hybridauth($aConfig, null, null, $oLogger);
 		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}

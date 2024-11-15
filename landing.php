@@ -34,7 +34,7 @@ try{
 
 	/** @var \Hybridauth\Adapter\AdapterInterface $oAdapter */
 	$oAdapter = Oauth2ClientService::GetInstance()->StoreTokens($sName, $sProvider);
-	//echo json_encode($oAdapter->getUserProfile(), JSON_PRETTY_PRINT);
+	echo json_encode($oAdapter->getUserProfile(), JSON_PRETTY_PRINT);
 } catch(\Exception $e){
 	throw new Oauth2ClientException($e);
 
