@@ -20,7 +20,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->RequireOnceItopFile('env-production/combodo-oauth2-client/vendor/autoload.php');
 	}
 
-	public function GetHybridauthProviderNameProvider()
+	public function GetClassNameProvider()
 	{
 		return [
 			[ 'Github', 'Github' ],
@@ -30,10 +30,10 @@ class ConfigServiceTest extends ItopDataTestCase
 	}
 
 	/**
-	 * @dataProvider GetHybridauthProviderNameProvider
+	 * @dataProvider GetClassNameProvider
 	 */
-	public function testGetHybridauthProviderName($sProvider, $sExpectedRes){
-		$sProviderName = $this->InvokeNonPublicMethod(ConfigService::class, 'GetHybridauthProviderName', ConfigService::GetInstance(), [$sProvider]);
+	public function testGetClassName($sProvider, $sExpectedRes){
+		$sProviderName = $this->InvokeNonPublicMethod(ConfigService::class, 'GetClassName', ConfigService::GetInstance(), [$sProvider]);
 		$this->assertEquals($sExpectedRes, $sProviderName, $sProvider);
 	}
 

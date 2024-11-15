@@ -171,7 +171,7 @@ class ConfigService
 		return array_merge(['scope' => 'scope' ], $this->GetAccessTokenModelToHybridauthMapping());
 	}
 
-	private function GetHybridauthProviderName(string $sProvider) : string
+	private function GetClassName(string $sProvider) : string
 	{
 		$i = strrpos($sProvider, '\\');
 		if ($i === false){
@@ -212,5 +212,12 @@ class ConfigService
 		} catch (\Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
+	}
+
+	public function GetHybridauthProvider(Oauth2Client $oObj) : string
+	{
+		$sClassName = $this->GetClassName(get_class($oObj));
+		$sProviderClassName = str_replace('Oauth2Client', '', $sClassName);
+		return "Hybridauth\\Provider\\$sProviderClassName";
 	}
 }
