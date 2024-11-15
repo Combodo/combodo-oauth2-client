@@ -80,7 +80,6 @@ class Oauth2ClientService
 			$oHybridAuth = $this->GetHybridauth($aConfig);
 			$oAdapter = $oHybridAuth->authenticate($sProviderName);
 			ConfigService::GetInstance()->SetTokens($sName, $sProvider, $oAdapter, $aConfig);
-			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oAdapter->getUserProfile()]);
 
 			return $oAdapter;
 		} catch (Oauth2ClientException $e) {
