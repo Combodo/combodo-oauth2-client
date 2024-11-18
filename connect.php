@@ -40,13 +40,13 @@ try{
 
 } catch (Oauth2ClientException $e) {
 	if (! is_null($oOauth2Client)){
-		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
+		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token: " . $e->getMessage(), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
 	}
 } catch (\Exception $e) {
 	//exception instanciated to generate log.
 	$e = new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 	if (! is_null($oOauth2Client)){
-		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
+		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token: " . $e->getMessage(), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
 	}
 }
 

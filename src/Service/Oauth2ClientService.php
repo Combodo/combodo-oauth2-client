@@ -49,7 +49,7 @@ class Oauth2ClientService
 			$oOAuth2 = $oOauth2Client->GetOauth2();
 			if ($oOAuth2->isConnected()) {
 				//clear inside session
-				$oOAuth2->disconnect();
+				//$oOAuth2->disconnect();
 
 				//refresh token if needed
 				$this->GetToken($oOauth2Client);
