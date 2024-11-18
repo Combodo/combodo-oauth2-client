@@ -31,7 +31,7 @@ class Oauth2ClientController extends Controller
 	public static function GetButtons(Oauth2Client $oOauth2Client, WebPage $oPage) : array
 	{
 		$aTab = [
-			'oauth2-client-connect' => [ 'label' => 'Connect', 'icon_classes' => 'fa fa-book', 'reset' => false ],
+			'oauth2-client-connect' => [ 'label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'reset' => false ],
 			'oauth2-client-reset-and-connect' => [ 'label' => 'Reset token and connect', 'icon_classes' => 'fas fa-eraser', 'reset' => true ],
 		];
 
