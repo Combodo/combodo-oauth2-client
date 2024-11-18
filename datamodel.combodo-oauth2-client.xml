@@ -2,7 +2,7 @@
 <itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.2">
   <classes>
     <class id="Oauth2Client" _delta="define">
-      <parent>Combodo\iTop\Oauth2Client\Model\AbstractOauth2Client</parent>
+      <php_parent>Combodo\iTop\Oauth2Client\Model\AbstractOauth2Client</php_parent>
       <properties>
         <category>bizmodel,searchable</category>
         <abstract>true</abstract>
