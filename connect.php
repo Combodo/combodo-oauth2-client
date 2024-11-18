@@ -8,10 +8,12 @@
 namespace Combodo\iTop\Oauth2Client;
 
 use Combodo\iTop\Application\Helper\Session;
+use Combodo\iTop\Application\WebPage\WebPage;
 use Combodo\iTop\Oauth2Client\Controller\Oauth2ClientController;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
 use Combodo\iTop\Oauth2Client\Service\Oauth2ClientService;
+use iTopStandardURLMaker;
 
 /**
  *  Return from OpenID Provider after a successful login
@@ -30,33 +32,26 @@ try{
 	$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
 	if ($sAction == Oauth2ClientController::ACTION_REFRESH_TOKEN) {
 		Oauth2ClientService::GetInstance()->GetToken($oOauth2Client);
-		$oAdapter = $oOauth2Client->GetOauth2();
 	} else {
-		/** @var \Hybridauth\Adapter\AdapterInterface $oAdapter */
-		$oAdapter = Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, $sAction === Oauth2ClientController::ACTION_RESET);
+		Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, $sAction === Oauth2ClientController::ACTION_RESET);
 	}
 
-	$sJson = json_encode($oAdapter->getUserProfile(), JSON_PRETTY_PRINT);
+	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Action $sAction OK", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
 
-	$sHTML = <<<HTML
-<pre>
-$sJson
-</pre>
-HTML;
-	echo $sHTML;
 } catch (Oauth2ClientException $e) {
 	if (! is_null($oOauth2Client)){
-		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token", 'ERROR', 1);
+		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
 	}
 } catch (\Exception $e) {
 	//exception instanciated to generate log.
 	$e = new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 	if (! is_null($oOauth2Client)){
-		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token", 'ERROR', 1);
+		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
 	}
 }
 
 if (! is_null($oOauth2Client)) {
+	$sUrl = iTopStandardURLMaker::MakeObjectURL(get_class($oOauth2Client), $oOauth2Client->GetKey());
 	header('HTTP/1.1 307 Temporary Redirect');
-	header('Location: '.ConfigService::GetInstance()->GetObjectUri($oOauth2Client));
+	header("Location: $sUrl");
 }
