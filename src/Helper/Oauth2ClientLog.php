@@ -11,7 +11,7 @@ use LogAPI;
 
 class Oauth2ClientLog extends LogAPI
 {
-	const CHANNEL_DEFAULT = 'Oauth';
+	const CHANNEL_DEFAULT = 'Oauth2';
 
 	protected static $m_oFileLog = null;
 

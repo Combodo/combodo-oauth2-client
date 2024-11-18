@@ -19,6 +19,10 @@ use utils;
 
 class Oauth2ClientController extends Controller
 {
+	public const ACTION_AUTHENTICATE = 'authenticate';
+	public const ACTION_RESET = 'reset_and_authenticate';
+	public const ACTION_REFRESH_TOKEN = 'refresh_token';
+
 	public function OperationDefault()
 	{
 		$aParams = [];
@@ -31,8 +35,9 @@ class Oauth2ClientController extends Controller
 	public static function GetButtons(Oauth2Client $oOauth2Client, WebPage $oPage) : array
 	{
 		$aTab = [
-			'oauth2-client-connect' => [ 'label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'reset' => false ],
-			'oauth2-client-reset-and-connect' => [ 'label' => 'Reset token and connect', 'icon_classes' => 'fas fa-eraser', 'reset' => true ],
+			'oauth2-client-connect' => [ 'label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'action' => self::ACTION_AUTHENTICATE ],
+			'oauth2-client-reset-and-connect' => [ 'label' => 'Reset token and connect', 'icon_classes' => 'fas fa-eraser', 'action' => self::ACTION_RESET ],
+			'oauth2-client-get-token' => [ 'label' => 'Get refreshed token', 'icon_classes' => 'fas fa-retweet', 'action' => self::ACTION_REFRESH_TOKEN ],
 		];
 
 		$aButtons = [];
@@ -45,7 +50,7 @@ class Oauth2ClientController extends Controller
 
 			$oOauthConnectButton->SetOnClickJsCode($sOauthConnectCallbackName.'();');
 
-			$sUrl = ConfigService::GetInstance()->GetConnectUrl($oOauth2Client, $aData['reset']);
+			$sUrl = ConfigService::GetInstance()->GetConnectUrl($oOauth2Client, $aData['action']);
 			$oPage->add_script(
 				<<<JS
 const $sOauthConnectCallbackName = function() {

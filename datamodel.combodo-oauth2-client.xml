@@ -2,7 +2,10 @@
 <itop_design xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="3.2">
   <classes>
     <class id="Oauth2Client" _delta="define">
-      <php_parent>Combodo\iTop\Oauth2Client\Model\AbstractOauth2Client</php_parent>
+      <parent>cmdbAbstractObject</parent>
+      <php_parent>
+        <name>Combodo\iTop\Oauth2Client\Model\AbstractOauth2Client</name>
+      </php_parent>
       <properties>
         <category>bizmodel,searchable</category>
         <abstract>true</abstract>
@@ -108,15 +111,11 @@
           <is_null_allowed>true</is_null_allowed>
           <display_style>list</display_style>
         </field>
-        <field id="access_token_secret" xsi:type="AttributeEncryptedPassword">
-          <sql>access_token_secret</sql>
-          <default_value/>
-          <is_null_allowed>true</is_null_allowed>
-        </field>
         <field id="token_type" xsi:type="AttributeString">
           <sql>token_type</sql>
           <default_value/>
           <is_null_allowed>true</is_null_allowed>
+          <tracking_level>none</tracking_level>
         </field>
       </fields>
       <event_listeners>
@@ -335,9 +334,6 @@
                 <item id="token_type">
                   <rank>110</rank>
                 </item>
-                <item id="access_token_secret">
-                  <rank>120</rank>
-                </item>
               </items>
             </item>
           </items>
@@ -370,7 +366,7 @@
         <category>bizmodel,searchable</category>
         <abstract>false</abstract>
         <key_type>autoincrement</key_type>
-        <db_table>priv_github_oauth2_client</db_table>
+        <db_table>priv_oauth2_client_github</db_table>
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
@@ -399,7 +395,7 @@
         <category>bizmodel,searchable</category>
         <abstract>false</abstract>
         <key_type>autoincrement</key_type>
-        <db_table>priv_github_oauth2_client</db_table>
+        <db_table>priv_oauth2_client_microsoftgraph</db_table>
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
@@ -475,9 +471,6 @@
                 <item id="token_type">
                   <rank>110</rank>
                 </item>
-                <item id="access_token_secret">
-                  <rank>120</rank>
-                </item>
               </items>
             </item>
           </items>
@@ -516,7 +509,7 @@
         <category>bizmodel,searchable</category>
         <abstract>false</abstract>
         <key_type>autoincrement</key_type>
-        <db_table>priv_github_oauth2_client</db_table>
+        <db_table>priv_oauth2_client_google</db_table>
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>

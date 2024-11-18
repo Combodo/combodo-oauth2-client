@@ -7,6 +7,7 @@
 namespace Combodo\iTop\Oauth2Client\Test;
 
 use Combodo\iTop\ItopAttributeEncryptedPassword\Model\ormEncryptedPassword;
+use Combodo\iTop\Oauth2Client\Controller\Oauth2ClientController;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
@@ -250,7 +251,6 @@ class ConfigServiceTest extends ItopDataTestCase
 			->willReturn(
 				[
 					'access_token' => 'ghu_xxx',
-					//'access_token_secret' => '',
 					'token_type' => 'bearer',
 					'refresh_token' => 'ghr_yyy',
 					'expires_at' => 1731454668,
@@ -284,7 +284,6 @@ class ConfigServiceTest extends ItopDataTestCase
 			->willReturn(
 				[
 					'access_token' => 'ghu_xxx',
-					//'access_token_secret' => '',
 					'token_type' => 'bearer',
 					'refresh_token' => 'ghr_yyy',
 					'expires_at' => 1731454668,
@@ -303,25 +302,23 @@ class ConfigServiceTest extends ItopDataTestCase
 
 	public function GetConnectUrlProvider() {
 		return [
-			'reset with GitHub' => [ 'class' => GitHubOauth2Client::class, 'reset' => true ],
-			'NO reset with MS' => [ 'class' => MicrosoftGraphOauth2Client::class, 'reset' => false ],
+			'reset with GitHub' => [ 'class' => GitHubOauth2Client::class, 'action' => 'reset' ],
+			'NO reset with MS' => [ 'class' => MicrosoftGraphOauth2Client::class, 'action' => 'resfresh_token' ],
 		];
 	}
 
 	/**
 	 * @dataProvider GetConnectUrlProvider
 	 */
-	public function testGetConnectUrl(string $sClass, bool $bResetTokens) {
+	public function testGetConnectUrl(string $sClass, string $sAction) {
 		$oOauth2Client = $this->createObject($sClass,
 			['name' => 'testname', 'client_id' => 'sClientId', 'client_secret' => 'sClientSecret']
 		);
 
 		$sProvider = urlencode(base64_encode($oOauth2Client->Get('provider')));
-		$sUrl = ConfigService::GetInstance()->GetConnectUrl($oOauth2Client, $bResetTokens);
-		$sExpectedUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=testname&provider=$sProvider";
-		if ($bResetTokens){
-			$sExpectedUrl .= "&reset_token=true";
-		}
+		$sUrl = ConfigService::GetInstance()->GetConnectUrl($oOauth2Client, $sAction);
+		$sExpectedUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=testname&provider=$sProvider&action=$sAction";
+
 		$this->assertEquals($sExpectedUrl, $sUrl);
 	}
 

@@ -223,7 +223,6 @@ class Oauth2ClientServiceTest extends ItopDataTestCase
 			->willReturn(
 				[
 					'access_token' => 'ghu_xxx',
-					//'access_token_secret' => '',
 					'token_type' => 'bearer',
 					'refresh_token' => 'ghr_yyy',
 					'expires_at' => 1731454668,
