@@ -6,6 +6,7 @@
 
 namespace Combodo\iTop\Oauth2Client\Hook;
 
+use AbstractApplicationUIExtension;
 use Combodo\iTop\Application\UI\Base\Component\Field\FieldUIBlockFactory;
 use Combodo\iTop\Application\UI\Base\Component\FieldSet\FieldSetUIBlockFactory;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
@@ -13,7 +14,7 @@ use Dict;
 use utils;
 use WebPage;
 
-class ApplicationUIExtension extends \AbstractApplicationUIExtension
+class ApplicationUIExtension extends AbstractApplicationUIExtension
 {
 
 	public function OnDisplayProperties($oObject, WebPage $oPage, $bEditMode = false)

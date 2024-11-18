@@ -7,13 +7,11 @@
 
 namespace Combodo\iTop\Oauth2Client\Controller;
 
+use Combodo\iTop\Application\TwigBase\Controller\Controller;
 use Combodo\iTop\Application\UI\Base\Component\Button\ButtonUIBlockFactory;
-use Combodo\iTop\Application\UI\Base\Component\Toolbar\Toolbar;
 use Combodo\iTop\Application\WebPage\WebPage;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
-use Combodo\iTop\Application\TwigBase\Controller\Controller;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
-use MenuBlock;
 use Oauth2Client;
 use utils;
 
@@ -32,18 +30,18 @@ class Oauth2ClientController extends Controller
 		$this->DisplayPage($aParams);
 	}
 
-	public static function GetButtons(Oauth2Client $oOauth2Client, WebPage $oPage) : array
+	public static function GetButtons(Oauth2Client $oOauth2Client, WebPage $oPage): array
 	{
 		$aTab = [
-			'oauth2-client-connect' => [ 'label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'action' => self::ACTION_AUTHENTICATE ],
-			'oauth2-client-reset-and-connect' => [ 'label' => 'Reset token and connect', 'icon_classes' => 'fas fa-eraser', 'action' => self::ACTION_RESET ],
-			'oauth2-client-get-token' => [ 'label' => 'Get refreshed token', 'icon_classes' => 'fas fa-retweet', 'action' => self::ACTION_REFRESH_TOKEN ],
+			'oauth2-client-connect' => ['label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'action' => self::ACTION_AUTHENTICATE],
+			'oauth2-client-reset-and-connect' => ['label' => 'Reset token and connect', 'icon_classes' => 'fas fa-eraser', 'action' => self::ACTION_RESET],
+			'oauth2-client-get-token' => ['label' => 'Get refreshed token', 'icon_classes' => 'fas fa-retweet', 'action' => self::ACTION_REFRESH_TOKEN],
 		];
 
 		$aButtons = [];
-		foreach($aTab as $sId => $aData){
+		foreach ($aTab as $sId => $aData) {
 			$oOauthConnectButton = ButtonUIBlockFactory::MakeIconAction($aData['icon_classes'], $aData['label'], null, null, false, $sId);
-			$aButtons[]=$oOauthConnectButton;
+			$aButtons[] = $oOauthConnectButton;
 
 			// Prepare button callback
 			$sOauthConnectCallbackName = 'OauthConnectCallback'.utils::Sanitize($oOauthConnectButton->GetId(), '', utils::ENUM_SANITIZATION_FILTER_VARIABLE_NAME);
@@ -59,6 +57,7 @@ window.location.assign('$sUrl');
 JS
 			);
 		}
+
 		return $aButtons;
 	}
 }

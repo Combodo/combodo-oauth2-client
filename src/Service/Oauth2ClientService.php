@@ -12,8 +12,6 @@ use Combodo\iTop\Oauth2Client\Model\ConfigService;
 use Exception;
 use Hybridauth\Adapter\AdapterInterface;
 use Hybridauth\Adapter\OAuth2;
-use Hybridauth\Hybridauth;
-use Hybridauth\Logger\Logger;
 use Oauth2Client;
 
 class Oauth2ClientService
@@ -89,6 +87,7 @@ class Oauth2ClientService
 
 	/**
 	 * Get up to date token.if needed, refresh workflow is triggered first.
+	 *
 	 * @param \Oauth2Client $oOauth2Client
 	 *
 	 * @return string
@@ -102,7 +101,7 @@ class Oauth2ClientService
 
 			$oOauth2ClientBisWithHybridauthOauth2Inside = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
 			$oAuth2 = $oOauth2ClientBisWithHybridauthOauth2Inside->GetOauth2();
-			if (! $oAuth2->isConnected()) {
+			if (!$oAuth2->isConnected()) {
 				throw new Oauth2ClientException(__FUNCTION__.": Oauth2 not initialized");
 			}
 

@@ -23,17 +23,17 @@ class Oauth2ClientLog extends LogAPI
 		parent::Enable($sTargetFile);
 	}
 
-	public static function GetHybridauthDebugMode() : string
+	public static function GetHybridauthDebugMode(): string
 	{
-		if (Oauth2ClientLog::IsLogLevelEnabled(LogAPI::LEVEL_DEBUG, self::CHANNEL_DEFAULT)){
+		if (Oauth2ClientLog::IsLogLevelEnabled(LogAPI::LEVEL_DEBUG, self::CHANNEL_DEFAULT)) {
 			return Logger::DEBUG;
 		}
 
-		if (Oauth2ClientLog::IsLogLevelEnabled(LogAPI::LEVEL_INFO, self::CHANNEL_DEFAULT)){
+		if (Oauth2ClientLog::IsLogLevelEnabled(LogAPI::LEVEL_INFO, self::CHANNEL_DEFAULT)) {
 			return Logger::INFO;
 		}
 
-		if (Oauth2ClientLog::IsLogLevelEnabled(LogAPI::LEVEL_ERROR, self::CHANNEL_DEFAULT)){
+		if (Oauth2ClientLog::IsLogLevelEnabled(LogAPI::LEVEL_ERROR, self::CHANNEL_DEFAULT)) {
 			return Logger::ERROR;
 		}
 

@@ -9,7 +9,8 @@ use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Hybridauth;
 use Hybridauth\Logger\Logger;
 
-class HybridAuthService {
+class HybridAuthService
+{
 	/** @var ?HybridAuthService */
 	private static $oInstance;
 
@@ -32,7 +33,7 @@ class HybridAuthService {
 		static::$oInstance = $oInstance;
 	}
 
-	public function GetOauth2(array $aConfig, string $sProviderName) : OAuth2
+	public function GetOauth2(array $aConfig, string $sProviderName): OAuth2
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
@@ -41,6 +42,7 @@ class HybridAuthService {
 			$oHybridauth = new Hybridauth($aConfig, null, null, $oLogger);
 			/** @var OAuth2 $oAuth2 */
 			$oAuth2 = $oHybridauth->getAdapter($sProviderName);
+
 			return $oAuth2;
 		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);

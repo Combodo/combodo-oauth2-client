@@ -12,8 +12,14 @@ use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\Service\HybridAuthService;
-use Hybridauth\Adapter\AdapterInterface;
+use DateTime;
+use DBObjectSet;
+use DBSearch;
+use Exception;
+use MetaModel;
 use Oauth2Client;
+use ReflectionClass;
+use utils;
 
 class ConfigService
 {
@@ -39,7 +45,7 @@ class ConfigService
 		static::$oInstance = $oInstance;
 	}
 
-	public function SetTokens(Oauth2Client $oOauth2Client) : void
+	public function SetTokens(Oauth2Client $oOauth2Client): void
 	{
 		try {
 			$sName = $oOauth2Client->Get('name');
@@ -50,9 +56,9 @@ class ConfigService
 			$aTokens = $oOauth2->getAccessToken();
 			Oauth2ClientLog::Debug(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'aTokens' => $aTokens]);
 			$aMapping = $oOauth2Client->GetAccessTokenModelToHybridauthMapping();
-			if (\utils::IsNullOrEmptyString($oOauth2Client->Get('scope'))) {
+			if (utils::IsNullOrEmptyString($oOauth2Client->Get('scope'))) {
 				/** @noinspection OneTimeUseVariablesInspection */
-				$oClass = new \ReflectionClass($oOauth2);
+				$oClass = new ReflectionClass($oOauth2);
 				$oProperty = $oClass->getProperty('scope');
 				$oProperty->setAccessible(true);
 				$sScope = $oProperty->getValue($oOauth2);
@@ -77,26 +83,26 @@ class ConfigService
 					]
 				);
 
-				if (\utils::IsNotNullOrEmptyString($siTopFieldCode)) {
+				if (utils::IsNotNullOrEmptyString($siTopFieldCode)) {
 					$oOauth2Client->Set($siTopFieldCode, $sVal);
 				}
 			}
 			$oOauth2Client->DBWrite();
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
 	}
 
 	/**
-	 * @param \Oauth2Client $oOauth2Client: object is reloaded afterwhile
+	 * @param \Oauth2Client $oOauth2Client : object is reloaded afterwhile
 	 *
 	 * @return void
 	 */
-	public function ResetTokens(Oauth2Client &$oOauth2Client) : void
+	public function ResetTokens(Oauth2Client &$oOauth2Client): void
 	{
 		$aMapping = $oOauth2Client->GetAccessTokenModelToHybridauthMapping();
 
-		foreach ($aMapping as $sHybridauthKey => $siTopFieldCode){
+		foreach ($aMapping as $sHybridauthKey => $siTopFieldCode) {
 			$oOauth2Client->Set($siTopFieldCode, '');
 		}
 		$oOauth2Client->DBWrite();
@@ -105,9 +111,11 @@ class ConfigService
 
 	/**
 	 * Provide the access_token fields mapping between hybridauth and iTop model
+	 *
 	 * @return array
 	 */
-	public function GetAccessTokenModelToHybridauthMapping() : array {
+	public function GetAccessTokenModelToHybridauthMapping(): array
+	{
 		return [
 			'access_token' => 'access_token',
 			'token_type' => 'token_type',
@@ -118,31 +126,33 @@ class ConfigService
 
 	/**
 	 * Provide the mapping between hybridauth and iTop model
+	 *
 	 * @return array
 	 */
-	public function GetModelToHybridauthMapping() : array {
-		return array_merge(['scope' => 'scope' ], $this->GetAccessTokenModelToHybridauthMapping());
+	public function GetModelToHybridauthMapping(): array
+	{
+		return array_merge(['scope' => 'scope'], $this->GetAccessTokenModelToHybridauthMapping());
 	}
 
-	private function GetClassName(string $sProvider) : string
+	private function GetClassName(string $sProvider): string
 	{
 		$i = strrpos($sProvider, '\\');
-		if ($i === false){
+		if ($i === false) {
 			return $sProvider;
 		}
 
-		return substr($sProvider, $i+1);
+		return substr($sProvider, $i + 1);
 	}
 
 	/**
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetLandingURL() : string
+	public function GetLandingURL(): string
 	{
 		try {
-			return \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/landing.php";
-		} catch (\Exception $e) {
+			return utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/landing.php";
+		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
 	}
@@ -154,24 +164,25 @@ class ConfigService
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetConnectUrl(Oauth2Client $oObj, string $sAction) : string
+	public function GetConnectUrl(Oauth2Client $oObj, string $sAction): string
 	{
 		try {
 			$sName = urlencode($oObj->Get('name'));
 			$sProvider = urlencode(base64_encode($oObj->Get('provider')));
 
-			$sUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=$sName&provider=$sProvider&action=$sAction";
+			$sUrl = utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=$sName&provider=$sProvider&action=$sAction";
 
 			return $sUrl;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
 	}
 
-	public function GetHybridauthProvider(Oauth2Client $oObj) : string
+	public function GetHybridauthProvider(Oauth2Client $oObj): string
 	{
 		$sClassName = $this->GetClassName(get_class($oObj));
 		$sProviderClassName = str_replace('Oauth2Client', '', $sClassName);
+
 		return "Hybridauth\\Provider\\$sProviderClassName";
 	}
 
@@ -186,12 +197,12 @@ class ConfigService
 	 * @return Oauth2Client
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException*
 	 */
-	public function GetOauth2Client(string $sName, string $sProvider, bool $bResetTokens=false) : Oauth2Client
+	public function GetOauth2Client(string $sName, string $sProvider, bool $bResetTokens = false): Oauth2Client
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
-			$oSearch = \DBSearch::FromOQL("SELECT Oauth2Client WHERE name=:name AND provider=:provider");
-			$oSet = new \DBObjectSet($oSearch, [], ['name' => $sName, 'provider' => $sProvider]);
+			$oSearch = DBSearch::FromOQL("SELECT Oauth2Client WHERE name=:name AND provider=:provider");
+			$oSet = new DBObjectSet($oSearch, [], ['name' => $sName, 'provider' => $sProvider]);
 			if ($oSet->Count() != 1) {
 				throw new Oauth2ClientException("Missing configuration", 0, null, ['name' => $sName, 'provider' => $sProvider]);
 			}
@@ -199,7 +210,7 @@ class ConfigService
 			/** @var Oauth2Client $oOauth2Client */
 			$oOauth2Client = $oSet->Fetch();
 
-			if ($bResetTokens){
+			if ($bResetTokens) {
 				$this->ResetTokens($oOauth2Client);
 			}
 
@@ -220,9 +231,9 @@ class ConfigService
 				if ($sVal instanceof ormEncryptedPassword) {
 					$sVal = $sVal->GetPassword();
 				}
-				if (\utils::IsNotNullOrEmptyString($sVal)) {
-					if (is_a(\MetaModel::GetAttributeDef(Oauth2Client::class, $siTopId), AttributeDateTime::class)) {
-						$oDateTime = \DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $sVal);
+				if (utils::IsNotNullOrEmptyString($sVal)) {
+					if (is_a(MetaModel::GetAttributeDef(Oauth2Client::class, $siTopId), AttributeDateTime::class)) {
+						$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $sVal);
 						$sVal = $oDateTime->getTimestamp();
 					}
 
@@ -242,15 +253,16 @@ class ConfigService
 
 			$oAuth2 = HybridAuthService::GetInstance()->GetOauth2($aConf, $sProviderName);
 			$oOauth2Client->SetOauth2($oAuth2);
+
 			return $oOauth2Client;
-		} catch (\Exception $e) {
+		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
 	}
 
-	public function GetObjectUri(Oauth2Client $oOauth2Client) : string
+	public function GetObjectUri(Oauth2Client $oOauth2Client): string
 	{
 		return sprintf("%s/pages/UI.php?operation=details&class=%s&id=%s",
-			\utils::GetAbsoluteUrlAppRoot(), get_class($oOauth2Client), $oOauth2Client->GetKey());
+			utils::GetAbsoluteUrlAppRoot(), get_class($oOauth2Client), $oOauth2Client->GetKey());
 	}
 }

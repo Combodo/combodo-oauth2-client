@@ -11,7 +11,7 @@ use Throwable;
 
 class Oauth2ClientException extends Exception
 {
-	public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null, array $aContext=[])
+	public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null, array $aContext = [])
 	{
 		if (!is_null($previous)) {
 			$sStack = $previous->getTraceAsString();
