@@ -11,8 +11,12 @@
   "type": "itop-extension",
   "description": "Oauth2 Client",
   "minimum-stability" : "RC",
+  "repositories": [{
+    "type": "vcs",
+    "url": "https://github.com/Combodo/hybridauth"
+  }],
   "require": {
     "composer-runtime-api": "^2.0",
-    "hybridauth/hybridauth" : ">=3.0.0"
+    "hybridauth/hybridauth" : "dev-master"
   }
 }
