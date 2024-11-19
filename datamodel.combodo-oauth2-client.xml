@@ -423,7 +423,25 @@
           <is_null_allowed>true</is_null_allowed>
         </field>
       </fields>
-      <methods/>
+      <methods>
+        <method id="GetModelToHybridauthMapping">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+
+        /**
+        * Provide the mapping between hybridauth and iTop model
+        * @return array
+        */
+        public function GetModelToHybridauthMapping() : array {
+          $aRes = Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetModelToHybridauthMapping();
+
+          return array_merge(['tenant' => 'tenant' ], $aRes);
+        }
+        ]]></code>
+        </method>
+      </methods>
       <presentation>
         <details>
           <items>

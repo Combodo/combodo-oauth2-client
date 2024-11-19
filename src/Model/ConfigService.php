@@ -232,7 +232,7 @@ class ConfigService
 					$sVal = $sVal->GetPassword();
 				}
 				if (utils::IsNotNullOrEmptyString($sVal)) {
-					if (is_a(MetaModel::GetAttributeDef(Oauth2Client::class, $siTopId), AttributeDateTime::class)) {
+					if (is_a(MetaModel::GetAttributeDef(get_class($oOauth2Client), $siTopId), AttributeDateTime::class)) {
 						$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $sVal);
 						$sVal = $oDateTime->getTimestamp();
 					}
@@ -260,9 +260,4 @@ class ConfigService
 		}
 	}
 
-	public function GetObjectUri(Oauth2Client $oOauth2Client): string
-	{
-		return sprintf("%s/pages/UI.php?operation=details&class=%s&id=%s",
-			utils::GetAbsoluteUrlAppRoot(), get_class($oOauth2Client), $oOauth2Client->GetKey());
-	}
 }

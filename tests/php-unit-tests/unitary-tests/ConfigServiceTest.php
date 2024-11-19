@@ -139,6 +139,42 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->assertEquals($oOauth2, $oOauth2Client->GetOauth2());
 	}
 
+	//test with specific non-token field (tenant here)
+	public function testGetOauth2Client_MSGraph_NoTokenYet() {
+		$sClientId = 'client_123';
+		$sClientSecret = 'secret456';
+
+		$sName = 'webhook';
+		$this->createObject(MicrosoftGraphOauth2Client::class,
+			['name' => $sName, 'client_id' => $sClientId, 'client_secret' => $sClientSecret, 'tenant' => 'tenant1234' ]
+		);
+
+		$aExpected = [
+			'providers' => [
+				'microsoftgraph' => [
+					'enabled' => true,
+					'keys' => [
+						'id' => $sClientId,
+						'secret' => $sClientSecret,
+					],
+					'callback' => ConfigService::GetInstance()->GetLandingURL(),
+					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'tenant' => 'tenant1234',
+				],
+			],
+		];
+
+		$oOauth2 = $this->createMock(OAuth2::class);
+		$this->oHybridAuthService->expects($this->once())
+			->method('GetOauth2')
+			->with($aExpected, 'microsoftgraph')
+			->willReturn($oOauth2);
+
+		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\MicrosoftGraph');
+
+		$this->assertEquals($oOauth2, $oOauth2Client->GetOauth2());
+	}
+
 	public function testGetOauth2Client_Github_WithAccessAndRefreshTokensToken() {
 		$sClientId = 'client_123';
 		$sClientSecret = 'secret456';
