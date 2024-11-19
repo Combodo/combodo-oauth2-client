@@ -81,7 +81,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase
 		$res = Oauth2ClientService::GetInstance()->Connect('webhook', 'Hybridauth\Provider\Github', $bResetToken);
 		$this->assertEquals($oOauth2, $res);
 	}
-	
+
 	public function testStoreTokens()
 	{
 		$oOauth2Client = $this->createMock(Oauth2Client::class);

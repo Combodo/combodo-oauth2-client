@@ -29,6 +29,7 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
     );
 
     public static $classMap = array (
+        'Combodo\\iTop\\Oauth2Client\\API\\Oauth2ClientAPI' => __DIR__ . '/../..' . '/src/API/Oauth2ClientAPI.php',
         'Combodo\\iTop\\Oauth2Client\\Controller\\Oauth2ClientController' => __DIR__ . '/../..' . '/src/Controller/Oauth2ClientController.php',
         'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientException' => __DIR__ . '/../..' . '/src/Helper/Oauth2ClientException.php',
         'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientHelper' => __DIR__ . '/../..' . '/src/Helper/Oauth2ClientHelper.php',
