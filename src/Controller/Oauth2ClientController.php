@@ -19,7 +19,6 @@ class Oauth2ClientController extends Controller
 {
 	public const ACTION_AUTHENTICATE = 'authenticate';
 	public const ACTION_RESET = 'reset_and_authenticate';
-	public const ACTION_REFRESH_TOKEN = 'refresh_token';
 
 	public function OperationDefault()
 	{
@@ -35,7 +34,6 @@ class Oauth2ClientController extends Controller
 		$aTab = [
 			'oauth2-client-connect' => ['label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'action' => self::ACTION_AUTHENTICATE],
 			'oauth2-client-reset-and-connect' => ['label' => 'Reset token and connect', 'icon_classes' => 'fas fa-eraser', 'action' => self::ACTION_RESET],
-			'oauth2-client-get-token' => ['label' => 'Get refreshed token', 'icon_classes' => 'fas fa-retweet', 'action' => self::ACTION_REFRESH_TOKEN],
 		];
 
 		$aButtons = [];

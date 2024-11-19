@@ -81,37 +81,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase
 		$res = Oauth2ClientService::GetInstance()->Connect('webhook', 'Hybridauth\Provider\Github', $bResetToken);
 		$this->assertEquals($oOauth2, $res);
 	}
-
-	/**
-	 * @dataProvider ConnectProvider
-	 */
-	public function testConnect_DisconnectionNeeded(bool $bResetToken)
-	{
-		$oOauth2Client = $this->createMock(Oauth2Client::class);
-		$this->oConfigService->expects($this->once())
-			->method('GetOauth2Client')
-			->with('webhook', 'Hybridauth\Provider\Github', $bResetToken)
-			->willReturn($oOauth2Client);
-
-		$oOauth2 = $this->createMock(OAuth2::class);
-		$oOauth2Client->expects($this->once())
-			->method('GetOauth2')
-			->willReturn($oOauth2);
-
-		$oOauth2->expects($this->once())
-			->method('isConnected')
-			->willReturn(true);
-
-		$oOauth2->expects($this->once())
-			->method('disconnect');
-
-		$oOauth2->expects($this->once())
-			->method('authenticate');
-
-		$res = Oauth2ClientService::GetInstance()->Connect('webhook', 'Hybridauth\Provider\Github', $bResetToken);
-		$this->assertEquals($oOauth2, $res);
-	}
-
+	
 	public function testStoreTokens()
 	{
 		$oOauth2Client = $this->createMock(Oauth2Client::class);

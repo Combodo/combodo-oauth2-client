@@ -89,14 +89,15 @@ class Oauth2ClientService
 	}
 
 	/**
-	 * Get up to date token.if needed, refresh workflow is triggered first.
+	 * Get up to date token.
+	 * Note: if needed, refresh workflow is triggered first. in that case its data are actualized (ie token expiration date...)
 	 *
 	 * @param \Oauth2Client $oOauth2Client
 	 *
-	 * @return string
+	 * @return string: access token
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetToken(Oauth2Client &$oOauth2Client): string
+	public function GetToken(Oauth2Client $oOauth2Client): string
 	{
 		try {
 			$sName = $oOauth2Client->Get('name');

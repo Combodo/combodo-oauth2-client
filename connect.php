@@ -30,11 +30,7 @@ try{
 	Session::Set('oauth2_client_provider', $sProvider);
 
 	$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
-	if ($sAction == Oauth2ClientController::ACTION_REFRESH_TOKEN) {
-		Oauth2ClientService::GetInstance()->GetToken($oOauth2Client);
-	} else {
-		Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, $sAction === Oauth2ClientController::ACTION_RESET);
-	}
+	Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, $sAction === Oauth2ClientController::ACTION_RESET);
 
 	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Action $sAction OK", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
 
