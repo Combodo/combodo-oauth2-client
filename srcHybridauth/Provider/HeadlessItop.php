@@ -37,7 +37,6 @@ class HeadlessItop extends OAuth2
 	 */
 	protected function configure()
 	{
-		parent::configure();
 
 		if (!$this->config->exists('url')) {
 			throw new InvalidApplicationCredentialsException(
@@ -60,13 +59,15 @@ class HeadlessItop extends OAuth2
 		}
 		$this->password = $this->config->get('password');
 
+		parent::configure();
+
 		if ($this->config->exists('version')) {
 			$this->version = $this->config->get('version');
 		}
 
-		$this->apiBaseUrl = $url . '/webservices/rest.php';
+		$this->apiBaseUrl = $url;
 
-		$this->authorizeUrl = $url . '/pages/exec.php?exec_module=authent-oauth&exec_page=auth.php';
+		$this->authorizeUrl = $url.  '/pages/exec.php?exec_module=authent-oauth&exec_page=auth.php';
 		$this->accessTokenUrl = $this->authorizeUrl;
 	}
 
@@ -75,8 +76,6 @@ class HeadlessItop extends OAuth2
 	 */
 	protected function initialize()
 	{
-		parent::initialize();
-
 		$this->tokenExchangeParameters = [
 			'client_id' => $this->clientId,
 			'client_secret' => $this->clientSecret,
@@ -86,10 +85,13 @@ class HeadlessItop extends OAuth2
 			'redirect_uri' => $this->callback
 		];
 
-		if ($this->isRefreshTokenAvailable()) {
-			$this->tokenRefreshParameters += [
+		$refreshToken = $this->getStoredData('refresh_token');
+		if (!empty($refreshToken)) {
+			$this->tokenRefreshParameters = [
 				'client_id' => $this->clientId,
-				'client_secret' => $this->clientSecret
+				'client_secret' => $this->clientSecret,
+				'grant_type' => 'refresh_token',
+				'refresh_token' => $refreshToken,
 			];
 		}
 
@@ -124,11 +126,9 @@ class HeadlessItop extends OAuth2
 
 		try {
 			$response = $this->exchangeCodeForAccessToken('');
-			$this->logger->info('authenticate:' . var_export($response, true));
 
 			$this->validateAccessTokenExchange($response);
 
-			$this->initialize();
 		} catch (Exception $e) {
 			$this->clearStoredData();
 
@@ -147,7 +147,7 @@ class HeadlessItop extends OAuth2
 SELECT User WHERE login="$this->username"
 JSON;
 
-        $response = $this->apiRequest('', 'POST', [ 'json_data' => $jsonData ], [], true);
+        $response = $this->apiRequest('/webservices/rest.php', 'POST', [ 'json_data' => $jsonData ], [], true);
 
         $data = new Data\Collection($response);
 

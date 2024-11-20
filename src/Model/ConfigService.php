@@ -225,6 +225,7 @@ class ConfigService
 					'id' => $oOauth2Client->Get('client_id'),
 					'secret' => $oOauth2Client->Get('client_secret')->GetPassword(),
 				],
+				'adapter' => $oOauth2Client->Get('provider'),
 				//'expires_in' => date_format(new \DateTime($oExpireAt), 'U') - time(),
 				'callback' => $this->GetLandingURL(),
 				'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),

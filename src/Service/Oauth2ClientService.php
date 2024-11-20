@@ -58,6 +58,11 @@ class Oauth2ClientService
 				$oOAuth2->authenticate();
 			}
 
+			Oauth2ClientLog::Error(__FUNCTION__, null, ['IsHeadless' => $oOauth2Client->IsHeadless()]);
+			if ($oOauth2Client->IsHeadless()){
+				ConfigService::GetInstance()->SetTokens($oOauth2Client);
+			}
+
 			//refresh token if needed
 			return $this->GetToken($oOauth2Client);
 		} catch (Oauth2ClientException $e) {
@@ -108,7 +113,9 @@ class Oauth2ClientService
 
 			$oOauth2ClientBisWithHybridauthOauth2Inside = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
 			$oAuth2 = $oOauth2ClientBisWithHybridauthOauth2Inside->GetOauth2();
-			if (!$oAuth2->isConnected()) {
+
+			/** @var Oauth2 $oAuth2 */
+			if (! $oAuth2->isConnected()) {
 				throw new Oauth2ClientException(__FUNCTION__.": Oauth2 not initialized");
 			}
 

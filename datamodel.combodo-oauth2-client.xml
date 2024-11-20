@@ -142,6 +142,20 @@
         </event_listener>
       </event_listeners>
       <methods>
+				<method id="IsHeadless">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+          /**
+          * Indicate whether oAuth2 provider is headless. ie authenticate is direct without any user interaction on IDP page.
+          **/
+        public function IsHeadless() : bool
+        {
+          return false;
+        }
+]]></code>
+        </method>
 				<method id="GetToken">
           <static>false</static>
           <access>public</access>
@@ -612,6 +626,20 @@
         </field>
       </fields>
       <methods>
+				<method id="IsHeadless">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+          /**
+          * Indicate whether oAuth2 provider is headless. ie authenticate is direct without any user interaction on IDP page.
+          **/
+        public function IsHeadless() : bool
+        {
+          return true;
+        }
+]]></code>
+        </method>
         <method id="GetModelToHybridauthMapping">
           <static>false</static>
           <access>public</access>
