@@ -12,6 +12,7 @@ use Combodo\iTop\Oauth2Client\Model\ConfigService;
 use Exception;
 use Hybridauth\Adapter\AdapterInterface;
 use Hybridauth\Adapter\OAuth2;
+use IssueLog;
 use Oauth2Client;
 
 class Oauth2ClientService
@@ -38,25 +39,27 @@ class Oauth2ClientService
 	 * @param string $sProvider
 	 * @param bool $bResetToken
 	 *
-	 * @return \Hybridauth\Adapter\OAuth2: when already connected returns the object. otherwise redirection occurs to IDP
+	 * @return string: access token
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function Connect(string $sName, string $sProvider, bool $bResetToken): OAuth2
+	public function Connect(string $sName, string $sProvider, bool $bResetToken): string
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 			$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider, $bResetToken);
+
+			/** @var \Hybridauth\Adapter\OAuth2 $oOAuth2 */
 			$oOAuth2 = $oOauth2Client->GetOauth2();
-			if ($oOAuth2->isConnected()) {
-				//clear inside session
-				//$oOAuth2->disconnect();
-
-				//refresh token if needed
-				$this->GetToken($oOauth2Client);
+			if ($bResetToken){
+				$oOAuth2->disconnect();
 			}
-			$oOAuth2->authenticate();
 
-			return $oOAuth2;
+			if (!$oOAuth2->isConnected()) {
+				$oOAuth2->authenticate();
+			}
+
+			//refresh token if needed
+			return $this->GetToken($oOauth2Client);
 		} catch (Oauth2ClientException $e) {
 			throw $e;
 		} catch (Exception $e) {
@@ -68,10 +71,10 @@ class Oauth2ClientService
 	 * @param string $sName
 	 * @param string $sProvider
 	 *
-	 * @return \Hybridauth\Adapter\AdapterInterface
+	 * @return OAuth2
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function StoreTokens(string $sName, string $sProvider): AdapterInterface
+	public function StoreTokens(string $sName, string $sProvider): Oauth2
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);

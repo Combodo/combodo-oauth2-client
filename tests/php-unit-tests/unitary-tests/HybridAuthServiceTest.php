@@ -50,6 +50,8 @@ class HybridAuthServiceTest extends ItopDataTestCase
 		$oOauth2Client = $this->CreateOauth2client("{$sProviderName}Oauth2Client");
 		$oOauth2ClientCompleted = ConfigService::GetInstance()->GetOauth2Client('webhook', $oOauth2Client->Get('provider'));
 		$this->assertEquals("Hybridauth\\Provider\\$sProviderName", get_class($oOauth2ClientCompleted->GetOauth2()));
+
+		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', HybridAuthService::GetInstance()->getStoredData($oOauth2ClientCompleted->GetOauth2(), 'authorization_state'));
 	}
 
 	private function CreateOauth2client($sOauth2ClientClass) : Oauth2Client
@@ -60,6 +62,7 @@ class HybridAuthServiceTest extends ItopDataTestCase
 			'client_secret' => 'secret456',
 			'scope' => 'toto',
 			'access_token' => 'access_token1',
+			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
 			'token_type' => 'token_type1',
 			'refresh_token' => 'refresh_token1',
 			'access_token_expiration' => '2024-11-12 00:37:48',
@@ -72,5 +75,13 @@ class HybridAuthServiceTest extends ItopDataTestCase
 
 		return $oOauth2Client;
 	}
+
+	/*public function test() {
+		$sAuthorizationState = "HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V";
+		$this->oHybridAuthService->expects($this->once())
+			->method('getStoredData')
+			->with('authorization_state')
+			->willReturn($sAuthorizationState);
+	}*/
 
 }

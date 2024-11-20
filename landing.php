@@ -37,7 +37,9 @@ try{
 
 	$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
 	Oauth2ClientService::GetInstance()->StoreTokens($sName, $sProvider);
-	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Action authentication OK", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
+	$oOauth2Client->Reload();
+	$sToken = $oOauth2Client->Get('access_token')->GetPassword();
+	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Action authentication OK: $sToken", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
 
 } catch (Oauth2ClientException $e) {
 	if (! is_null($oOauth2Client)){

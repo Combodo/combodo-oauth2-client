@@ -64,6 +64,7 @@ class ConfigServiceTest extends ItopDataTestCase
 			'client_secret' => $sClientSecret,
 			'scope' => 'toto',
 			'access_token' => 'access_token1',
+			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
 			'token_type' => 'token_type1',
 			'refresh_token' => 'refresh_token1',
 			'access_token_expiration' => '2024-11-13 00:37:48',
@@ -89,6 +90,7 @@ class ConfigServiceTest extends ItopDataTestCase
 			'client_secret' => $sClientSecret,
 			'scope' => 'toto',
 			'access_token' => '',
+			'authorization_state' => '',
 			'token_type' => '',
 			'refresh_token' => '',
 			'access_token_expiration' => '',
@@ -131,7 +133,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$oOauth2 = $this->createMock(OAuth2::class);
 		$this->oHybridAuthService->expects($this->once())
 			->method('GetOauth2')
-			->with($aExpected, 'github')
+			->with($aExpected, 'github', '')
 			->willReturn($oOauth2);
 
 		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\Github');
@@ -167,7 +169,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$oOauth2 = $this->createMock(OAuth2::class);
 		$this->oHybridAuthService->expects($this->once())
 			->method('GetOauth2')
-			->with($aExpected, 'microsoftgraph')
+			->with($aExpected, 'microsoftgraph', '')
 			->willReturn($oOauth2);
 
 		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\MicrosoftGraph');
@@ -186,6 +188,7 @@ class ConfigServiceTest extends ItopDataTestCase
 				'client_id' => $sClientId,
 				'client_secret' => $sClientSecret,
 				'access_token' => 'access_token7',
+				'authorization_state' => 'auth_state2',
 				'access_token_expiration' => '2024-11-13 00:37:48',
 				'refresh_token' => 'refresh_token8',
 				'refresh_token_expiration' => '2025-11-13 00:37:48',
@@ -218,7 +221,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$oOauth2 = $this->createMock(Oauth2::class);
 		$this->oHybridAuthService->expects($this->once())
 			->method('GetOauth2')
-			->with($aExpected, 'github')
+			->with($aExpected, 'github', 'auth_state2')
 			->willReturn($oOauth2);
 
 		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\Github');
@@ -237,6 +240,7 @@ class ConfigServiceTest extends ItopDataTestCase
 				'client_id' => $sClientId,
 				'client_secret' => $sClientSecret,
 				'access_token' => 'access_token7',
+				'authorization_state' => 'auth_state2',
 				'access_token_expiration' => '2024-11-13 00:37:48',
 				'refresh_token' => 'refresh_token8',
 				'refresh_token_expiration' => '2025-11-13 00:37:48',
@@ -263,7 +267,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$oOauth2 = $this->createMock(Oauth2::class);
 		$this->oHybridAuthService->expects($this->once())
 			->method('GetOauth2')
-			->with($aExpected, 'github')
+			->with($aExpected, 'github', '')
 			->willReturn($oOauth2);
 
 		$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, 'Hybridauth\Provider\Github', true);
@@ -294,6 +298,12 @@ class ConfigServiceTest extends ItopDataTestCase
 			);
 		$oOauth2Client->SetOauth2($oGithubAdapter);
 
+		$sAuthorizationState = "HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V";
+		$this->oHybridAuthService->expects($this->once())
+			->method('getStoredData')
+			->with($oGithubAdapter, 'authorization_state')
+			->willReturn($sAuthorizationState);
+
 		ConfigService::GetInstance()->SetTokens($oOauth2Client);
 		$oOauth2Client->Reload();
 
@@ -302,6 +312,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
 		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token')->GetPassword());
 		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
+		$this->assertEquals($sAuthorizationState, $oOauth2Client->Get('authorization_state'));
 	}
 
 	public function testSetTokens_Github_ScopeNotSet_UseProviderScope() {
@@ -325,6 +336,13 @@ class ConfigServiceTest extends ItopDataTestCase
 					'expires_at' => 1731454668,
 				]
 			);
+
+		$sAuthorizationState = "HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V";
+		$this->oHybridAuthService->expects($this->once())
+			->method('getStoredData')
+			->with($oGithubAdapter, 'authorization_state')
+			->willReturn($sAuthorizationState);
+
 		$oOauth2Client->SetOauth2($oGithubAdapter);
 		ConfigService::GetInstance()->SetTokens($oOauth2Client);
 		$oOauth2Client->Reload();
@@ -334,6 +352,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->assertEquals('bearer', $oOauth2Client->Get('token_type'));
 		$this->assertEquals('ghr_yyy', $oOauth2Client->Get('refresh_token')->GetPassword());
 		$this->assertEquals('2024-11-13 00:37:48', $oOauth2Client->Get('access_token_expiration'));
+		$this->assertEquals($sAuthorizationState, $oOauth2Client->Get('authorization_state'));
 	}
 
 	public function GetConnectUrlProvider() {

@@ -12,6 +12,7 @@ use Combodo\iTop\Application\WebPage\WebPage;
 use Combodo\iTop\Oauth2Client\Controller\Oauth2ClientController;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
+use Combodo\iTop\Oauth2Client\Service\HybridAuthService;
 use Combodo\iTop\Oauth2Client\Service\Oauth2ClientService;
 use iTopStandardURLMaker;
 
@@ -30,9 +31,13 @@ try{
 	Session::Set('oauth2_client_provider', $sProvider);
 
 	$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
-	Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, $sAction === Oauth2ClientController::ACTION_RESET);
+	if ($sAction === Oauth2ClientController::ACTION_RESET) {
+		$sToken = Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, true);
+	} else {
+		$sToken = Oauth2ClientService::GetInstance()->GetToken($oOauth2Client);
+	}
 
-	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Action $sAction OK", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
+	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Action $sAction OK: $sToken", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
 
 } catch (Oauth2ClientException $e) {
 	if (! is_null($oOauth2Client)){

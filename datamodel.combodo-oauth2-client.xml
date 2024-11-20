@@ -87,6 +87,12 @@
           <default_value/>
           <is_null_allowed>true</is_null_allowed>
         </field>
+        <field id="authorization_state" xsi:type="AttributeString">
+          <sql>authorization_state</sql>
+          <default_value/>
+          <is_null_allowed>true</is_null_allowed>
+          <tracking_level>none</tracking_level>
+        </field>
         <field id="status" xsi:type="AttributeEnum">
           <values>
             <value id="active">
@@ -206,6 +212,7 @@
                 $this->AddAttributeFlags('access_token_expiration', OPT_ATT_READONLY);
                 $this->AddAttributeFlags('refresh_token', OPT_ATT_READONLY);
                 $this->AddAttributeFlags('refresh_token_expiration', OPT_ATT_READONLY);
+                $this->AddAttributeFlags('authorization_state', OPT_ATT_READONLY);
           }]]></code>
         </method>
         <method id="EvtSetInitialAttributeFlagsOauthClient2">
@@ -224,6 +231,7 @@
                 $this->AddInitialAttributeFlags('access_token_expiration', OPT_ATT_READONLY);
                 $this->AddInitialAttributeFlags('refresh_token', OPT_ATT_READONLY);
                 $this->AddInitialAttributeFlags('refresh_token_expiration', OPT_ATT_READONLY);
+                $this->AddInitialAttributeFlags('authorization_state', OPT_ATT_READONLY);
           }]]></code>
         </method>
         <method id="GetAccessTokenModelToHybridauthMapping">
@@ -333,6 +341,9 @@
                 </item>
                 <item id="token_type">
                   <rank>110</rank>
+                </item>
+                <item id="authorization_state">
+                  <rank>120</rank>
                 </item>
               </items>
             </item>
@@ -488,6 +499,9 @@
                 </item>
                 <item id="token_type">
                   <rank>110</rank>
+                </item>
+                <item id="authorization_state">
+                  <rank>120</rank>
                 </item>
               </items>
             </item>
