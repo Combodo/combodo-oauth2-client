@@ -9,6 +9,7 @@ namespace Hybridauth\Provider;
 
 use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Data;
+use Hybridauth\Exception\Exception;
 use Hybridauth\Exception\InvalidApplicationCredentialsException;
 use Hybridauth\Exception\UnexpectedApiResponseException;
 use Hybridauth\User;
@@ -16,7 +17,7 @@ use Hybridauth\User;
 /**
  * Itop OAuth2 provider adapter.
  */
-class Itop extends OAuth2
+class HeadlessItop extends OAuth2
 {
     /**
      * {@inheritdoc}
@@ -65,7 +66,7 @@ class Itop extends OAuth2
 
 		$this->apiBaseUrl = $url . '/webservices/rest.php';
 
-		$this->authorizeUrl = $this->apiBaseUrl . '/pages/exec.php?exec_module=authent-oauth&exec_page=auth.php';
+		$this->authorizeUrl = $url . '/pages/exec.php?exec_module=authent-oauth&exec_page=auth.php';
 		$this->accessTokenUrl = $this->authorizeUrl;
 	}
 
@@ -97,7 +98,7 @@ class Itop extends OAuth2
         ];
 
 		$this->apiRequestParameters = [
-		'version' => $this->version
+			'version' => $this->version
 		];
 
 		$this->tokenExchangeHeaders = [
@@ -107,6 +108,34 @@ class Itop extends OAuth2
 		$this->tokenRefreshHeaders = [
 			'Content-Type' => 'application/json'
 		];
+	}
+
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function authenticate()
+	{
+		$this->logger->info(sprintf('%s::authenticate()', get_class($this)));
+
+		if ($this->isConnected()) {
+			return true;
+		}
+
+		try {
+			$response = $this->exchangeCodeForAccessToken('');
+			$this->logger->info('authenticate:' . var_export($response, true));
+
+			$this->validateAccessTokenExchange($response);
+
+			$this->initialize();
+		} catch (Exception $e) {
+			$this->clearStoredData();
+
+			throw $e;
+		}
+
+		return null;
 	}
 
     /**
