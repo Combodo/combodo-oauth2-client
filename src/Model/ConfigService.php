@@ -52,6 +52,7 @@ class ConfigService
 			$sProvider = $oOauth2Client->Get('provider');
 
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
+			/** @var \Hybridauth\Adapter\OAuth2 $oOauth2 */
 			$oOauth2 = $oOauth2Client->GetOauth2();
 			$aTokens = $oOauth2->getAccessToken();
 			Oauth2ClientLog::Debug(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'aTokens' => $aTokens]);
@@ -87,6 +88,9 @@ class ConfigService
 					$oOauth2Client->Set($siTopFieldCode, $sVal);
 				}
 			}
+
+			$sAuthorizationState = HybridAuthService::GetInstance()->getStoredData($oOauth2, 'authorization_state');
+			$oOauth2Client->Set('authorization_state', $sAuthorizationState);
 			$oOauth2Client->DBWrite();
 		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
@@ -105,6 +109,7 @@ class ConfigService
 		foreach ($aMapping as $sHybridauthKey => $siTopFieldCode) {
 			$oOauth2Client->Set($siTopFieldCode, '');
 		}
+		$oOauth2Client->Set('authorization_state', '');
 		$oOauth2Client->DBWrite();
 		$oOauth2Client->Reload();
 	}
@@ -251,7 +256,7 @@ class ConfigService
 			$aConf = ['providers' => [$sProviderName => $aData]];
 			Oauth2ClientLog::Debug(__FUNCTION__, null, ['name' => $sName, 'provider' => $sProvider, 'hybridauth_provider_name' => $sProviderName, 'aConf' => $aConf]);
 
-			$oAuth2 = HybridAuthService::GetInstance()->GetOauth2($aConf, $sProviderName);
+			$oAuth2 = HybridAuthService::GetInstance()->GetOauth2($aConf, $sProviderName, $oOauth2Client->Get('authorization_state'));
 			$oOauth2Client->SetOauth2($oAuth2);
 
 			return $oOauth2Client;
