@@ -6,6 +6,6 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Hybridauth\\' => array($vendorDir . '/hybridauth/hybridauth/src'),
+    'Hybridauth\\' => array($baseDir . '/srcHybridauth', $vendorDir . '/hybridauth/hybridauth/src'),
     'Combodo\\iTop\\Oauth2Client\\' => array($baseDir . '/src'),
 );
