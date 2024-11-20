@@ -37,17 +37,17 @@ try{
 		$sToken = Oauth2ClientService::GetInstance()->GetToken($oOauth2Client);
 	}
 
-	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Action $sAction OK: $sToken", WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
+	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationOK", $sToken), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
 
 } catch (Oauth2ClientException $e) {
 	if (! is_null($oOauth2Client)){
-		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token: " . $e->getMessage(), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
+		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationError", $e->getMessage()), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
 	}
 } catch (\Exception $e) {
 	//exception instanciated to generate log.
 	$e = new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 	if (! is_null($oOauth2Client)){
-		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, "Failed validating token: " . $e->getMessage(), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
+		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationError", $e->getMessage()), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
 	}
 }
 

@@ -33,14 +33,22 @@ class Oauth2ClientController extends Controller
 	public static function GetButtons(Oauth2Client $oOauth2Client, WebPage $oPage): array
 	{
 		$aTab = [
-			'oauth2-client-get-token' => ['label' => 'Get token', 'icon_classes' => 'fas fa-check-circle', 'action' => self::ACTION_GET_TOKEN],
+			'oauth2-client-get-token' => [
+				'label' => 'Oauth2Client:UI:Button:GetToken',
+				'icon_classes' => 'fas fa-check-circle',
+				'action' => self::ACTION_GET_TOKEN
+			],
 			//'oauth2-client-connect' => ['label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'action' => self::ACTION_AUTHENTICATE],
-			'oauth2-client-reset-and-connect' => ['label' => 'Authenticate', 'icon_classes' => 'fas fa-user-check', 'action' => self::ACTION_RESET],
+			'oauth2-client-reset-and-connect' => [
+				'label' => 'Oauth2Client:UI:Button:Authenticate',
+				'icon_classes' => 'fas fa-user-check',
+				'action' => self::ACTION_RESET
+			],
 		];
 
 		$aButtons = [];
 		foreach ($aTab as $sId => $aData) {
-			$oOauthConnectButton = ButtonUIBlockFactory::MakeIconAction($aData['icon_classes'], $aData['label'], null, null, false, $sId);
+			$oOauthConnectButton = ButtonUIBlockFactory::MakeIconAction($aData['icon_classes'], \Dict::S($aData['label']), null, null, false, $sId);
 			$aButtons[] = $oOauthConnectButton;
 
 			// Prepare button callback
