@@ -32,11 +32,14 @@ class HybridAuthServiceTest extends ItopDataTestCase
 
 	public function ProvidersReturnedProvider()
 	{
-		return [
-			[ 'GitHub' ],
-			[ 'MicrosoftGraph' ],
-			[ 'Google' ],
+		$aProviders = [
+			'GitHub', 'MicrosoftGraph', 'Google'
 		];
+		$aRes=[];
+		foreach ($aProviders as $sProvider){
+			$aRes[$sProvider] = [$sProvider];
+		}
+		return $aRes;
 
 	}
 
@@ -49,9 +52,12 @@ class HybridAuthServiceTest extends ItopDataTestCase
 		$_SERVER['REMOTE_ADDR'] = '1.2.3.4';
 		$oOauth2Client = $this->CreateOauth2client("{$sProviderName}Oauth2Client");
 		$oOauth2ClientCompleted = ConfigService::GetInstance()->GetOauth2Client('webhook', $oOauth2Client->Get('provider'));
-		$this->assertEquals("Hybridauth\\Provider\\$sProviderName", get_class($oOauth2ClientCompleted->GetOauth2()));
+		/** @var OAuth2 $oAuth2 */
+		$oAuth2 = $oOauth2ClientCompleted->GetOauth2();
+		$this->assertEquals("Hybridauth\\Provider\\$sProviderName", get_class($oAuth2));
 
-		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', HybridAuthService::GetInstance()->getStoredData($oOauth2ClientCompleted->GetOauth2(), 'authorization_state'));
+		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', HybridAuthService::GetInstance()->getStoredData($oAuth2, 'authorization_state'));
+		$this->assertTrue($oAuth2->isConnected());
 	}
 
 	private function CreateOauth2client($sOauth2ClientClass) : Oauth2Client

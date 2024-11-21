@@ -18,7 +18,6 @@ use utils;
 class Oauth2ClientController extends Controller
 {
 	public const ACTION_AUTHENTICATE = 'authenticate';
-	public const ACTION_RESET = 'reset_and_authenticate';
 	public const ACTION_GET_TOKEN = 'get_token';
 
 	public function OperationDefault()
@@ -38,11 +37,10 @@ class Oauth2ClientController extends Controller
 				'icon_classes' => 'fas fa-check-circle',
 				'action' => self::ACTION_GET_TOKEN
 			],
-			//'oauth2-client-connect' => ['label' => 'Connect', 'icon_classes' => 'fas fa-user-check', 'action' => self::ACTION_AUTHENTICATE],
 			'oauth2-client-reset-and-connect' => [
 				'label' => 'Oauth2Client:UI:Button:Authenticate',
 				'icon_classes' => 'fas fa-user-check',
-				'action' => self::ACTION_RESET
+				'action' => self::ACTION_AUTHENTICATE
 			],
 		];
 
@@ -56,7 +54,9 @@ class Oauth2ClientController extends Controller
 
 			$oOauthConnectButton->SetOnClickJsCode($sOauthConnectCallbackName.'();');
 
-			$sUrl = ConfigService::GetInstance()->GetConnectUrl($oOauth2Client, $aData['action']);
+			$sName = $oOauth2Client->Get('name');
+			$sProvider = $oOauth2Client->Get('provider');
+			$sUrl = Oauth2ClientHelper::GetConnectUrl($sName, $sProvider, $aData['action']);
 			$oPage->add_script(
 				<<<JS
 const $sOauthConnectCallbackName = function() {

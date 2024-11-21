@@ -6,16 +6,15 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Combodo\\iTop\\Oauth2Client\\API\\Oauth2ClientAPI' => $baseDir . '/src/API/Oauth2ClientAPI.php',
     'Combodo\\iTop\\Oauth2Client\\Controller\\Oauth2ClientController' => $baseDir . '/src/Controller/Oauth2ClientController.php',
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientException' => $baseDir . '/src/Helper/Oauth2ClientException.php',
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientHelper' => $baseDir . '/src/Helper/Oauth2ClientHelper.php',
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientLog' => $baseDir . '/src/Helper/Oauth2ClientLog.php',
     'Combodo\\iTop\\Oauth2Client\\Hook\\ApplicationUIExtension' => $baseDir . '/src/Hook/ApplicationUIExtension.php',
+    'Combodo\\iTop\\Oauth2Client\\HybridAuth\\AdapterService' => $baseDir . '/src/HybridAuth/AdapterService.php',
     'Combodo\\iTop\\Oauth2Client\\Model\\AbstractOauth2Client' => $baseDir . '/src/Model/AbstractOauth2Client.php',
-    'Combodo\\iTop\\Oauth2Client\\Model\\ConfigService' => $baseDir . '/src/Model/ConfigService.php',
-    'Combodo\\iTop\\Oauth2Client\\Service\\HybridAuthService' => $baseDir . '/src/Service/HybridAuthService.php',
-    'Combodo\\iTop\\Oauth2Client\\Service\\Oauth2ClientService' => $baseDir . '/src/Service/Oauth2ClientService.php',
+    'Combodo\\iTop\\Oauth2Client\\Model\\Oauth2ClientService' => $baseDir . '/src/Model/Oauth2ClientService.php',
+    'Combodo\\iTop\\Oauth2Client\\Service\\Oauth2Service' => $baseDir . '/src/Service/Oauth2Service.php',
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Hybridauth\\Adapter\\AbstractAdapter' => $vendorDir . '/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php',
     'Hybridauth\\Adapter\\AdapterInterface' => $vendorDir . '/hybridauth/hybridauth/src/Adapter/AdapterInterface.php',

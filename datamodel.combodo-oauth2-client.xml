@@ -174,7 +174,7 @@
           <code><![CDATA[
         public function GetHybridauthProvider() : string
         {
-          return Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetHybridauthProvider($this);
+          return Combodo\iTop\Oauth2Client\Model\Oauth2ClientService::GetInstance()->GetHybridauthProvider($this);
         }
 ]]></code>
         </method>
@@ -258,8 +258,13 @@
         * Provide the acces_token fields mapping between hybridauth and iTop model
         * @return array
         */
-        public function GetAccessTokenModelToHybridauthMapping() : array {
-          return Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetAccessTokenModelToHybridauthMapping();
+        public function GetTokenModelToHybridauthMapping() : array {
+          return [
+            'access_token' => 'access_token',
+            'token_type' => 'token_type',
+            'refresh_token' => 'refresh_token',
+            'expires_at' => 'access_token_expiration',
+          ];
         }
         ]]></code>
         </method>
@@ -274,7 +279,7 @@
         * @return array
         */
         public function GetModelToHybridauthMapping() : array {
-          return Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetModelToHybridauthMapping();
+          return [];
         }
         ]]></code>
         </method>
@@ -460,9 +465,7 @@
         * @return array
         */
         public function GetModelToHybridauthMapping() : array {
-          $aRes = Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetModelToHybridauthMapping();
-
-          return array_merge(['tenant' => 'tenant' ], $aRes);
+          return ['tenant' => 'tenant' ];
         }
         ]]></code>
         </method>
@@ -651,15 +654,12 @@
         * @return array
         */
         public function GetModelToHybridauthMapping() : array {
-          $aRes = Combodo\iTop\Oauth2Client\Model\ConfigService::GetInstance()->GetModelToHybridauthMapping();
-          $aMapping = [
+          return [
             'username' => 'username',
             'password' => 'password',
             'version' => 'version',
             'url' => 'base_url',
           ];
-
-          return array_merge($aMapping, $aRes);
         }
         ]]></code>
         </method>

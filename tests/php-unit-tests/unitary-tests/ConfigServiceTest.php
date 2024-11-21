@@ -124,6 +124,7 @@ class ConfigServiceTest extends ItopDataTestCase
 						'id' => $sClientId,
 						'secret' => $sClientSecret,
 					],
+					'adapter' => 'Hybridauth\\Provider\\GitHub',
 					'callback' => ConfigService::GetInstance()->GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 				],
@@ -159,6 +160,7 @@ class ConfigServiceTest extends ItopDataTestCase
 						'id' => $sClientId,
 						'secret' => $sClientSecret,
 					],
+					'adapter' => 'Hybridauth\\Provider\\MicrosoftGraph',
 					'callback' => ConfigService::GetInstance()->GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 					'tenant' => 'tenant1234',
@@ -177,7 +179,7 @@ class ConfigServiceTest extends ItopDataTestCase
 		$this->assertEquals($oOauth2, $oOauth2Client->GetOauth2());
 	}
 
-	public function testGetOauth2Client_Github_WithAccessAndRefreshTokensToken() {
+	public function testGetOauth2Client_Github_WithAccessAndRefreshTokens() {
 		$sClientId = 'client_123';
 		$sClientSecret = 'secret456';
 
@@ -205,6 +207,7 @@ class ConfigServiceTest extends ItopDataTestCase
 						'id' => $sClientId,
 						'secret' => $sClientSecret,
 					],
+					'adapter' => 'Hybridauth\\Provider\\GitHub',
 					'callback' => ConfigService::GetInstance()->GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 					'scope' => 'any scope',
@@ -257,6 +260,7 @@ class ConfigServiceTest extends ItopDataTestCase
 						'id' => $sClientId,
 						'secret' => $sClientSecret,
 					],
+					'adapter' => 'Hybridauth\\Provider\\GitHub',
 					'callback' => ConfigService::GetInstance()->GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 					'scope' => 'any scope',
@@ -376,5 +380,4 @@ class ConfigServiceTest extends ItopDataTestCase
 
 		$this->assertEquals($sExpectedUrl, $sUrl);
 	}
-
 }

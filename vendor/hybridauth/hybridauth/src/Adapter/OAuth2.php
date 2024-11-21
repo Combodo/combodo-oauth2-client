@@ -260,7 +260,7 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         if ($this->config->exists('tokens')) {
             $this->setAccessToken($this->config->get('tokens'));
         }
-        
+
         if ($this->config->exists('supportRequestState')) {
             $this->supportRequestState = $this->config->get('supportRequestState');
         }
@@ -424,6 +424,7 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
          *
          * http://tools.ietf.org/html/rfc6749#section-4.1.1
          */
+
         if ($this->supportRequestState
             && (!$state || $this->getStoredData('authorization_state') != $state)
         ) {

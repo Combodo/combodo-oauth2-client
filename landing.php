@@ -10,9 +10,8 @@ namespace Combodo\iTop\Oauth2Client;
 use Combodo\iTop\Application\Helper\Session;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
-use Combodo\iTop\Oauth2Client\Model\ConfigService;
-use Combodo\iTop\Oauth2Client\Service\Oauth2ClientService;
-use Hybridauth\Logger\Logger;
+use Combodo\iTop\Oauth2Client\Model\Oauth2ClientService;
+use Combodo\iTop\Oauth2Client\Service\Oauth2Service;
 use iTopStandardURLMaker;
 use Combodo\iTop\Application\WebPage\WebPage;
 
@@ -35,10 +34,11 @@ try{
 	$sName = Session::Get('oauth2_client_name');
 	$sProvider = Session::Get('oauth2_client_provider');
 
-	$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
-	Oauth2ClientService::GetInstance()->StoreTokens($sName, $sProvider);
-	$oOauth2Client->Reload();
-	$sToken = $oOauth2Client->Get('access_token')->GetPassword();
+	Oauth2Service::GetInstance()->Init($sName, $sProvider);
+	$oOauth2Client = Oauth2ClientService::GetInstance()->GetOauth2Client();
+
+	$sToken = Oauth2Service::GetInstance()->AuthenticateFinish();
+
 	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationOK", $sToken), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
 } catch (Oauth2ClientException $e) {
 	if (! is_null($oOauth2Client)){

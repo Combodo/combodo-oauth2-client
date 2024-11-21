@@ -11,9 +11,9 @@ use Combodo\iTop\Application\Helper\Session;
 use Combodo\iTop\Application\WebPage\WebPage;
 use Combodo\iTop\Oauth2Client\Controller\Oauth2ClientController;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
-use Combodo\iTop\Oauth2Client\Model\ConfigService;
-use Combodo\iTop\Oauth2Client\Service\HybridAuthService;
-use Combodo\iTop\Oauth2Client\Service\Oauth2ClientService;
+use Combodo\iTop\Oauth2Client\HybridAuth\AdapterService;
+use Combodo\iTop\Oauth2Client\Model\Oauth2ClientService;
+use Combodo\iTop\Oauth2Client\Service\Oauth2Service;
 use iTopStandardURLMaker;
 
 /**
@@ -30,15 +30,18 @@ try{
 	Session::Set('oauth2_client_name', $sName);
 	Session::Set('oauth2_client_provider', $sProvider);
 
-	$oOauth2Client = ConfigService::GetInstance()->GetOauth2Client($sName, $sProvider);
-	if ($sAction === Oauth2ClientController::ACTION_RESET) {
-		$sToken = Oauth2ClientService::GetInstance()->Connect($sName, $sProvider, true);
+	Oauth2Service::GetInstance()->Init($sName, $sProvider);
+	$oOauth2Client = Oauth2ClientService::GetInstance()->GetOauth2Client();
+
+	if ($sAction === Oauth2ClientController::ACTION_AUTHENTICATE) {
+		// IDP can remain here in case of headless.
+		// Otherwise IDP will call back landing.php
+		$sToken = Oauth2Service::GetInstance()->Authenticate();
 	} else {
-		$sToken = Oauth2ClientService::GetInstance()->GetToken($oOauth2Client);
+		$sToken = Oauth2Service::GetInstance()->GetAccessToken();
 	}
 
 	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationOK", $sToken), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
-
 } catch (Oauth2ClientException $e) {
 	if (! is_null($oOauth2Client)){
 		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationError", $e->getMessage()), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
