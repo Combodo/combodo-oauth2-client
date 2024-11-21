@@ -22,8 +22,8 @@ SetupWebPage::AddModule(
 		'dependencies' => [
 			'itop-attribute-encrypted-password/1.0.0',
 		],
-		'mandatory' => true,
-		'visible' => true,
+		'mandatory' => false,
+		'visible' => false,
 
 		// Components
 		//
