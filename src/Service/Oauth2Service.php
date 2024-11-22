@@ -8,6 +8,7 @@ use Combodo\iTop\Oauth2Client\HybridAuth\AdapterService;
 use Combodo\iTop\Oauth2Client\Model\ConfigService;
 use Combodo\iTop\Oauth2Client\Model\Oauth2ClientService;
 use Exception;
+use Oauth2Client;
 
 class Oauth2Service {
 	private static Oauth2Service $oInstance;
