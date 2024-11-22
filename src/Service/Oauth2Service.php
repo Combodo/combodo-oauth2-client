@@ -32,12 +32,27 @@ class Oauth2Service {
 		static::$oInstance = $oInstance;
 	}
 
+	/**
+	 * @param string $sName
+	 * @param string $sProvider
+	 *
+	 * @return void
+	 */
 	public function Init(string $sName, string $sProvider)
 	{
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 		$this->sName = $sName;
 		$this->sProvider = $sProvider;
 		Oauth2ClientService::GetInstance()->InitClient($this->sName, $this->sProvider);
+		AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
+	}
+
+	private function InitByOauth2Client(Oauth2Client $oOauth2Client) : void
+	{
+		Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
+		$this->sName = $oOauth2Client->Get('name');
+		$this->sProvider = $oOauth2Client->Get('provider');
+		Oauth2ClientService::GetInstance()->InitClientByOauth2Client($oOauth2Client);
 		AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
 	}
 
@@ -64,6 +79,11 @@ class Oauth2Service {
 		return Oauth2ClientService::GetInstance()->GetAccessToken();
 	}
 
+	/**
+	 * @api
+	 * @return string
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
+	 */
 	public function GetAccessToken() : string
 	{
 		$sToken = Oauth2ClientService::GetInstance()->GetAccessToken();
@@ -81,5 +101,17 @@ class Oauth2Service {
 
 		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse);
 		return Oauth2ClientService::GetInstance()->GetAccessToken();
+	}
+
+	/**
+	 * @api
+	 * @param \Combodo\iTop\Oauth2Client\Service\Oauth2Client $oOauth2Client
+	 *
+	 * @return string
+	 */
+	public function GetAccessTokenByOauth2Client(Oauth2Client $oOauth2Client) : string
+	{
+		$this->InitByOauth2Client($oOauth2Client);
+		return $this->GetAccessToken();
 	}
 }

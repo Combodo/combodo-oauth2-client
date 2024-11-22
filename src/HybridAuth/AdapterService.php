@@ -107,7 +107,11 @@ class AdapterService {
 	}
 
 	private function GetAuthorizationState() : string {
-		$sAuthorizationState= utils::ReadParam('state', '', false, utils::ENUM_SANITIZATION_FILTER_STRING);
+		if ($_SERVER['REQUEST_METHOD'] === 'POST'){
+			$sAuthorizationState= utils::ReadPostedParam('state', '',utils::ENUM_SANITIZATION_FILTER_STRING);
+		} else {
+			$sAuthorizationState= utils::ReadParam('state', '', false, utils::ENUM_SANITIZATION_FILTER_STRING);
+		}
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sAuthorizationState]);
 		return $sAuthorizationState;
 	}

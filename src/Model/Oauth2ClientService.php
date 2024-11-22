@@ -46,6 +46,14 @@ class Oauth2ClientService {
 		$this->GetOauth2Client();
 	}
 
+	public function InitClientByOauth2Client(Oauth2Client $oOauth2Client) : void
+	{
+		Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
+		$this->sName = $oOauth2Client->Get('name');
+		$this->sProvider = $oOauth2Client->Get('provider');
+		$this->oOauth2Client = $oOauth2Client;
+	}
+
 	public function GetOauth2Client() : Oauth2Client
 	{
 		try {
@@ -146,7 +154,10 @@ class Oauth2ClientService {
 		Oauth2ClientLog::Debug(__FUNCTION__, null, $aTokenResponse);
 		$aTokenMapping = $this->oOauth2Client->GetTokenModelToHybridauthMapping();
 		foreach ($aTokenMapping as $sHybridauthId => $sAttCode) {
-			$this->oOauth2Client->Set($sAttCode, $aTokenResponse[$sHybridauthId]);
+			$sValue = $aTokenResponse[$sHybridauthId] ?? null;
+			if (! is_null($sValue)){
+				$this->oOauth2Client->Set($sAttCode, $sValue);
+			}
 		}
 
 		$this->oOauth2Client->Set('authorization_state', $aTokenResponse['authorization_state'] ?? '');
