@@ -16,10 +16,10 @@ use Oauth2Client;
 use utils;
 
 class Oauth2ClientService {
-	private static Oauth2ClientService $oInstance;
+	private static ?Oauth2ClientService $oInstance;
 	private string $sName;
 	private string $sProvider;
-	private Oauth2Client $oOauth2Client;
+	private ?Oauth2Client $oOauth2Client;
 
 	protected function __construct() {
 	}
@@ -37,12 +37,20 @@ class Oauth2ClientService {
 		static::$oInstance = $oInstance;
 	}
 
+	public static function GetHybridauthProvider(Oauth2Client $oObj): string
+	{
+		$sClassName = Oauth2ClientHelper::GetClassName(get_class($oObj));
+		$sProviderClassName = str_replace('Oauth2Client', '', $sClassName);
+
+		return "Hybridauth\\Provider\\$sProviderClassName";
+	}
+
 	public function InitClient(string $sName, string $sProvider)
 	{
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 		$this->sName = $sName;
 		$this->sProvider = $sProvider;
-
+		$this->oOauth2Client = null;
 		$this->GetOauth2Client();
 	}
 
@@ -54,7 +62,7 @@ class Oauth2ClientService {
 		$this->oOauth2Client = $oOauth2Client;
 	}
 
-	public function GetOauth2Client() : Oauth2Client
+	private function GetOauth2Client() : Oauth2Client
 	{
 		try {
 			if (isset($this->oOauth2Client)){
@@ -82,28 +90,30 @@ class Oauth2ClientService {
 
 	public function GetAuthenticateConfiguration() : array
 	{
+		$oOauth2Client = $this->GetOauth2Client();
+
 		$aData = [
-			'enabled' => $this->oOauth2Client->Get('status') === 'active',
+			'enabled' => $oOauth2Client->Get('status') === 'active',
 			'keys' => [
-				'id' => $this->oOauth2Client->Get('client_id'),
-				'secret' => $this->oOauth2Client->Get('client_secret')->GetPassword(),
+				'id' => $oOauth2Client->Get('client_id'),
+				'secret' => $oOauth2Client->Get('client_secret')->GetPassword(),
 			],
-			'adapter' => $this->oOauth2Client->Get('provider'),
+			'adapter' => $oOauth2Client->Get('provider'),
 			//'expires_in' => date_format(new \DateTime($oExpireAt), 'U') - time(),
 			'callback' => Oauth2ClientHelper::GetLandingURL(),
 			'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 		];
 
-		$sScope = $this->oOauth2Client->Get('scope');
+		$sScope = $oOauth2Client->Get('scope');
 		if (utils::IsNotNullOrEmptyString($sScope)) {
 			$aData['scope'] = $sScope;
 		}
 
-		foreach ($this->oOauth2Client->GetModelToHybridauthMapping() as $sHybridauthId => $sAttCode) {
-			$val = $this->oOauth2Client->Get($sAttCode);
+		foreach ($oOauth2Client->GetModelToHybridauthMapping() as $sHybridauthId => $sAttCode) {
+			$val = $oOauth2Client->Get($sAttCode);
 			if ($val instanceof ormEncryptedPassword) {
 				$val = $val->GetPassword();
-			} else if (MetaModel::GetAttributeDef(get_class($this->oOauth2Client), $sAttCode) instanceof AttributeDateTime) {
+			} else if (MetaModel::GetAttributeDef(get_class($oOauth2Client), $sAttCode) instanceof AttributeDateTime) {
 				$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $val);
 				$val = $oDateTime->getTimestamp();
 			}
@@ -121,17 +131,18 @@ class Oauth2ClientService {
 
 	public function GetRefreshTokenConfiguration() : array
 	{
+		$oOauth2Client = $this->GetOauth2Client();
 		$sProviderName = Oauth2ClientHelper::GetProviderName($this->sProvider);
 		$aConf = $this->GetAuthenticateConfiguration();
 		$aData = $aConf['providers'][$sProviderName];
 
-		$aTokenMapping = $this->oOauth2Client->GetTokenModelToHybridauthMapping();
+		$aTokenMapping = $oOauth2Client->GetTokenModelToHybridauthMapping();
 		$aTokens = [];
 		foreach ($aTokenMapping as $sHybridauthId => $sAttCode) {
-			$val = $this->oOauth2Client->Get($sAttCode);
+			$val = $oOauth2Client->Get($sAttCode);
 			if ($val instanceof ormEncryptedPassword) {
 				$val = $val->GetPassword();
-			} else if (MetaModel::GetAttributeDef(get_class($this->oOauth2Client), $sAttCode) instanceof AttributeDateTime) {
+			} else if (! is_null($val) && MetaModel::GetAttributeDef(get_class($oOauth2Client), $sAttCode) instanceof AttributeDateTime) {
 				$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $val);
 				$val = $oDateTime->getTimestamp();
 			}
@@ -145,28 +156,30 @@ class Oauth2ClientService {
 			$aData['tokens'] = $aTokens;
 		}
 		$aConf = ['providers' => [$sProviderName => $aData]];
-		$aConf['authorization_state'] = $this->oOauth2Client->Get('authorization_state');
+		$aConf['authorization_state'] = $oOauth2Client->Get('authorization_state');
 		return $aConf;
 	}
 
 	public function SaveTokens(array $aTokenResponse) : void
 	{
+		$oOauth2Client = $this->GetOauth2Client();
 		Oauth2ClientLog::Debug(__FUNCTION__, null, $aTokenResponse);
-		$aTokenMapping = $this->oOauth2Client->GetTokenModelToHybridauthMapping();
+		$aTokenMapping = $oOauth2Client->GetTokenModelToHybridauthMapping();
 		foreach ($aTokenMapping as $sHybridauthId => $sAttCode) {
 			$sValue = $aTokenResponse[$sHybridauthId] ?? null;
 			if (! is_null($sValue)){
-				$this->oOauth2Client->Set($sAttCode, $sValue);
+				$oOauth2Client->Set($sAttCode, $sValue);
 			}
 		}
 
-		$this->oOauth2Client->Set('authorization_state', $aTokenResponse['authorization_state'] ?? '');
-		$this->oOauth2Client->DBWrite();
+		$oOauth2Client->Set('authorization_state', $aTokenResponse['authorization_state'] ?? '');
+		$oOauth2Client->DBWrite();
 	}
 
 	public function GetAccessToken() : ?string
 	{
-		$oAccessToken = $this->oOauth2Client->Get('access_token');
+		$oOauth2Client = $this->GetOauth2Client();
+		$oAccessToken = $oOauth2Client->Get('access_token');
 		if (is_null($oAccessToken)){
 			return null;
 		}
@@ -175,16 +188,13 @@ class Oauth2ClientService {
 
 	public function IsExpired() : bool
 	{
-		$oAttDateTime = $this->oOauth2Client->Get('access_token_expiration');
+		$oOauth2Client = $this->GetOauth2Client();
+		$oAttDateTime = $oOauth2Client->Get('access_token_expiration');
+		if (is_null($oAttDateTime)){
+			throw new Oauth2ClientException('No expiration date found');
+		}
+
 		$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $oAttDateTime);
 		return $oDateTime < new DateTime();
-	}
-
-	public function GetHybridauthProvider(Oauth2Client $oObj): string
-	{
-		$sClassName = Oauth2ClientHelper::GetClassName(get_class($oObj));
-		$sProviderClassName = str_replace('Oauth2Client', '', $sClassName);
-
-		return "Hybridauth\\Provider\\$sProviderClassName";
 	}
 }

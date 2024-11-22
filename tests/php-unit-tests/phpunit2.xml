@@ -29,7 +29,9 @@
 
   <testsuites>
     <testsuite name="Unitary">
-      <directory suffix="Test.php">unitary-tests</directory>
+      <directory suffix="Test.php">unitary-tests/HybridAuth</directory>
+      <directory suffix="Test.php">unitary-tests/Model</directory>
+      <directory suffix="Test.php">unitary-tests/Service</directory>
     </testsuite>
     <testsuite name="Integration">
       <directory suffix="Test.php">integration-tests</directory>
