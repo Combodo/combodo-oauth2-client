@@ -7,8 +7,6 @@ use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Exception;
 use Hybridauth\Adapter\AdapterInterface;
-use Hybridauth\Adapter\OAuth2;
-use Hybridauth\Hybridauth;
 use Hybridauth\Logger\Logger;
 use ReflectionClass;
 use utils;
@@ -53,18 +51,13 @@ class AdapterService {
 	{
 		try {
 			$oLogger = new Logger(Oauth2ClientLog::GetHybridauthDebugMode(), APPROOT.'log/hybridauth.log');
-			/*if (utils::IsNullOrEmptyString($aConfig['scope'] ?? '')){
-				$aConfig['scope'] = $this->GetDefaultScope();
-			}*/
-			$oHybridauth = new Hybridauth($aConfig, null, null, $oLogger);
-			$this->oAuth2 = $oHybridauth->getAdapter($this->sProviderName);
+
+			$this->oAuth2 = AdapterFabrikService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig, $oLogger);
 
 			$sAuthorizationState = $aConfig['authorization_state'] ?? null;
 			if (utils::IsNotNullOrEmptyString($sAuthorizationState)){
 				$this->oAuth2->getStorage()->set($this->sProviderName.'.authorization_state', $sAuthorizationState);
 			}
-
-
 		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
@@ -83,8 +76,10 @@ class AdapterService {
 		Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
 		$this->InitOauth2($aConfig);
 		$this->oAuth2->authenticate();
+
 		$aTokens = $this->oAuth2->getAccessToken();
 		$aTokens['authorization_state'] = $this->GetAuthorizationState();
+
 		Oauth2ClientLog::Debug(__FUNCTION__, null, $aTokens);
 		return $aTokens;
 	}
@@ -116,7 +111,7 @@ class AdapterService {
 		return $sAuthorizationState;
 	}
 
-	private function GetDefaultScope() : string {
+	public function GetDefaultScope() : string {
 		/** @noinspection OneTimeUseVariablesInspection */
 		$oClass = new ReflectionClass($this->oAuth2);
 		$oProperty = $oClass->getProperty('scope');

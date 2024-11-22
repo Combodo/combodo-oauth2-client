@@ -270,10 +270,35 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 			'refresh_token' => 'refresh_token1',
 			'expires_at' => '2024-11-13 00:37:48',
 		];
-		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse);
+		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, 'default_scope');
 
 		$oObj->Reload();
 
+		$this->assertEquals('scope789', $oObj->Get('scope'));
+		$this->assertEquals('access_token1', $oObj->Get('access_token')->GetPassword());
+		$this->assertEquals('bearer', $oObj->Get('token_type'));
+		$this->assertEquals('refresh_token1', $oObj->Get('refresh_token')->GetPassword());
+		$this->assertEquals('2024-11-13 00:37:48', $oObj->Get('access_token_expiration'));
+		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', $oObj->Get('authorization_state'));
+	}
+
+	public function testSaveTokens_OverrideWithDefaultScopeWhenNotFilledIn() {
+		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, []);
+		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
+
+		$aTokenResponse = [
+			'access_token' => 'access_token1',
+			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
+			'token_type' => 'bearer',
+			'refresh_token' => 'refresh_token1',
+			'expires_at' => '2024-11-13 00:37:48',
+		];
+		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, 'default_scope');
+
+		$oObj->Reload();
+
+		$this->assertEquals('', $oObj->Get('scope'));
+		//TODO: discuss with Eric: $this->assertEquals('default_scope', $oObj->Get('scope'));
 		$this->assertEquals('access_token1', $oObj->Get('access_token')->GetPassword());
 		$this->assertEquals('bearer', $oObj->Get('token_type'));
 		$this->assertEquals('refresh_token1', $oObj->Get('refresh_token')->GetPassword());
@@ -290,10 +315,11 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
 			'token_type' => 'bearer',
 		];
-		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse);
+		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, 'default_scope');
 
 		$oObj->Reload();
 
+		$this->assertEquals('scope789', $oObj->Get('scope'));
 		$this->assertEquals('access_token1', $oObj->Get('access_token')->GetPassword());
 		$this->assertEquals('bearer', $oObj->Get('token_type'));
 		$this->assertEquals('', $oObj->Get('refresh_token')->GetPassword());

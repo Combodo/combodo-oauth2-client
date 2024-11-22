@@ -160,11 +160,17 @@ class Oauth2ClientService {
 		return $aConf;
 	}
 
-	public function SaveTokens(array $aTokenResponse) : void
+	public function SaveTokens(array $aTokenResponse, string $sDefaultScope) : void
 	{
 		$oOauth2Client = $this->GetOauth2Client();
 		Oauth2ClientLog::Debug(__FUNCTION__, null, $aTokenResponse);
+
+		/*if (utils::IsNullOrEmptyString($oOauth2Client->Get('scope'))){
+			$oOauth2Client->Set('scope', $sDefaultScope);
+		}*/
+
 		$aTokenMapping = $oOauth2Client->GetTokenModelToHybridauthMapping();
+
 		foreach ($aTokenMapping as $sHybridauthId => $sAttCode) {
 			$sValue = $aTokenResponse[$sHybridauthId] ?? null;
 			if (! is_null($sValue)){

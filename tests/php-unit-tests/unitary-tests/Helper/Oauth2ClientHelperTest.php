@@ -31,9 +31,10 @@ class Oauth2ClientHelperTest extends ItopDataTestCase {
 		);
 
 		$sProvider = $oOauth2Client->Get('provider');
-		$sProvider = urlencode(base64_encode($sProvider));
 		$sUrl = Oauth2ClientHelper::GetConnectUrl('testname', $sProvider, $sAction);
-		$sExpectedUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=testname&provider=$sProvider&action=$sAction";
+
+		$sExpectedUrlProvider = urlencode(base64_encode($sProvider));
+		$sExpectedUrl = \utils::GetAbsoluteUrlModulesRoot().Oauth2ClientHelper::MODULE_NAME."/connect.php?name=testname&provider=$sExpectedUrlProvider&action=$sAction";
 
 		$this->assertEquals($sExpectedUrl, $sUrl);
 	}

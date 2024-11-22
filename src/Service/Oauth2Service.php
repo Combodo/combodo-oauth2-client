@@ -74,8 +74,9 @@ class Oauth2Service {
 	{
 		$aConfig = Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration();
 		$aTokenResponse = AdapterService::GetInstance()->AuthenticateFinish($aConfig);
+		$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
 
-		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse);
+		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
 		return Oauth2ClientService::GetInstance()->GetAccessToken();
 	}
 
@@ -98,8 +99,9 @@ class Oauth2Service {
 
 		$aConfig = Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration();
 		$aTokenResponse = AdapterService::GetInstance()->RefreshToken($aConfig);
+		$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
 
-		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse);
+		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
 		return Oauth2ClientService::GetInstance()->GetAccessToken();
 	}
 
