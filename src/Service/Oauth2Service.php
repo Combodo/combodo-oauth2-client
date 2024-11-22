@@ -109,7 +109,7 @@ class Oauth2Service {
 	 *
 	 * @return string
 	 */
-	public function GetAccessTokenByOauth2Client(Oauth2Client $oOauth2Client) : string
+	public function GetAccessTokenByOauth2Client(\Oauth2Client $oOauth2Client) : string
 	{
 		$this->InitByOauth2Client($oOauth2Client);
 		return $this->GetAccessToken();
