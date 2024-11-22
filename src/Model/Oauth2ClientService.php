@@ -62,7 +62,7 @@ class Oauth2ClientService {
 		$this->oOauth2Client = $oOauth2Client;
 	}
 
-	private function GetOauth2Client() : Oauth2Client
+	public function GetOauth2Client() : Oauth2Client
 	{
 		try {
 			if (isset($this->oOauth2Client)){
