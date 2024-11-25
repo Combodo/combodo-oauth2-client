@@ -438,6 +438,26 @@
         </field>
       </fields>
       <methods>
+        <method id="GetAccessTokenModelToHybridauthMapping">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+
+        /**
+        * Provide the acces_token fields mapping between hybridauth and iTop model
+        * @return array
+        */
+        public function GetTokenModelToHybridauthMapping() : array {
+          return [
+            'access_token' => 'access_token',
+            'token_type' => 'token_type',
+            'id_token' => 'refresh_token',
+            'expires_at' => 'access_token_expiration',
+          ];
+        }
+        ]]></code>
+        </method>
         <method id="GetModelToHybridauthMapping">
           <static>false</static>
           <access>public</access>
@@ -562,7 +582,28 @@
         </reconciliation>
       </properties>
       <fields/>
-      <methods/>
+      <methods>
+        <method id="GetAccessTokenModelToHybridauthMapping">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+
+        /**
+        * Provide the acces_token fields mapping between hybridauth and iTop model
+        * @return array
+        */
+        public function GetTokenModelToHybridauthMapping() : array {
+          return [
+            'access_token' => 'access_token',
+            'token_type' => 'token_type',
+            'id_token' => 'refresh_token',
+            'expires_at' => 'access_token_expiration',
+          ];
+        }
+        ]]></code>
+        </method>
+      </methods>
       <presentation/>
     </class>
     <class id="HeadlessItopOauth2Client" _delta="define">
