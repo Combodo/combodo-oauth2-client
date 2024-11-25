@@ -9,7 +9,14 @@ use Combodo\iTop\Oauth2Client\Model\Oauth2ClientService;
 use Exception;
 use Oauth2Client;
 
-class Oauth2Service {
+/**
+ * OAuth 2.0 client APi
+ *
+ * @api
+ * @package
+ */
+class Oauth2Service
+{
 	private static Oauth2Service $oInstance;
 	private string $sName;
 	private string $sProvider;
@@ -34,42 +41,65 @@ class Oauth2Service {
 	}
 
 	/**
+	 * Initialize the API with the name and provider name of the OAuth IdP
+	 *
 	 * @api
-	 * @param string $sName
-	 * @param string $sProvider
+	 *
+	 * @param string $sName Registered entry name chosen for this connection
+	 * @param string $sProvider Provider name
 	 *
 	 * @return void
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
 	public function Init(string $sName, string $sProvider)
 	{
-		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
-		$this->sName = $sName;
-		$this->sProvider = $sProvider;
-		Oauth2ClientService::GetInstance()->InitClient($this->sName, $this->sProvider);
-		AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
+			$this->sName = $sName;
+			$this->sProvider = $sProvider;
+			Oauth2ClientService::GetInstance()->InitClient($this->sName, $this->sProvider);
+			AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
 	}
 
 	/**
+	 * Initialize the API with the corresponding Oauth2Client object
+	 *
 	 * @api
+	 *
 	 * @param \Oauth2Client $oOauth2Client
 	 *
 	 * @return void
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function InitByOauth2Client(Oauth2Client $oOauth2Client) : void
+	public function InitByOauth2Client(Oauth2Client $oOauth2Client): void
 	{
-		Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
-		$this->sName = $oOauth2Client->Get('name');
-		$this->sProvider = $oOauth2Client->Get('provider');
-		Oauth2ClientService::GetInstance()->InitClientByOauth2Client($oOauth2Client);
-		AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
+			$this->sName = $oOauth2Client->Get('name');
+			$this->sProvider = $oOauth2Client->Get('provider');
+			Oauth2ClientService::GetInstance()->InitClientByOauth2Client($oOauth2Client);
+			AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
 	}
 
 	/**
+	 * Authenticate the connection with the IdP
+	 * The connection is first disconnected then connected again
+	 *
 	 * @api
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function Authenticate() : string
+	public function Authenticate(): string
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
@@ -85,56 +115,80 @@ class Oauth2Service {
 	}
 
 	/**
+	 * Finish the authentication process with the response from the IdP
+	 *
 	 * @api
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function AuthenticateFinish() : string
+	public function AuthenticateFinish(): string
 	{
-		Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
-		$aConfig = Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration();
-		$aTokenResponse = AdapterService::GetInstance()->AuthenticateFinish($aConfig);
-		$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
+			$aConfig = Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration();
+			$aTokenResponse = AdapterService::GetInstance()->AuthenticateFinish($aConfig);
+			$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
+			Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
 
-		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
-		return Oauth2ClientService::GetInstance()->GetAccessToken();
+			return Oauth2ClientService::GetInstance()->GetAccessToken();
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
 	}
 
 	/**
+	 * Get the access token to use in communication with IdP
+	 *
 	 * @api
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetAccessToken() : string
+	public function GetAccessToken(): string
 	{
-		Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
-		$sToken = Oauth2ClientService::GetInstance()->GetAccessToken();
-		if (is_null($sToken)){
-			throw new Oauth2ClientException("Oauth2 never initialized");
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
+			$sToken = Oauth2ClientService::GetInstance()->GetAccessToken();
+			if (is_null($sToken)) {
+				throw new Oauth2ClientException("Oauth2 never initialized");
+			}//expired token
+			if (!Oauth2ClientService::GetInstance()->IsExpired()) {
+				return $sToken;
+			}
+			$aConfig = Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration();
+			$aTokenResponse = AdapterService::GetInstance()->RefreshToken($aConfig);
+			$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
+			Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
+
+			return Oauth2ClientService::GetInstance()->GetAccessToken();
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
-
-		//expired token
-		if (! Oauth2ClientService::GetInstance()->IsExpired()){
-			return $sToken;
-		}
-
-		$aConfig = Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration();
-		$aTokenResponse = AdapterService::GetInstance()->RefreshToken($aConfig);
-		$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
-
-		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
-		return Oauth2ClientService::GetInstance()->GetAccessToken();
 	}
 
 	/**
+	 * Get the access token to use in communication with IdP
+	 *
 	 * @api
-	 * @param \Combodo\iTop\Oauth2Client\Service\Oauth2Client $oOauth2Client
+	 *
+	 * @param \Oauth2Client $oOauth2Client
 	 *
 	 * @return string
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetAccessTokenByOauth2Client(\Oauth2Client $oOauth2Client) : string
+	public function GetAccessTokenByOauth2Client(Oauth2Client $oOauth2Client): string
 	{
-		$this->InitByOauth2Client($oOauth2Client);
-		return $this->GetAccessToken();
+		try {
+			$this->InitByOauth2Client($oOauth2Client);
+
+			return $this->GetAccessToken();
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
 	}
 }

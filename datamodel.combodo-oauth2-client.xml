@@ -3,9 +3,6 @@
   <classes>
     <class id="Oauth2Client" _delta="define">
       <parent>cmdbAbstractObject</parent>
-      <php_parent>
-        <name>Combodo\iTop\Oauth2Client\Model\AbstractOauth2Client</name>
-      </php_parent>
       <properties>
         <category>bizmodel,searchable</category>
         <abstract>true</abstract>
@@ -278,23 +275,24 @@
   {
 		$aHeaderBlocks = parent::DisplayBareHeader($oPage, $bEditMode);
 
-    $aOauthConnectButtons = Combodo\iTop\Oauth2Client\Controller\Oauth2ClientController::GetButtons($this, $oPage);
+    if ($this instanceof Oauth2Client) {
+      $aOauthConnectButtons = Combodo\iTop\Oauth2Client\Controller\Oauth2ClientController::GetButtons($this, $oPage);
 
-		// Add the buttons in the existing toolbar
-		reset($aHeaderBlocks['toolbar']);
-		$sToolbarContainerKey = key($aHeaderBlocks['toolbar']);
-		foreach ($aHeaderBlocks['toolbar'][$sToolbarContainerKey]->GetSubBlocks() as $sSubBlockId => $oSubBlock) {
-			if (!($oSubBlock instanceof Combodo\iTop\Application\UI\Base\Component\Toolbar\Toolbar)) {
-				continue;
-			}
-			// Look for the actions menu toolbar by checking if its ID starts with the good prefix
-			if (stripos($sSubBlockId, MenuBlock::ACTIONS_TOOLBAR_ID_PREFIX) === 0) {
-			  foreach($aOauthConnectButtons as $oOauthConnectButton)
-			  {
-				$oSubBlock->PrependSubBlock($oOauthConnectButton);
-			  }
-				break;
-			}
+      // Add the buttons in the existing toolbar
+      reset($aHeaderBlocks['toolbar']);
+      $sToolbarContainerKey = key($aHeaderBlocks['toolbar']);
+      foreach ($aHeaderBlocks['toolbar'][$sToolbarContainerKey]->GetSubBlocks() as $sSubBlockId => $oSubBlock) {
+        if (!($oSubBlock instanceof Combodo\iTop\Application\UI\Base\Component\Toolbar\Toolbar)) {
+          continue;
+        }
+        // Look for the actions menu toolbar by checking if its ID starts with the good prefix
+        if (stripos($sSubBlockId, MenuBlock::ACTIONS_TOOLBAR_ID_PREFIX) === 0) {
+          foreach($aOauthConnectButtons as $oOauthConnectButton) {
+            $oSubBlock->PrependSubBlock($oOauthConnectButton);
+          }
+          break;
+        }
+      }
 		}
 
 		return $aHeaderBlocks;

@@ -11,6 +11,7 @@ use Combodo\iTop\Application\UI\Base\Component\Field\FieldUIBlockFactory;
 use Combodo\iTop\Application\UI\Base\Component\FieldSet\FieldSetUIBlockFactory;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Dict;
+use Oauth2Client;
 use utils;
 use WebPage;
 
@@ -19,7 +20,7 @@ class ApplicationUIExtension extends AbstractApplicationUIExtension
 
 	public function OnDisplayProperties($oObject, WebPage $oPage, $bEditMode = false)
 	{
-		if (!$bEditMode) {
+		if (!$bEditMode || ! ($oObject instanceof Oauth2Client)) {
 			return;
 		}
 		$oFieldSet = FieldSetUIBlockFactory::MakeStandard(Dict::S('Oauth2Client:UI:IDPParameters'));

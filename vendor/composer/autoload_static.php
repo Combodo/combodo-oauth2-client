@@ -37,7 +37,6 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         'Combodo\\iTop\\Oauth2Client\\Hook\\ApplicationUIExtension' => __DIR__ . '/../..' . '/src/Hook/ApplicationUIExtension.php',
         'Combodo\\iTop\\Oauth2Client\\HybridAuth\\AdapterInterfaceFactoryService' => __DIR__ . '/../..' . '/src/HybridAuth/AdapterInterfaceFactoryService.php',
         'Combodo\\iTop\\Oauth2Client\\HybridAuth\\AdapterService' => __DIR__ . '/../..' . '/src/HybridAuth/AdapterService.php',
-        'Combodo\\iTop\\Oauth2Client\\Model\\AbstractOauth2Client' => __DIR__ . '/../..' . '/src/Model/AbstractOauth2Client.php',
         'Combodo\\iTop\\Oauth2Client\\Model\\Oauth2ClientService' => __DIR__ . '/../..' . '/src/Model/Oauth2ClientService.php',
         'Combodo\\iTop\\Oauth2Client\\Service\\Oauth2Service' => __DIR__ . '/../..' . '/src/Service/Oauth2Service.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',

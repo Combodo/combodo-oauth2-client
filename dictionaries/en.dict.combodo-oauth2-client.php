@@ -18,4 +18,6 @@ Dict::Add('EN US', 'English', 'English', [
 
 	'Oauth2Client:UI:Button:GetToken' => 'Display access token. If expired, access token is refreshed before via Oauth.',
 	'Oauth2Client:UI:Button:Authenticate' => 'Authenticate to the IDP via Oauth.',
+
+	'Oauth2Client:UI:Error:RefreshTokenNotAvailable' => 'Refresh token not available',
 ]);
