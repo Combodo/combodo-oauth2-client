@@ -297,8 +297,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 
 		$oObj->Reload();
 
-		$this->assertEquals('', $oObj->Get('scope'));
-		//TODO: discuss with Eric: $this->assertEquals('default_scope', $oObj->Get('scope'));
+		$this->assertEquals('default_scope', $oObj->Get('scope'));
 		$this->assertEquals('access_token1', $oObj->Get('access_token')->GetPassword());
 		$this->assertEquals('bearer', $oObj->Get('token_type'));
 		$this->assertEquals('refresh_token1', $oObj->Get('refresh_token')->GetPassword());

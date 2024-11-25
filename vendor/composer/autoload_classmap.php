@@ -11,7 +11,7 @@ return array(
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientHelper' => $baseDir . '/src/Helper/Oauth2ClientHelper.php',
     'Combodo\\iTop\\Oauth2Client\\Helper\\Oauth2ClientLog' => $baseDir . '/src/Helper/Oauth2ClientLog.php',
     'Combodo\\iTop\\Oauth2Client\\Hook\\ApplicationUIExtension' => $baseDir . '/src/Hook/ApplicationUIExtension.php',
-    'Combodo\\iTop\\Oauth2Client\\HybridAuth\\AdapterFabrikService' => $baseDir . '/src/HybridAuth/AdapterFabrikService.php',
+    'Combodo\\iTop\\Oauth2Client\\HybridAuth\\AdapterInterfaceFactoryService' => $baseDir . '/src/HybridAuth/AdapterInterfaceFactoryService.php',
     'Combodo\\iTop\\Oauth2Client\\HybridAuth\\AdapterService' => $baseDir . '/src/HybridAuth/AdapterService.php',
     'Combodo\\iTop\\Oauth2Client\\Model\\AbstractOauth2Client' => $baseDir . '/src/Model/AbstractOauth2Client.php',
     'Combodo\\iTop\\Oauth2Client\\Model\\Oauth2ClientService' => $baseDir . '/src/Model/Oauth2ClientService.php',

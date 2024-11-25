@@ -22,6 +22,7 @@ class Oauth2ClientService {
 	private ?Oauth2Client $oOauth2Client;
 
 	protected function __construct() {
+		Oauth2ClientLog::Enable();
 	}
 
 	final public static function GetInstance(): Oauth2ClientService {
@@ -109,19 +110,8 @@ class Oauth2ClientService {
 			$aData['scope'] = $sScope;
 		}
 
-		foreach ($oOauth2Client->GetModelToHybridauthMapping() as $sHybridauthId => $sAttCode) {
-			$val = $oOauth2Client->Get($sAttCode);
-			if ($val instanceof ormEncryptedPassword) {
-				$val = $val->GetPassword();
-			} else if (MetaModel::GetAttributeDef(get_class($oOauth2Client), $sAttCode) instanceof AttributeDateTime) {
-				$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $val);
-				$val = $oDateTime->getTimestamp();
-			}
-
-			if (utils::IsNotNullOrEmptyString($val)) {
-				$aData[$sHybridauthId] = $val;
-			}
-		}
+		$aModelToHybridauthMapping = $oOauth2Client->GetModelToHybridauthMapping();
+		$this->MapAttCodesToConf($oOauth2Client, $aModelToHybridauthMapping, $aData);
 
 		$sProviderName = Oauth2ClientHelper::GetProviderName($this->sProvider);
 		$aConf = ['providers' => [$sProviderName => $aData]];
@@ -137,21 +127,7 @@ class Oauth2ClientService {
 		$aData = $aConf['providers'][$sProviderName];
 
 		$aTokenMapping = $oOauth2Client->GetTokenModelToHybridauthMapping();
-		$aTokens = [];
-		foreach ($aTokenMapping as $sHybridauthId => $sAttCode) {
-			$val = $oOauth2Client->Get($sAttCode);
-			if ($val instanceof ormEncryptedPassword) {
-				$val = $val->GetPassword();
-			} else if (! is_null($val) && MetaModel::GetAttributeDef(get_class($oOauth2Client), $sAttCode) instanceof AttributeDateTime) {
-				$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $val);
-				$val = $oDateTime->getTimestamp();
-			}
-
-			if (utils::IsNotNullOrEmptyString($val)) {
-				$aTokens[$sHybridauthId] = $val;
-			}
-		}
-
+		$this->MapAttCodesToConf($oOauth2Client, $aTokenMapping, $aTokens);
 		if (count($aTokens) > 0) {
 			$aData['tokens'] = $aTokens;
 		}
@@ -160,14 +136,35 @@ class Oauth2ClientService {
 		return $aConf;
 	}
 
+	private function MapAttCodesToConf(Oauth2Client $oOauth2Client, array $aHybridToAttCodeMapping, array &$aData=null) : void {
+		if (is_null($aData)){
+			$aData=[];
+		}
+		foreach ($aHybridToAttCodeMapping as $sHybridauthId => $sAttCode) {
+			$val = $oOauth2Client->Get($sAttCode);
+			if ($val instanceof ormEncryptedPassword) {
+				$val = $val->GetPassword();
+			}
+
+			if (! is_null($val) && MetaModel::GetAttributeDef(get_class($oOauth2Client), $sAttCode) instanceof AttributeDateTime) {
+				$oDateTime = DateTime::createFromFormat(AttributeDateTime::GetSQLFormat(), $val);
+				$val = $oDateTime->getTimestamp();
+			}
+
+			if (utils::IsNotNullOrEmptyString($val)) {
+				$aData[$sHybridauthId] = $val;
+			}
+		}
+	}
+
 	public function SaveTokens(array $aTokenResponse, string $sDefaultScope) : void
 	{
 		$oOauth2Client = $this->GetOauth2Client();
 		Oauth2ClientLog::Debug(__FUNCTION__, null, $aTokenResponse);
 
-		/*if (utils::IsNullOrEmptyString($oOauth2Client->Get('scope'))){
+		if (utils::IsNullOrEmptyString($oOauth2Client->Get('scope'))){
 			$oOauth2Client->Set('scope', $sDefaultScope);
-		}*/
+		}
 
 		$aTokenMapping = $oOauth2Client->GetTokenModelToHybridauthMapping();
 
@@ -178,7 +175,10 @@ class Oauth2ClientService {
 			}
 		}
 
-		$oOauth2Client->Set('authorization_state', $aTokenResponse['authorization_state'] ?? '');
+		$sAuthState = $aTokenResponse['authorization_state'] ?? '';
+		if (utils::IsNotNullOrEmptyString($sAuthState)){
+			$oOauth2Client->Set('authorization_state', $sAuthState);
+		}
 		$oOauth2Client->DBWrite();
 	}
 

@@ -19,6 +19,7 @@ class AdapterService {
 	private AdapterInterface $oAuth2;
 
 	protected function __construct() {
+		Oauth2ClientLog::Enable();
 	}
 
 	final public static function GetInstance(): AdapterService {
@@ -50,10 +51,7 @@ class AdapterService {
 	public function InitOauth2(array $aConfig): void
 	{
 		try {
-			$oLogger = new Logger(Oauth2ClientLog::GetHybridauthDebugMode(), APPROOT.'log/hybridauth.log');
-
-			$this->oAuth2 = AdapterFabrikService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig, $oLogger);
-
+			$this->oAuth2 = AdapterInterfaceFactoryService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig);
 			$sAuthorizationState = $aConfig['authorization_state'] ?? null;
 			if (utils::IsNotNullOrEmptyString($sAuthorizationState)){
 				$this->oAuth2->getStorage()->set($this->sProviderName.'.authorization_state', $sAuthorizationState);
@@ -91,8 +89,16 @@ class AdapterService {
 
 		// refresh tokens if needed
 		$this->oAuth2->maintainToken();
-		if ($this->oAuth2->hasAccessTokenExpired() === true) {
-			$this->oAuth2->refreshAccessToken();
+		$hasAccessTokenExpired = $this->oAuth2->hasAccessTokenExpired();
+		Oauth2ClientLog::Debug(__FUNCTION__, null, ['hasAccessTokenExpired' => $hasAccessTokenExpired ]);
+		if ($hasAccessTokenExpired === true) {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, ['isRefreshTokenAvailable' => $this->oAuth2->isRefreshTokenAvailable() ]);
+			$sResponse = $this->oAuth2->refreshAccessToken();
+			if (is_null($sResponse)){
+				throw new Oauth2ClientException("Refresh token not available");
+			}
+
+			Oauth2ClientLog::Debug(__FUNCTION__, null, ['refresh token response' => $sResponse ]);
 		}
 
 		$aTokens = $this->oAuth2->getAccessToken();

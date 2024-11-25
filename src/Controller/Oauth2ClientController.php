@@ -11,7 +11,6 @@ use Combodo\iTop\Application\TwigBase\Controller\Controller;
 use Combodo\iTop\Application\UI\Base\Component\Button\ButtonUIBlockFactory;
 use Combodo\iTop\Application\WebPage\WebPage;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
-use Combodo\iTop\Oauth2Client\Model\ConfigService;
 use Oauth2Client;
 use utils;
 
