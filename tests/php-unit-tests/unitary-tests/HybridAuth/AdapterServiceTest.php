@@ -219,7 +219,8 @@ class AdapterServiceTest extends ItopDataTestCase {
 			->willReturn(true);
 
 		$oAuth2->expects($this->once())
-			->method('refreshAccessToken');
+			->method('refreshAccessToken')
+			->willReturn("OK");
 
 		$aTokenExample = $this->GetTokenResponseExample();
 		$oAuth2->expects($this->once())
