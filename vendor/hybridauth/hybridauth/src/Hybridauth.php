@@ -72,12 +72,13 @@ class Hybridauth
             throw new InvalidArgumentException('Hybridauth config does not exist on the given path.');
         }
 
-        $this->config = $config + [
-                'debug_mode' => Logger::NONE,
-                'debug_file' => '',
-                'curl_options' => null,
-                'providers' => []
-            ];
+        $default_config = [
+            'debug_mode' => Logger::NONE,
+            'debug_file' => '',
+            'curl_options' => null,
+            'providers' => []
+        ];
+        $this->config = array_merge($default_config, $config);
         $this->storage = $storage;
         $this->logger = $logger;
         $this->httpClient = $httpClient;
@@ -127,7 +128,7 @@ class Hybridauth
             foreach ($fs as $file) {
                 if (!$file->isDir()) {
                     $provider = strtok($file->getFilename(), '.');
-                    if ($name === mb_strtolower($provider)) {
+                    if (mb_strtolower($name) === mb_strtolower($provider)) {
                         $adapter = sprintf('Hybridauth\\Provider\\%s', $provider);
                         break;
                     }

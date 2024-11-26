@@ -5,7 +5,7 @@
         'type' => 'itop-extension',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '16d0f1f1d5071a11f492c1d8da9791e021da698b',
+        'reference' => '9c7a275cd634fdc877ae227dba2339518d6ee04f',
         'name' => 'combodo/combodo-oauth2-client',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'itop-extension',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '16d0f1f1d5071a11f492c1d8da9791e021da698b',
+            'reference' => '9c7a275cd634fdc877ae227dba2339518d6ee04f',
             'dev_requirement' => false,
         ),
         'hybridauth/hybridauth' => array(
@@ -27,7 +27,7 @@
             'aliases' => array(
                 0 => '9999999-dev',
             ),
-            'reference' => '4a48c78bc2881a8e0b786936bfcf444ac16176a3',
+            'reference' => '64566ad273fc1cc5742cdc28210a42601c9f8ce1',
             'dev_requirement' => false,
         ),
     ),
