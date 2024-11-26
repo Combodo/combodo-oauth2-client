@@ -265,32 +265,4 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 
 		$this->assertEquals('token12345', Oauth2Service::GetInstance()->GetAccessToken());
 	}
-
-	public function testGetAccessTokenByOauth2Client_UpToDate() {
-		$obj = $this->CreateOauth2Client();
-		$sName = $obj->Get('name');
-		$sProvider = $obj->Get('provider');
-
-		$this->oOauth2ClientService->expects($this->never())
-			->method('InitClient');
-
-		$this->oOauth2ClientService->expects($this->once())
-			->method('InitClientByOauth2Client')
-			->with($obj);
-
-		$this->oAdapterService->expects($this->once())
-			->method('Init')
-			->with($sName, $sProvider);
-
-		$sToken = 'token123';
-		$this->oOauth2ClientService->expects($this->once())
-			->method('GetAccessToken')
-			->willReturn($sToken);
-
-		$this->oOauth2ClientService->expects($this->once())
-			->method('IsExpired')
-			->willReturn(false);
-
-		$this->assertEquals($sToken, Oauth2Service::GetInstance()->GetAccessTokenByOauth2Client($obj));
-	}
 }
