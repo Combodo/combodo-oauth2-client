@@ -80,55 +80,16 @@ class Google extends OAuth2
         parent::initialize();
 
         $this->AuthorizeUrlParameters += [
-            'access_type' => 'offline'
+            'access_type' => 'offline',
+            'prompt' => 'consent'
         ];
 
         if ($this->isRefreshTokenAvailable()) {
             $this->tokenRefreshParameters += [
                 'client_id' => $this->clientId,
-                'client_secret' => $this->clientSecret
+                'client_secret' => $this->clientSecret,
             ];
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * include id_token $tokenNames
-     */
-    public function getAccessToken()
-    {
-        $tokenNames = [
-            'access_token',
-            'id_token',
-            'access_token_secret',
-            'token_type',
-            'refresh_token',
-            'expires_in',
-            'expires_at',
-        ];
-
-        $tokens = [];
-
-        foreach ($tokenNames as $name) {
-            if ($this->getStoredData($name)) {
-                $tokens[$name] = $this->getStoredData($name);
-            }
-        }
-
-        return $tokens;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function validateAccessTokenExchange($response)
-    {
-        $collection = parent::validateAccessTokenExchange($response);
-
-        $this->storeData('id_token', $collection->get('id_token'));
-
-        return $collection;
     }
 
     /**

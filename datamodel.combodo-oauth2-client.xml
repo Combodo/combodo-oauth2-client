@@ -437,26 +437,39 @@
           <is_null_allowed>true</is_null_allowed>
         </field>
       </fields>
+      <event_listeners>
+        <event_listener id="EVENT_DB_BEFORE_WRITE">
+          <event>EVENT_DB_BEFORE_WRITE</event>
+          <callback>EvtBeforeWriteMSGraph</callback>
+          <rank>1</rank>
+        </event_listener>
+      </event_listeners>
       <methods>
-        <method id="GetAccessTokenModelToHybridauthMapping">
+        <method id="EvtBeforeWriteMSGraph">
+          <comment>/**
+            * Event Listener for EVENT_DB_BEFORE_WRITE
+            * An object is about to be written into the database.
+            * The object can be modified.
+            *
+            * @param Combodo\iTop\Service\Events\EventData $oEventData Event data object
+            */
+          </comment>
           <static>false</static>
           <access>public</access>
-          <type>Overload-DBObject</type>
-          <code><![CDATA[
+          <type>EventListener</type>
+          <code><![CDATA[	public function EvtBeforeWriteMSGraph(Combodo\iTop\Service\Events\EventData $oEventData)
+          {
+            $sScope = $this->Get('scope');
 
-        /**
-        * Provide the acces_token fields mapping between hybridauth and iTop model
-        * @return array
-        */
-        public function GetTokenModelToHybridauthMapping() : array {
-          return [
-            'access_token' => 'access_token',
-            'token_type' => 'token_type',
-            'id_token' => 'refresh_token',
-            'expires_at' => 'access_token_expiration',
-          ];
-        }
-        ]]></code>
+            if (\utils::IsNullOrEmptyString($sScope)){
+              //default value from hybridauth lib will be enforced (it contains offline_access already).
+              return;
+            }
+
+            if (strpos($sScope, 'offline_access') ===false){
+              $this->Set('scope', $sScope . ' offline_access');
+            }
+          }]]></code>
         </method>
         <method id="GetModelToHybridauthMapping">
           <static>false</static>
@@ -582,28 +595,7 @@
         </reconciliation>
       </properties>
       <fields/>
-      <methods>
-        <method id="GetAccessTokenModelToHybridauthMapping">
-          <static>false</static>
-          <access>public</access>
-          <type>Overload-DBObject</type>
-          <code><![CDATA[
-
-        /**
-        * Provide the acces_token fields mapping between hybridauth and iTop model
-        * @return array
-        */
-        public function GetTokenModelToHybridauthMapping() : array {
-          return [
-            'access_token' => 'access_token',
-            'token_type' => 'token_type',
-            'id_token' => 'refresh_token',
-            'expires_at' => 'access_token_expiration',
-          ];
-        }
-        ]]></code>
-        </method>
-      </methods>
+      <methods/>
       <presentation/>
     </class>
     <class id="HeadlessItopOauth2Client" _delta="define">

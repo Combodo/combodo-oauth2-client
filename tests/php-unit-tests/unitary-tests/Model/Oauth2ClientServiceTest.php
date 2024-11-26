@@ -204,12 +204,12 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'adapter' => 'Hybridauth\\Provider\\MicrosoftGraph',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
-					'scope' => 'scope789',
+					'scope' => 'scope789 offline_access',
 					'tokens' => [
 						'access_token' => 'access_token1',
 						'token_type' => 'token_type1',
 						'expires_at' => 1731454668,
-						'id_token' => 'refresh_token1',
+						'refresh_token' => 'refresh_token1',
 					],
 					'tenant' => 'tenant321',
 				],
@@ -328,15 +328,15 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 
 	public function SaveTokensWithCustomFieldsProvider() {
 		return [
-			'MicrosoftGraphOauth2Client' => ['MicrosoftGraphOauth2Client'],
-			'GoogleOauth2Client' => ['GoogleOauth2Client'],
+			'MicrosoftGraphOauth2Client' => ['MicrosoftGraphOauth2Client', 'scope789 offline_access'],
+			'GoogleOauth2Client' => ['GoogleOauth2Client', 'scope789'],
 		];
 	}
 
 	/**
 	 * @dataProvider SaveTokensWithCustomFieldsProvider
 	 */
-	public function testSaveTokensWithCustomFields($sProviderClass) {
+	public function testSaveTokensWithCustomFields($sProviderClass, $sExpectedScope) {
 		$oObj = $this->CreateOauth2Client($sProviderClass, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -344,14 +344,14 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 			'access_token' => 'access_token1',
 			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
 			'token_type' => 'bearer',
-			'id_token' => 'refresh_token1',
+			'refresh_token' => 'refresh_token1',
 			'expires_at' => '2024-11-13 00:37:48',
 		];
 		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, 'default_scope');
 
 		$oObj->Reload();
 
-		$this->assertEquals('scope789', $oObj->Get('scope'));
+		$this->assertEquals($sExpectedScope, $oObj->Get('scope'));
 		$this->assertEquals('access_token1', $oObj->Get('access_token')->GetPassword());
 		$this->assertEquals('bearer', $oObj->Get('token_type'));
 		$this->assertEquals('refresh_token1', $oObj->Get('refresh_token')->GetPassword());

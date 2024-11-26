@@ -46,7 +46,7 @@ class MicrosoftGraph extends OAuth2
     /**
      * {@inheritdoc}
      */
-    protected $scope = 'openid user.read contacts.read';
+    protected $scope = 'openid user.read contacts.read offline_access';
 
     /**
      * {@inheritdoc}
@@ -75,6 +75,10 @@ class MicrosoftGraph extends OAuth2
     {
         parent::initialize();
 
+        $this->AuthorizeUrlParameters += [
+			'prompt'                 => 'consent',
+        ];
+
         $tenant = $this->config->get('tenant');
         if (!empty($tenant)) {
             $adjustedEndpoints = [
@@ -84,46 +88,13 @@ class MicrosoftGraph extends OAuth2
 
             $this->setApiEndpoints($adjustedEndpoints);
         }
-    }
 
-    /**
-     * {@inheritdoc}
-     *
-     * include id_token $tokenNames
-     */
-    public function getAccessToken()
-    {
-        $tokenNames = [
-            'access_token',
-            'id_token',
-            'access_token_secret',
-            'token_type',
-            'refresh_token',
-            'expires_in',
-            'expires_at',
-        ];
-
-        $tokens = [];
-
-        foreach ($tokenNames as $name) {
-            if ($this->getStoredData($name)) {
-                $tokens[$name] = $this->getStoredData($name);
-            }
+        if ($this->isRefreshTokenAvailable()) {
+            $this->tokenRefreshParameters += [
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+            ];
         }
-
-        return $tokens;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function validateAccessTokenExchange($response)
-    {
-        $collection = parent::validateAccessTokenExchange($response);
-
-        $this->storeData('id_token', $collection->get('id_token'));
-
-        return $collection;
     }
 
     /**
