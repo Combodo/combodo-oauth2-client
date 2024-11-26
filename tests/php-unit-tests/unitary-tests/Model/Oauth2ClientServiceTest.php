@@ -161,18 +161,18 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 	}
 
 	public function testGetRefreshTokenConfiguration_nominalcase() {
-		$oObj = $this->CreateOauth2ClientWithTokens(\GoogleOauth2Client::class, ['scope' => 'scope789']);
+		$oObj = $this->CreateOauth2ClientWithTokens(\GitHubOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
 		$aExpected = [
 			'providers' => [
-				'google' => [
+				'github' => [
 					'enabled' => true,
 					'keys' => [
 						'id' => 'client_123',
 						'secret' => 'secret456',
 					],
-					'adapter' => 'Hybridauth\\Provider\\Google',
+					'adapter' => 'Hybridauth\\Provider\\GitHub',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
 					'scope' => 'scope789',
@@ -208,8 +208,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'tokens' => [
 						'access_token' => 'access_token1',
 						'token_type' => 'token_type1',
-						'refresh_token' => 'refresh_token1',
 						'expires_at' => 1731454668,
+						'id_token' => 'refresh_token1',
 					],
 					'tenant' => 'tenant321',
 				],
@@ -260,7 +260,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 	}
 
 	public function testSaveTokens() {
-		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, ['scope' => 'scope789']);
+		$oObj = $this->CreateOauth2Client(\GitHubOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
 		$aTokenResponse = [
@@ -283,7 +283,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 	}
 
 	public function testSaveTokens_OverrideWithDefaultScopeWhenNotFilledIn() {
-		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, []);
+		$oObj = $this->CreateOauth2Client(\GitHubOauth2Client::class, []);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
 		$aTokenResponse = [
@@ -306,7 +306,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 	}
 
 	public function testSaveTokens_NoRefreshParamsReturnedByIDP() {
-		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, ['scope' => 'scope789']);
+		$oObj = $this->CreateOauth2Client(\GitHubOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
 		$aTokenResponse = [
@@ -323,6 +323,39 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals('bearer', $oObj->Get('token_type'));
 		$this->assertEquals('', $oObj->Get('refresh_token')->GetPassword());
 		$this->assertEquals(null, $oObj->Get('access_token_expiration'));
+		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', $oObj->Get('authorization_state'));
+	}
+
+	public function SaveTokensWithCustomFieldsProvider() {
+		return [
+			'MicrosoftGraphOauth2Client' => ['MicrosoftGraphOauth2Client'],
+			'GoogleOauth2Client' => ['GoogleOauth2Client'],
+		];
+	}
+
+	/**
+	 * @dataProvider SaveTokensWithCustomFieldsProvider
+	 */
+	public function testSaveTokensWithCustomFields($sProviderClass) {
+		$oObj = $this->CreateOauth2Client($sProviderClass, ['scope' => 'scope789']);
+		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
+
+		$aTokenResponse = [
+			'access_token' => 'access_token1',
+			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
+			'token_type' => 'bearer',
+			'id_token' => 'refresh_token1',
+			'expires_at' => '2024-11-13 00:37:48',
+		];
+		Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, 'default_scope');
+
+		$oObj->Reload();
+
+		$this->assertEquals('scope789', $oObj->Get('scope'));
+		$this->assertEquals('access_token1', $oObj->Get('access_token')->GetPassword());
+		$this->assertEquals('bearer', $oObj->Get('token_type'));
+		$this->assertEquals('refresh_token1', $oObj->Get('refresh_token')->GetPassword());
+		$this->assertEquals('2024-11-13 00:37:48', $oObj->Get('access_token_expiration'));
 		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', $oObj->Get('authorization_state'));
 	}
 }
