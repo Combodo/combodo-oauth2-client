@@ -258,4 +258,12 @@ class AdapterServiceTest extends ItopDataTestCase {
 		AdapterService::GetInstance()->InitOauth2($aConfig);
 		$this->assertEquals("openid user.read contacts.read", AdapterService::GetInstance()->GetDefaultScope());
 	}
+
+	public function testListProviders() {
+		$aRes = AdapterService::GetInstance()->ListProviders();
+		$this->assertContains("Google", $aRes, var_export($aRes, true));
+		$this->assertContains("MicrosoftGraph", $aRes, var_export($aRes, true));
+		$this->assertContains("HeadlessItop", $aRes, var_export($aRes, true));
+
+	}
 }

@@ -182,4 +182,23 @@ class AdapterService
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
 	}
+
+	public function ListProviders() : array {
+		$aList = [];
+
+		$sPath = __DIR__ . '/../../vendor/hybridauth/hybridauth/src/Provider/';
+		$oFilesystemIterator = new \FilesystemIterator($sPath);
+		/** @var \SplFileInfo $file */
+		foreach ($oFilesystemIterator as $file) {
+			if (!$file->isDir()) {
+				$sProvider = strtok($file->getFilename(), '.');
+				$sClass = sprintf('Hybridauth\\Provider\\%s', $sProvider);
+				$oReflectionClass = new \ReflectionClass($sClass);
+				if ($oReflectionClass->implementsInterface(AdapterInterface::class)) {
+					$aList [] = $sProvider;
+				}
+			}
+		}
+		return $aList;
+	}
 }
