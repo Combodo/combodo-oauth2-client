@@ -20,4 +20,7 @@ Dict::Add('FR FR', 'French', 'Français', [
 	'Oauth2Client:UI:Button:Authenticate' => 'Authentification sur l\'IdP',
 
 	'Oauth2Client:UI:Error:RefreshTokenNotAvailable' => 'Le jeton de rafraichissement n\'est pas disponible',
+
+	'Menu:Oauth2Client' => 'Client OAuth 2.0',
+	'Menu:Oauth2Client+' => 'Client OAuth 2.0 générique',
 ]);

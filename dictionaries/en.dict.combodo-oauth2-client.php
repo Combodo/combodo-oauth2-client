@@ -20,4 +20,7 @@ Dict::Add('EN US', 'English', 'English', [
 	'Oauth2Client:UI:Button:Authenticate' => 'Authenticate to the IDP via Oauth.',
 
 	'Oauth2Client:UI:Error:RefreshTokenNotAvailable' => 'Refresh token not available',
+
+	'Menu:Oauth2Client' => 'OAuth 2.0 client',
+	'Menu:Oauth2Client+' => 'General purpose OAuth 2.0 Client',
 ]);
