@@ -76,7 +76,7 @@ class MicrosoftGraph extends OAuth2
         parent::initialize();
 
         $this->AuthorizeUrlParameters += [
-			'prompt'                 => 'consent',
+			'prompt' => 'consent',
         ];
 
         $tenant = $this->config->get('tenant');
