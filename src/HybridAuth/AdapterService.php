@@ -61,7 +61,7 @@ class AdapterService
 	public function InitOauth2(array $aConfig): void
 	{
 		try {
-			$this->oAuth2 = AdapterInterfaceFactoryService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig);
+			$this->oAuth2 = AdapterFactoryService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig);
 			$sAuthorizationState = $aConfig['authorization_state'] ?? null;
 			if (utils::IsNotNullOrEmptyString($sAuthorizationState)) {
 				$this->oAuth2->getStorage()->set($this->sProviderName.'.authorization_state', $sAuthorizationState);

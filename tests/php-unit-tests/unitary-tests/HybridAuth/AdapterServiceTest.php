@@ -4,7 +4,7 @@ namespace Combodo\iTop\Oauth2Client\Test\HybridAuth;
 
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
-use Combodo\iTop\Oauth2Client\HybridAuth\AdapterInterfaceFactoryService;
+use Combodo\iTop\Oauth2Client\HybridAuth\AdapterFactoryService;
 use Combodo\iTop\Oauth2Client\HybridAuth\AdapterService;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
 use Hybridauth\Adapter\AdapterInterface;
@@ -15,7 +15,7 @@ use Hybridauth\Provider\MicrosoftGraph;
 use Hybridauth\Storage\StorageInterface;
 
 class AdapterServiceTest extends ItopDataTestCase {
-	private AdapterInterfaceFactoryService $oAdapterFabrikService;
+	private AdapterFactoryService $oAdapterFabrikService;
 	private StorageInterface $oStorageInterface;
 
 	protected function setUp(): void {
@@ -28,8 +28,8 @@ class AdapterServiceTest extends ItopDataTestCase {
 	}
 
 	private function MockAdapterFabrikService($sProviderName, array $aConfig, AdapterInterface $oAuth2, ?string $sExpectedAuthorizationState=null) {
-		$this->oAdapterFabrikService = $this->createMock(AdapterInterfaceFactoryService::class);
-		AdapterInterfaceFactoryService::SetInstance($this->oAdapterFabrikService);
+		$this->oAdapterFabrikService = $this->createMock(AdapterFactoryService::class);
+		AdapterFactoryService::SetInstance($this->oAdapterFabrikService);
 		$this->oAdapterFabrikService->expects($this->once())
 			->method('GetAdapterInterface')
 			->with($sProviderName, $aConfig)

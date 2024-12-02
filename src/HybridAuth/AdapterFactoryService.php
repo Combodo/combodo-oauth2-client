@@ -9,15 +9,15 @@ use Hybridauth\Adapter\AdapterInterface;
 use Hybridauth\Hybridauth;
 use Hybridauth\Logger\Logger;
 
-class AdapterInterfaceFactoryService
+class AdapterFactoryService
 {
-	private static ?AdapterInterfaceFactoryService $oInstance;
+	private static ?AdapterFactoryService $oInstance;
 
 	protected function __construct()
 	{
 	}
 
-	final public static function GetInstance(): AdapterInterfaceFactoryService
+	final public static function GetInstance(): AdapterFactoryService
 	{
 		if (!isset(static::$oInstance)) {
 			static::$oInstance = new static();
@@ -26,7 +26,7 @@ class AdapterInterfaceFactoryService
 		return static::$oInstance;
 	}
 
-	final public static function SetInstance(?AdapterInterfaceFactoryService $oInstance): void
+	final public static function SetInstance(?AdapterFactoryService $oInstance): void
 	{
 		static::$oInstance = $oInstance;
 	}
