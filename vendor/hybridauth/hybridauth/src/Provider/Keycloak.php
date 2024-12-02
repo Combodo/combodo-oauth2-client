@@ -72,6 +72,24 @@ class Keycloak extends OAuth2
     /**
      * {@inheritdoc}
      */
+    protected function initialize()
+    {
+        parent::initialize();
+
+        /*unset($this->AuthorizeUrlParameters['redirect_uri']);
+        $this->AuthorizeUrlParameters += [
+            'post_logout_redirect_uri' => $this->callback,
+        ];
+
+        unset($this->tokenExchangeParameters['redirect_uri']);
+        $this->tokenExchangeParameters += [
+            'post_logout_redirect_uri' => $this->callback,
+        ];*/
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getUserProfile()
     {
         $response = $this->apiRequest('userinfo');
