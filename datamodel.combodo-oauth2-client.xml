@@ -139,17 +139,6 @@
         </event_listener>
       </event_listeners>
       <methods>
-				<method id="GetToken">
-          <static>false</static>
-          <access>public</access>
-          <type>Overload-DBObject</type>
-          <code><![CDATA[
-        public function GetToken(Oauth2Client $oOauth2Client) : string
-        {
-          return Combodo\iTop\Oauth2Client\Service\Oauth2ClientService::GetInstance()->GetToken($this);
-        }
-]]></code>
-        </method>
         <method id="GetHybridauthProvider">
           <static>false</static>
           <access>public</access>
