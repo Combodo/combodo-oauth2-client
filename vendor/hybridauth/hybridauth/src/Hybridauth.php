@@ -73,11 +73,11 @@ class Hybridauth
         }
 
         $this->config = $config + [
-            'debug_mode' => Logger::NONE,
-            'debug_file' => '',
-            'curl_options' => null,
-            'providers' => []
-        ];
+                'debug_mode' => Logger::NONE,
+                'debug_file' => '',
+                'curl_options' => null,
+                'providers' => []
+            ];
         $this->storage = $storage;
         $this->logger = $logger;
         $this->httpClient = $httpClient;
@@ -121,6 +121,7 @@ class Hybridauth
         $adapter = isset($config['adapter']) ? $config['adapter'] : sprintf('Hybridauth\\Provider\\%s', $name);
 
         if (!class_exists($adapter)) {
+            $unexistingConfiguredAdapter = $adapter;
             $adapter = null;
             $fs = new \FilesystemIterator(__DIR__ . '/Provider/');
             /** @var \SplFileInfo $file */
@@ -134,7 +135,7 @@ class Hybridauth
                 }
             }
             if ($adapter === null) {
-                throw new InvalidArgumentException("Unknown Provider ($adapter).");
+                throw new InvalidArgumentException("Unknown Provider (name: $name / configured: $unexistingConfiguredAdapter).");
             }
         }
 

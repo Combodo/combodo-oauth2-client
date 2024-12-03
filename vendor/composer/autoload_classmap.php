@@ -102,6 +102,7 @@ return array(
     'Hybridauth\\Provider\\WordPress' => $vendorDir . '/hybridauth/hybridauth/src/Provider/WordPress.php',
     'Hybridauth\\Provider\\Yahoo' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Yahoo.php',
     'Hybridauth\\Storage\\Session' => $vendorDir . '/hybridauth/hybridauth/src/Storage/Session.php',
+    'Hybridauth\\Storage\\StorageImpl' => $vendorDir . '/hybridauth/hybridauth/src/Storage/StorageImpl.php',
     'Hybridauth\\Storage\\StorageInterface' => $vendorDir . '/hybridauth/hybridauth/src/Storage/StorageInterface.php',
     'Hybridauth\\Thirdparty\\OAuth\\OAuthConsumer' => $vendorDir . '/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthConsumer.php',
     'Hybridauth\\Thirdparty\\OAuth\\OAuthRequest' => $vendorDir . '/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthRequest.php',

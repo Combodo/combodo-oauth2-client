@@ -126,6 +126,7 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         'Hybridauth\\Provider\\WordPress' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/WordPress.php',
         'Hybridauth\\Provider\\Yahoo' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Yahoo.php',
         'Hybridauth\\Storage\\Session' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Storage/Session.php',
+        'Hybridauth\\Storage\\StorageImpl' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Storage/StorageImpl.php',
         'Hybridauth\\Storage\\StorageInterface' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Storage/StorageInterface.php',
         'Hybridauth\\Thirdparty\\OAuth\\OAuthConsumer' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthConsumer.php',
         'Hybridauth\\Thirdparty\\OAuth\\OAuthRequest' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Thirdparty/OAuth/OAuthRequest.php',

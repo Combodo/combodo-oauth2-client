@@ -66,7 +66,6 @@ class Keycloak extends OAuth2
 
         $this->authorizeUrl = $this->apiBaseUrl . 'auth';
         $this->accessTokenUrl = $this->apiBaseUrl . 'token';
-
     }
 
     /**
@@ -76,15 +75,12 @@ class Keycloak extends OAuth2
     {
         parent::initialize();
 
-        /*unset($this->AuthorizeUrlParameters['redirect_uri']);
-        $this->AuthorizeUrlParameters += [
-            'post_logout_redirect_uri' => $this->callback,
-        ];
-
-        unset($this->tokenExchangeParameters['redirect_uri']);
-        $this->tokenExchangeParameters += [
-            'post_logout_redirect_uri' => $this->callback,
-        ];*/
+        if ($this->isRefreshTokenAvailable()) {
+            $this->tokenRefreshParameters += [
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+            ];
+        }
     }
 
     /**

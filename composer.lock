@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Combodo/hybridauth.git",
-                "reference": "64566ad273fc1cc5742cdc28210a42601c9f8ce1"
+                "reference": "a672795db3a386d7fa31350013434a1dc9f907be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/64566ad273fc1cc5742cdc28210a42601c9f8ce1",
-                "reference": "64566ad273fc1cc5742cdc28210a42601c9f8ce1",
+                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/a672795db3a386d7fa31350013434a1dc9f907be",
+                "reference": "a672795db3a386d7fa31350013434a1dc9f907be",
                 "shasum": ""
             },
             "require": {
@@ -71,7 +71,7 @@
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
                 "source": "https://github.com/Combodo/hybridauth/tree/master"
             },
-            "time": "2024-11-26T16:45:09+00:00"
+            "time": "2024-12-03T17:13:48+00:00"
         }
     ],
     "packages-dev": [],
