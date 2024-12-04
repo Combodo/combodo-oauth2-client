@@ -31,6 +31,11 @@ $sSessionLog = session_id().' '.\utils::GetSessionLog();
 Oauth2ClientLog::Debug("SESSION: $sSessionLog");
 
 try {
+	$sTransactionId = Session::Get('transaction_id');
+	if (empty($sTransactionId) || !\utils::IsTransactionValid($sTransactionId, false)) {
+		\LoginWebPage::HTTP401Error();
+	}
+
 	$sName = Session::Get('oauth2_client_name');
 	$sProvider = Session::Get('oauth2_client_provider');
 

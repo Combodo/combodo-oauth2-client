@@ -27,7 +27,7 @@ try {
 	$sProvider = base64_decode(\utils::ReadParam('provider'));
 	$sAction = \utils::ReadParam('action');
 	Session::Set('oauth2_client_name', $sName);
-	Session::Set('oauth2_client_provider', $sProvider);
+	Session::Set('transaction_id', \utils::GetNewTransactionId());
 
 	Oauth2Service::GetInstance()->Init($sName, $sProvider);
 	$oOauth2Client = Oauth2ClientService::GetInstance()->GetOauth2Client();
