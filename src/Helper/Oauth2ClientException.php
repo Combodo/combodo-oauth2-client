@@ -8,20 +8,23 @@ namespace Combodo\iTop\Oauth2Client\Helper;
 
 use Exception;
 use Throwable;
+use utils;
 
 class Oauth2ClientException extends Exception
 {
+	public ?string $sError;
+
 	public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null, array $aContext = [])
 	{
 		if (!is_null($previous)) {
 			$sStack = $previous->getTraceAsString();
-			$sError = $previous->getMessage();
+			$this->sError = utils::Sanitize($previous->getMessage(), '', utils::ENUM_SANITIZATION_FILTER_STRING);
 		} else {
 			$sStack = $this->getTraceAsString();
-			$sError = '';
+			$this->sError = null;
 		}
 
-		$aContext['error'] = $sError;
+		$aContext['error'] = $this->sError;
 		$aContext['stack'] = $sStack;
 		Oauth2ClientLog::Error($message, null, $aContext);
 		parent::__construct($message, $code, $previous);

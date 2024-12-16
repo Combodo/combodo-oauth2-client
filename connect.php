@@ -44,7 +44,8 @@ try {
 	$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationOK", $sToken), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_OK, 1);
 } catch (Oauth2ClientException $e) {
 	if (!is_null($oOauth2Client)) {
-		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationError", $e->getMessage()), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
+		$sMsg = $e->sError ?? $e->getMessage();
+		$oOauth2Client::SetSessionMessage(get_class($oOauth2Client), $oOauth2Client->GetKey(), 1, \Dict::Format("Oauth2Client:UI:Message:ValidationError", $sMsg), WebPage::ENUM_SESSION_MESSAGE_SEVERITY_ERROR, 1);
 	}
 } catch (\Exception $e) {
 	//exception instantiated to generate log.
