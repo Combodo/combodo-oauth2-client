@@ -87,6 +87,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'adapter' => 'Hybridauth\\Provider\\GitHub',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'isLogoutRequiredBeforeDisconnect' => false,
 				],
 			],
 		];
@@ -108,6 +109,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'adapter' => 'Hybridauth\\Provider\\Google',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'isLogoutRequiredBeforeDisconnect' => false,
 					'scope' => 'scope789',
 				],
 			],
@@ -130,6 +132,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'adapter' => 'Hybridauth\\Provider\\MicrosoftGraph',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'isLogoutRequiredBeforeDisconnect' => false,
 					'tenant' => 'tenant321',
 				],
 			],
@@ -152,6 +155,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'adapter' => 'Hybridauth\\Provider\\Google',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'isLogoutRequiredBeforeDisconnect' => false,
 					'scope' => 'scope789',
 				],
 			],
@@ -175,6 +179,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'adapter' => 'Hybridauth\\Provider\\GitHub',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'isLogoutRequiredBeforeDisconnect' => false,
 					'scope' => 'scope789',
 					'tokens' => [
 						'access_token' => 'access_token1',
@@ -204,6 +209,7 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 					'adapter' => 'Hybridauth\\Provider\\MicrosoftGraph',
 					'callback' => Oauth2ClientHelper::GetLandingURL(),
 					'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+					'isLogoutRequiredBeforeDisconnect' => false,
 					'scope' => 'scope789 offline_access',
 					'tokens' => [
 						'access_token' => 'access_token1',

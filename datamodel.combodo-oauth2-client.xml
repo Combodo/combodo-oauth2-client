@@ -84,6 +84,11 @@
           <default_value/>
           <is_null_allowed>true</is_null_allowed>
         </field>
+        <field id="logout_from_idp_when_disconnect" xsi:type="AttributeBoolean">
+          <sql>logout_from_idp_when_disconnect</sql>
+          <default_value>false</default_value>
+          <is_null_allowed>true</is_null_allowed>
+        </field>
         <field id="authorization_state" xsi:type="AttributeString">
           <sql>authorization_state</sql>
           <default_value/>
@@ -849,6 +854,9 @@
                 </item>
                 <item id="authorization_state">
                   <rank>120</rank>
+                </item>
+                <item id="logout_from_idp_when_disconnect">
+                  <rank>130</rank>
                 </item>
               </items>
             </item>
