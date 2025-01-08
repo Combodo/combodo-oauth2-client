@@ -49,6 +49,10 @@ class GitHub extends OAuth2
     {
         parent::initialize();
 
+        $this->AuthorizeUrlParameters += [
+            'prompt' => 'consent',
+        ];
+
         if ($this->isRefreshTokenAvailable()) {
             $this->tokenRefreshParameters += [
                 'client_id' => $this->clientId,
@@ -122,4 +126,5 @@ class GitHub extends OAuth2
 
         return $userProfile;
     }
+
 }
