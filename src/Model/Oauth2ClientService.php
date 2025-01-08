@@ -138,7 +138,7 @@ class Oauth2ClientService
 				//'expires_in' => date_format(new \DateTime($oExpireAt), 'U') - time(),
 				'callback' => Oauth2ClientHelper::GetLandingURL(),
 				'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
-				'isLogoutRequiredBeforeDisconnect' => $oOauth2Client->Get('logout_from_idp_when_disconnect'),
+				'logout_before_disconnect' => $oOauth2Client->Get('logout_from_idp_when_disconnect'),
 			];
 			$sScope = $oOauth2Client->Get('scope');
 			if (utils::IsNotNullOrEmptyString($sScope)) {
