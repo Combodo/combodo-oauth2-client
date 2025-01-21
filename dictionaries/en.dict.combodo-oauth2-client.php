@@ -34,6 +34,7 @@ Dict::Add('EN US', 'English', 'English', [
 	'Class:Oauth2Client/Attribute:refresh_token_expiration' => 'Refresh Token Expiration',
 	'Class:Oauth2Client/Attribute:access_token_expiration' => 'Access Token Expiration',
 	'Class:Oauth2Client/Attribute:scope' => 'Scope',
+	'Class:Oauth2Client/Attribute:scope+' => 'Leave this field empty and it will be filled by iTop when creating the object',
 	'Class:Oauth2Client/Attribute:authorization_state' => 'Authorization State',
 	'Class:Oauth2Client/Attribute:status' => 'Status',
 	'Class:Oauth2Client/Attribute:token_type' => 'Token Type',
