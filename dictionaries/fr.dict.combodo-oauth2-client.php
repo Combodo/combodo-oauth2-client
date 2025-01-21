@@ -34,7 +34,7 @@ Dict::Add('FR FR', 'French', 'Français', [
 	'Class:Oauth2Client/Attribute:refresh_token_expiration' => 'Expiration du Jeton de rafraîchissement',
 	'Class:Oauth2Client/Attribute:access_token_expiration' => 'Expiration du Jeton d\'accès',
 	'Class:Oauth2Client/Attribute:scope' => 'Scope',
-	'Class:Oauth2Client/Attribute:scope+' => 'A la création de l\'objet, ce champs est rempli automatiquement s\'il est laissé vide',
+	'Class:Oauth2Client/Attribute:scope+' => 'A la création de l\'objet, le scope, s\'il est laissé vide, est rempli automatiquement selon le fournisseur',
 	'Class:Oauth2Client/Attribute:authorization_state' => 'Statut d\'Autorisation State',
 	'Class:Oauth2Client/Attribute:status' => 'Statut',
 	'Class:Oauth2Client/Attribute:token_type' => 'Type de Token',
