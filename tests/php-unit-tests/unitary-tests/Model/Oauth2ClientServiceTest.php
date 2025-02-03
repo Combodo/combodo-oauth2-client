@@ -79,7 +79,6 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$aExpected = [
 			'providers' => [
 				'github' => [
-					'enabled' => true,
 					'keys' => [
 						'id' => 'client_123',
 						'secret' => 'secret456',
@@ -100,7 +99,6 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$aExpected = [
 			'providers' => [
 				'google' => [
-					'enabled' => true,
 					'keys' => [
 						'id' => 'client_123',
 						'secret' => 'secret456',
@@ -122,7 +120,6 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$aExpected = [
 			'providers' => [
 				'microsoftgraph' => [
-					'enabled' => true,
 					'keys' => [
 						'id' => 'client_123',
 						'secret' => 'secret456',
@@ -144,7 +141,6 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$aExpected = [
 			'providers' => [
 				'google' => [
-					'enabled' => true,
 					'keys' => [
 						'id' => 'client_123',
 						'secret' => 'secret456',
@@ -167,7 +163,6 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$aExpected = [
 			'providers' => [
 				'github' => [
-					'enabled' => true,
 					'keys' => [
 						'id' => 'client_123',
 						'secret' => 'secret456',
@@ -196,7 +191,6 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$aExpected = [
 			'providers' => [
 				'microsoftgraph' => [
-					'enabled' => true,
 					'keys' => [
 						'id' => 'client_123',
 						'secret' => 'secret456',

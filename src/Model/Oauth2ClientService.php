@@ -129,7 +129,6 @@ class Oauth2ClientService
 		try {
 			$oOauth2Client = $this->GetOauth2Client();
 			$aData = [
-				'enabled' => $oOauth2Client->Get('status') === 'active',
 				'keys' => [
 					'id' => $oOauth2Client->Get('client_id'),
 					'secret' => $oOauth2Client->Get('client_secret')->GetPassword(),
