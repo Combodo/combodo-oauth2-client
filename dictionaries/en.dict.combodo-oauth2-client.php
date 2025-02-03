@@ -9,7 +9,7 @@
  */
 
 Dict::Add('EN US', 'English', 'English', [
-	'Oauth2Client:UI:IDPParameters' => 'IDP Parameters',
+	'Oauth2Client:UI:IDPParameters' => 'Data for the Identity Provider',
 	'Oauth2Client:UI:AppURL' => 'Application URL',
 	'Oauth2Client:UI:LandingURL' => 'Landing URL',
 
@@ -27,7 +27,7 @@ Dict::Add('EN US', 'English', 'English', [
 	'Class:Oauth2Client' => 'OAuth 2.0 client',
 	'Class:Oauth2Client/Attribute:name' => 'Name',
 	'Class:Oauth2Client/Attribute:provider' => 'Provider',
-	'Class:Oauth2Client/Attribute:client_id' => 'Client ID',
+	'Class:Oauth2Client/Attribute:client_id' => 'Client id',
 	'Class:Oauth2Client/Attribute:client_secret' => 'Client Secret',
 	'Class:Oauth2Client/Attribute:refresh_token' => 'Refresh Token',
 	'Class:Oauth2Client/Attribute:access_token' => 'Access Token',
@@ -46,13 +46,16 @@ Dict::Add('EN US', 'English', 'English', [
 
 	'Class:GoogleOauth2Client' => 'Google OAuth 2.0 client',
 
-	'Class:HeadlessItopOauth2Client' => 'Headless OAuth 2.0 client',
-	'Class:HeadlessItopOauth2Client/Attribute:username' => 'Username',
-	'Class:HeadlessItopOauth2Client/Attribute:password' => 'Password',
-	'Class:HeadlessItopOauth2Client/Attribute:base_url' => 'Base URL',
-	'Class:HeadlessItopOauth2Client/Attribute:version' => 'Version',
+	'Class:HeadlessOauth2Client' => 'Headless OAuth 2.0 client',
+	'Class:HeadlessOauth2Client/Attribute:username' => 'Username',
+	'Class:HeadlessOauth2Client/Attribute:password' => 'Password',
+	'Class:HeadlessOauth2Client/Attribute:base_url' => 'Base URL',
+	'Class:HeadlessOauth2Client/Attribute:version' => 'Version',
 
 	'Class:KeycloakOauth2Client' => 'Keycloak OAuth 2.0 client',
 	'Class:KeycloakOauth2Client/Attribute:url' => 'URL',
 	'Class:KeycloakOauth2Client/Attribute:realm' => 'Realm',
+
+	'OAuth2Client:baseinfo' => 'Purpose',
+	'OAuth2Client:idp_info' => 'Data from Identity Provider',
 ]);

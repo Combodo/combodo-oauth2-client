@@ -9,7 +9,7 @@
  */
 
 Dict::Add('FR FR', 'French', 'Français', [
-	'Oauth2Client:UI:IDPParameters' => 'Paramètres de l\'IdP',
+	'Oauth2Client:UI:IDPParameters' => 'Paramètres pour le Fournisseur d\'Identité',
 	'Oauth2Client:UI:AppURL' => 'URL de l\'application',
 	'Oauth2Client:UI:LandingURL' => 'URL de retour',
 
@@ -27,7 +27,7 @@ Dict::Add('FR FR', 'French', 'Français', [
 	'Class:Oauth2Client' => 'Client OAuth 2.0',
 	'Class:Oauth2Client/Attribute:name' => 'Nom',
 	'Class:Oauth2Client/Attribute:provider' => 'Fournisseur',
-	'Class:Oauth2Client/Attribute:client_id' => 'ID du Client',
+	'Class:Oauth2Client/Attribute:client_id' => 'Id du Client',
 	'Class:Oauth2Client/Attribute:client_secret' => 'Secret du Client',
 	'Class:Oauth2Client/Attribute:refresh_token' => 'Jeton de rafraîchissement',
 	'Class:Oauth2Client/Attribute:access_token' => 'Jeton d\'accès',
@@ -46,13 +46,16 @@ Dict::Add('FR FR', 'French', 'Français', [
 
 	'Class:GoogleOauth2Client' => 'Client OAuth 2.0 Google',
 
-	'Class:HeadlessItopOauth2Client' => 'Client OAuth 2.0 Headless',
-	'Class:HeadlessItopOauth2Client/Attribute:username' => 'Nom d\'utilisateur',
-	'Class:HeadlessItopOauth2Client/Attribute:password' => 'Mot de Passe',
-	'Class:HeadlessItopOauth2Client/Attribute:base_url' => 'URL de Base',
-	'Class:HeadlessItopOauth2Client/Attribute:version' => 'Version',
+	'Class:HeadlessOauth2Client' => 'Client OAuth 2.0 Headless',
+	'Class:HeadlessOauth2Client/Attribute:username' => 'Nom d\'utilisateur',
+	'Class:HeadlessOauth2Client/Attribute:password' => 'Mot de Passe',
+	'Class:HeadlessOauth2Client/Attribute:base_url' => 'URL de Base',
+	'Class:HeadlessOauth2Client/Attribute:version' => 'Version',
 
 	'Class:KeycloakOauth2Client' => 'Client OAuth 2.0 Keycloak',
 	'Class:KeycloakOauth2Client/Attribute:url' => 'URL',
 	'Class:KeycloakOauth2Client/Attribute:realm' => 'Realm',
+
+	'OAuth2Client:baseinfo' => 'Informations de base',
+	'OAuth2Client:idp_info' => 'Paramètres venant du Fournisseur d\'Identité',
 ]);
