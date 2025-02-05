@@ -25,10 +25,10 @@ class ApplicationUIExtension extends AbstractApplicationUIExtension
 		}
 		$oFieldSet = FieldSetUIBlockFactory::MakeStandard(Dict::S('Oauth2Client:UI:IDPParameters'));
 
-		$oField = FieldUIBlockFactory::MakeSmall(Dict::S('Oauth2Client:UI:AppURL'), utils::GetAbsoluteUrlAppRoot());
+		$oField = FieldUIBlockFactory::MakeSmall(Dict::S('Oauth2Client:UI:AppURL'), utils::GetAbsoluteUrlAppRoot(), Dict::S('Oauth2Client:UI:AppURL+'));
 		$oFieldSet->AddSubBlock($oField);
 
-		$oField = FieldUIBlockFactory::MakeSmall(Dict::S('Oauth2Client:UI:LandingURL'), Oauth2ClientHelper::GetLandingURL());
+		$oField = FieldUIBlockFactory::MakeSmall(Dict::S('Oauth2Client:UI:LandingURL'), Oauth2ClientHelper::GetLandingURL(), Dict::S('Oauth2Client:UI:LandingURL+'));
 		$oFieldSet->AddSubBlock($oField);
 
 		$oPage->AddUiBlock($oFieldSet);
