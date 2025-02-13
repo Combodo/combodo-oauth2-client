@@ -137,6 +137,7 @@ class Oauth2ClientService
 				//'expires_in' => date_format(new \DateTime($oExpireAt), 'U') - time(),
 				'callback' => Oauth2ClientHelper::GetLandingURL(),
 				'debug_mode' => Oauth2ClientLog::GetHybridauthDebugMode(),
+				'enabled' => true,
 			];
 			$sScope = $oOauth2Client->Get('scope');
 			if (utils::IsNotNullOrEmptyString($sScope)) {
