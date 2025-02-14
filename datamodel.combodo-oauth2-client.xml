@@ -11,10 +11,9 @@
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
-          <format>%1$s - %2$s</format>
+          <format>%1$s</format>
           <attributes>
             <attribute id="name"/>
-            <attribute id="provider"/>
           </attributes>
         </naming>
         <display_template/>
@@ -372,10 +371,9 @@
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
-          <format>%1$s - %2$s</format>
+          <format>%1$s</format>
           <attributes>
             <attribute id="name"/>
-            <attribute id="provider"/>
           </attributes>
         </naming>
         <display_template/>
@@ -401,11 +399,9 @@
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
-          <format>%1$s - %2$s</format>
+          <format>%1$s</format>
           <attributes>
             <attribute id="name"/>
-            <attribute id="tenant"/>
-            <attribute id="provider"/>
           </attributes>
         </naming>
         <display_template/>
@@ -577,10 +573,9 @@
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
-          <format>%1$s - %2$s</format>
+          <format>%1$s</format>
           <attributes>
             <attribute id="name"/>
-            <attribute id="provider"/>
           </attributes>
         </naming>
         <display_template/>
@@ -606,10 +601,9 @@
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
-          <format>%1$s - %2$s</format>
+          <format>%1$s</format>
           <attributes>
             <attribute id="name"/>
-            <attribute id="provider"/>
           </attributes>
         </naming>
         <display_template/>
@@ -767,12 +761,9 @@
         <db_key_field>id</db_key_field>
         <db_final_class_field>finalclass</db_final_class_field>
         <naming>
-          <format>%1$s - %2$s</format>
+          <format>%1$s</format>
           <attributes>
             <attribute id="name"/>
-            <attribute id="url"/>
-            <attribute id="realm"/>
-            <attribute id="provider"/>
           </attributes>
         </naming>
         <display_template/>
