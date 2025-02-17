@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
+class ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01
 {
     public static $prefixLengthsPsr4 = array (
         'H' => 
@@ -13,6 +13,7 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         ),
         'C' => 
         array (
+            'Combodo\\iTop\\Oauth2Client\\Test\\' => 31,
             'Combodo\\iTop\\Oauth2Client\\' => 26,
         ),
     );
@@ -22,6 +23,10 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         array (
             0 => __DIR__ . '/../..' . '/srcHybridauth',
             1 => __DIR__ . '/..' . '/hybridauth/hybridauth/src',
+        ),
+        'Combodo\\iTop\\Oauth2Client\\Test\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/tests/php-unit-tests',
         ),
         'Combodo\\iTop\\Oauth2Client\\' => 
         array (
@@ -145,9 +150,9 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit59806bb5fc710911a83fe4fe83d82535::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit59806bb5fc710911a83fe4fe83d82535::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit59806bb5fc710911a83fe4fe83d82535::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01::$classMap;
 
         }, null, ClassLoader::class);
     }

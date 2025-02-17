@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright   Copyright (C) 2010-2024 Combodo SAS
  * @license     https://www.combodo.com/documentation/combodo-software-license.html

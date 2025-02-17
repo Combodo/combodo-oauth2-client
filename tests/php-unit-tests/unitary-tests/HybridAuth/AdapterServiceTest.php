@@ -14,20 +14,25 @@ use Hybridauth\Provider\Google;
 use Hybridauth\Provider\MicrosoftGraph;
 use Hybridauth\Storage\StorageInterface;
 
-class AdapterServiceTest extends ItopDataTestCase {
+class AdapterServiceTest extends ItopDataTestCase
+{
 	private AdapterFactoryService $oAdapterFabrikService;
 	private StorageInterface $oStorageInterface;
 
-	protected function setUp(): void {
+	protected function setUp(): void
+	{
 		parent::setUp();
 		$this->RequireOnceItopFile('env-production/combodo-oauth2-client/vendor/autoload.php');
 	}
 
-	protected function tearDown(): void {
+	protected function tearDown(): void
+	{
 		parent::tearDown();
+		AdapterFactoryService::SetInstance(null);
 	}
 
-	private function MockAdapterFabrikService($sProviderName, array $aConfig, AdapterInterface $oAuth2, ?string $sExpectedAuthorizationState=null) {
+	private function MockAdapterFabrikService($sProviderName, array $aConfig, AdapterInterface $oAuth2, ?string $sExpectedAuthorizationState = null)
+	{
 		$this->oAdapterFabrikService = $this->createMock(AdapterFactoryService::class);
 		AdapterFactoryService::SetInstance($this->oAdapterFabrikService);
 		$this->oAdapterFabrikService->expects($this->once())
@@ -35,7 +40,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 			->with($sProviderName, $aConfig)
 			->willReturn($oAuth2);
 
-		if (is_null($sExpectedAuthorizationState)){
+		if (is_null($sExpectedAuthorizationState)) {
 			$oAuth2->expects($this->never())->method('getStorage');
 		} else {
 			$oAuth2->expects($this->once())
@@ -44,11 +49,12 @@ class AdapterServiceTest extends ItopDataTestCase {
 
 			$this->oStorageInterface->expects($this->once())
 				->method('set')
-				->with("$sProviderName.authorization_state", $sExpectedAuthorizationState);
+				->with(".authorization_state", $sExpectedAuthorizationState);
 		}
 	}
 
-	public function testAuthenticate_NoAuthorizationStateYet() {
+	public function testAuthenticate_NoAuthorizationStateYet()
+	{
 		$oAuth2 = $this->createMock(Google::class);
 		$sProvider = 'Hybridauth\\Provider\\Google';
 		$aConfig = [
@@ -80,7 +86,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 		AdapterService::GetInstance()->Authenticate($aConfig);
 	}
 
-	private function GetTokenResponseExample() : array
+	private function GetTokenResponseExample(): array
 	{
 		return [
 			'access_token' => 'access_token1',
@@ -91,7 +97,8 @@ class AdapterServiceTest extends ItopDataTestCase {
 		];
 	}
 
-	public function testAuthenticateFinish_IdpAnswerByHttpPost() {
+	public function testAuthenticateFinish_IdpAnswerByHttpPost()
+	{
 		$_SERVER = ['REQUEST_METHOD' => 'POST' ];
 		$_POST = ['state' => 'auth_state123' ];
 
@@ -132,7 +139,8 @@ class AdapterServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpectedRes, AdapterService::GetInstance()->AuthenticateFinish($aConfig));
 	}
 
-	public function testAuthenticateFinish_IdpAnswerByHttpGet() {
+	public function testAuthenticateFinish_IdpAnswerByHttpGet()
+	{
 		$_SERVER = ['REQUEST_METHOD' => 'GET' ];
 		$_REQUEST = ['state' => 'auth_state123' ];
 
@@ -173,7 +181,8 @@ class AdapterServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpectedRes, AdapterService::GetInstance()->AuthenticateFinish($aConfig));
 	}
 
-	public function testRefreshToken_ByGet() {
+	public function testRefreshToken_ByGet()
+	{
 		$_SERVER = ['REQUEST_METHOD' => 'GET' ];
 		$sAuthorizationState = 'auth_state123';
 		$_REQUEST = ['state' => $sAuthorizationState];
@@ -202,7 +211,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 					],
 				],
 			],
-			'authorization_state' => $sAuthorizationState
+			'authorization_state' => $sAuthorizationState,
 		];
 
 		$this->oStorageInterface = $this->createMock(StorageInterface::class);
@@ -232,7 +241,8 @@ class AdapterServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpectedRes, AdapterService::GetInstance()->RefreshToken($aConfig));
 	}
 
-	public function testGetDefaultScope() {
+	public function testGetDefaultScope()
+	{
 		$oAuth2 = $this->createMock(MicrosoftGraph::class);
 		$sProvider = 'Hybridauth\\Provider\\MicrosoftGraph';
 		$aConfig = [
@@ -259,10 +269,28 @@ class AdapterServiceTest extends ItopDataTestCase {
 		$this->assertEquals("openid user.read contacts.read offline_access", AdapterService::GetInstance()->GetDefaultScope());
 	}
 
-	public function testListProviders() {
+	public function testListProviders()
+	{
+		$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
 		$aRes = AdapterService::GetInstance()->ListProviders();
 		$this->assertContains("Google", $aRes, var_export($aRes, true));
 		$this->assertContains("MicrosoftGraph", $aRes, var_export($aRes, true));
-		//$this->assertContains("HeadlessItop", $aRes, var_export($aRes, true));
+		$this->assertContains("Itop", $aRes, var_export($aRes, true));
+		$this->assertContains("Headless", $aRes, var_export($aRes, true));
+	}
+
+	public function testListDatamodelDeclaredProviders()
+	{
+		$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
+		$aRes = AdapterService::GetInstance()->ListDatamodelDeclaredProviders();
+		$aExpected = [
+			'GitHub' => 'Hybridauth\Provider\GitHub',
+			'Google' => 'Hybridauth\Provider\Google',
+			'Headless' => 'Hybridauth\Provider\Headless',
+			'Itop' => 'Hybridauth\Provider\Itop',
+			'Keycloak' => 'Hybridauth\Provider\Keycloak',
+			'MicrosoftGraph' => 'Hybridauth\Provider\MicrosoftGraph',
+		];
+		$this->assertEquals($aExpected, $aRes);
 	}
 }

@@ -4,10 +4,12 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" packagePrefix="Combodo\iTop\Oauth2Client\" />
       <sourceFolder url="file://$MODULE_DIR$/srcHybridauth" isTestSource="false" packagePrefix="Hybridauth\" />
+      <sourceFolder url="file://$MODULE_DIR$/tests/php-unit-tests" isTestSource="true" packagePrefix="Combodo\iTop\Oauth2Client\Test\" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="combodo-webhook-integration" />
     <orderEntry type="module" module-name="combodo-hybridauth" />
+    <orderEntry type="module" module-name="authent-token" />
   </component>
 </module>

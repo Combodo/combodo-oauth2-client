@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @copyright   Copyright (C) 2010-2024 Combodo SARL
  * @license     http://opensource.org/licenses/AGPL-3.0
@@ -11,7 +12,7 @@ use utils;
 
 class Oauth2ClientHelper
 {
-	const MODULE_NAME = 'combodo-oauth2-client';
+	public const MODULE_NAME = 'combodo-oauth2-client';
 
 	public static function GetClassName(string $sProvider): string
 	{
@@ -28,7 +29,6 @@ class Oauth2ClientHelper
 		return mb_strtolower(static::GetClassName($sProvider));
 	}
 
-
 	/**
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
@@ -41,7 +41,6 @@ class Oauth2ClientHelper
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
 	}
-
 
 	/**
 	 * @param string $sName
