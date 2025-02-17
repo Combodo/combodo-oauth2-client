@@ -44,7 +44,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 
 			$this->oStorageInterface->expects($this->once())
 				->method('set')
-				->with("$sProviderName.authorization_state", $sExpectedAuthorizationState);
+				->with(".authorization_state", $sExpectedAuthorizationState);
 		}
 	}
 

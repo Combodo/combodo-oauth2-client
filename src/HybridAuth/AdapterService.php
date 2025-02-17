@@ -73,7 +73,7 @@ class AdapterService
 				null, $this->oHttpClient, $this->oStorage);
 			$sAuthorizationState = $aConfig['authorization_state'] ?? null;
 			if (utils::IsNotNullOrEmptyString($sAuthorizationState)) {
-				$this->oAuth2->getStorage()->set($this->sProviderName.'.authorization_state', $sAuthorizationState);
+				$this->storeData('authorization_state', $sAuthorizationState);
 			}
 		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
@@ -188,6 +188,27 @@ class AdapterService
 
 			return $oProperty->getValue($this->oAuth2);
 		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 *
+	 * @return mixed
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
+	 */
+	public function storeData(string $name, $value = null) : void
+	{
+		try {
+			/** @noinspection OneTimeUseVariablesInspection */
+			$oClass = new ReflectionClass($this->oAuth2);
+			$method = $oClass->getMethod('storeData');
+			$method->setAccessible(true);
+
+			$method->invokeArgs($this->oAuth2, [$name, $value]);
+		} catch (\Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
 		}
 	}
