@@ -8,6 +8,8 @@ use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Dict;
 use Exception;
 use Hybridauth\Adapter\AdapterInterface;
+use Hybridauth\HttpClient\HttpClientInterface;
+use Hybridauth\Storage\StorageInterface;
 use ReflectionClass;
 use utils;
 
@@ -18,6 +20,8 @@ class AdapterService
 	private string $sProvider;
 	private string $sProviderName;
 	private AdapterInterface $oAuth2;
+	private ?HttpClientInterface $oHttpClient;
+	private ?StorageInterface $oStorage;
 
 	protected function __construct()
 	{
@@ -41,15 +45,19 @@ class AdapterService
 	/**
 	 * @param string $sName
 	 * @param string $sProvider provider class fqdn
+	 * @param ?HttpClientInterface $oHttpClient
+	 * @param ?StorageInterface $storage
 	 *
 	 * @return void
 	 */
-	public function Init(string $sName, string $sProvider): void
+	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient=null, ?StorageInterface $oStorage=null): void
 	{
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 		$this->sName = $sName;
-		$this->sProviderName = Oauth2ClientHelper::GetProviderName($sProvider);
 		$this->sProvider = $sProvider;
+		$this->sProviderName = Oauth2ClientHelper::GetProviderName($sProvider);
+		$this->oHttpClient = $oHttpClient;
+		$this->oStorage = $oStorage;
 	}
 
 	/**
@@ -61,7 +69,8 @@ class AdapterService
 	public function InitOauth2(array $aConfig): void
 	{
 		try {
-			$this->oAuth2 = AdapterFactoryService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig);
+			$this->oAuth2 = AdapterFactoryService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig,
+				null, $this->oHttpClient, $this->oStorage);
 			$sAuthorizationState = $aConfig['authorization_state'] ?? null;
 			if (utils::IsNotNullOrEmptyString($sAuthorizationState)) {
 				$this->oAuth2->getStorage()->set($this->sProviderName.'.authorization_state', $sAuthorizationState);
