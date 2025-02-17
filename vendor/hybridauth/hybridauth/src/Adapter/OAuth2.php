@@ -260,7 +260,7 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         if ($this->config->exists('tokens')) {
             $this->setAccessToken($this->config->get('tokens'));
         }
-        
+
         if ($this->config->exists('supportRequestState')) {
             $this->supportRequestState = $this->config->get('supportRequestState');
         }
@@ -316,7 +316,7 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
             $this->authenticateCheckError();
 
             $code = filter_input($_SERVER['REQUEST_METHOD'] === 'POST' ? INPUT_POST : INPUT_GET, 'code');
-
+            $code = $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST['code'] : $_GET['code'];
             if (empty($code)) {
                 $this->authenticateBegin();
             } else {
@@ -413,8 +413,9 @@ abstract class OAuth2 extends AbstractAdapter implements AdapterInterface
         );
 
         $state = filter_input($_SERVER['REQUEST_METHOD'] === 'POST' ? INPUT_POST : INPUT_GET, 'state');
+        $state = $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST['state'] : $_GET['state'];
         $code = filter_input($_SERVER['REQUEST_METHOD'] === 'POST' ? INPUT_POST : INPUT_GET, 'code');
-
+        $code = $_SERVER['REQUEST_METHOD'] === 'POST' ? $_POST['code'] : $_GET['code'];
         /**
          * Authorization Request State
          *
