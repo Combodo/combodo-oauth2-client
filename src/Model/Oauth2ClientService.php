@@ -81,7 +81,7 @@ class Oauth2ClientService
 	public function InitClientByOauth2Client(Oauth2Client $oOauth2Client): void
 	{
 		try {
-			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client->GetKey()]);
 			$this->sName = $oOauth2Client->Get('name');
 			$this->sProvider = $oOauth2Client->Get('provider');
 			$this->oOauth2Client = $oOauth2Client;
@@ -105,8 +105,12 @@ class Oauth2ClientService
 			$oSearch = DBSearch::FromOQL("SELECT Oauth2Client WHERE name=:name AND provider=:provider");
 			$oSet = new DBObjectSet($oSearch, [], ['name' => $this->sName, 'provider' => $this->sProvider]);
 			if ($oSet->Count() != 1) {
-				throw new Oauth2ClientException("Missing configuration", 0, null,
-					['name' => $this->sName, 'provider' => $this->sProvider]);
+				throw new Oauth2ClientException(
+					"Missing configuration",
+					0,
+					null,
+					['name' => $this->sName, 'provider' => $this->sProvider]
+				);
 			}
 
 			/** @var Oauth2Client $oDBObject */
@@ -258,15 +262,14 @@ class Oauth2ClientService
 	 * @return string|null
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetAccessToken(): ?string
+	public function GetAccessToken(): string
 	{
 		try {
 			$oOauth2Client = $this->GetOauth2Client();
 			$oAccessToken = $oOauth2Client->Get('access_token');
-			if (is_null($oAccessToken)) {
-				return null;
+			if (is_null($oAccessToken) || utils::IsNullOrEmptyString($oAccessToken->GetPassword())) {
+				throw new Oauth2ClientException("Oauth2 never initialized");
 			}
-
 			return $oAccessToken->GetPassword();
 		} catch (Oauth2ClientException $e) {
 			throw $e;

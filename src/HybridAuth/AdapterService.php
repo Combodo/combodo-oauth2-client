@@ -2,22 +2,28 @@
 
 namespace Combodo\iTop\Oauth2Client\HybridAuth;
 
+use Combodo\iTop\AuthentToken\Helper\TokenAuthLog;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Dict;
 use Exception;
 use Hybridauth\Adapter\AdapterInterface;
+use Hybridauth\Data\Collection;
+use Hybridauth\HttpClient\HttpClientInterface;
+use Hybridauth\Storage\StorageInterface;
 use ReflectionClass;
 use utils;
 
 class AdapterService
 {
-	private static AdapterService $oInstance;
+	private static ?AdapterService $oInstance;
 	private string $sName;
 	private string $sProvider;
 	private string $sProviderName;
 	private AdapterInterface $oAuth2;
+	private ?HttpClientInterface $oHttpClient;
+	private ?StorageInterface $oStorage;
 
 	protected function __construct()
 	{
@@ -41,15 +47,19 @@ class AdapterService
 	/**
 	 * @param string $sName
 	 * @param string $sProvider provider class fqdn
+	 * @param ?HttpClientInterface $oHttpClient
+	 * @param ?StorageInterface $storage
 	 *
 	 * @return void
 	 */
-	public function Init(string $sName, string $sProvider): void
+	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient = null, ?StorageInterface $oStorage = null): void
 	{
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 		$this->sName = $sName;
-		$this->sProviderName = Oauth2ClientHelper::GetProviderName($sProvider);
 		$this->sProvider = $sProvider;
+		$this->sProviderName = Oauth2ClientHelper::GetProviderName($sProvider);
+		$this->oHttpClient = $oHttpClient;
+		$this->oStorage = $oStorage;
 	}
 
 	/**
@@ -61,10 +71,16 @@ class AdapterService
 	public function InitOauth2(array $aConfig): void
 	{
 		try {
-			$this->oAuth2 = AdapterFactoryService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig);
+			$this->oAuth2 = AdapterFactoryService::GetInstance()->GetAdapterInterface(
+				$this->sProviderName,
+				$aConfig,
+				null,
+				$this->oHttpClient,
+				$this->oStorage
+			);
 			$sAuthorizationState = $aConfig['authorization_state'] ?? null;
 			if (utils::IsNotNullOrEmptyString($sAuthorizationState)) {
-				$this->oAuth2->getStorage()->set($this->sProviderName.'.authorization_state', $sAuthorizationState);
+				$this->storeData('authorization_state', $sAuthorizationState);
 			}
 		} catch (Exception $e) {
 			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
@@ -145,6 +161,45 @@ class AdapterService
 		}
 	}
 
+	public function GetUserProfile(array $aConfig): \Hybridauth\User\Profile
+	{
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
+			$this->InitOauth2($aConfig);// refresh tokens if needed
+			return $this->oAuth2->getUserProfile();
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
+	/**
+	 * @param array $aConfig
+	 * @param string $sUrl
+	 * @param string $sMethod
+	 * @param array $aParameters
+	 * @param array $aHeaders
+	 * @param bool $bMultipart
+	 *
+	 * @return Collection
+	 * @throws Oauth2ClientException
+	 */
+	public function ApiRequest(array $aConfig, string $sUrl, string $sMethod = 'GET', array $aParameters = [], array $aHeaders = [], bool $bMultipart = false): Collection
+	{
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
+			$this->InitOauth2($aConfig);// refresh tokens if needed
+			$response = $this->oAuth2->apiRequest($sUrl, $sMethod, $aParameters, $aHeaders, $bMultipart);
+
+			return new Collection($response);
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
 	/**
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
@@ -152,7 +207,8 @@ class AdapterService
 	private function GetAuthorizationState(): string
 	{
 		try {
-			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			$sRequestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+			if ($sRequestMethod === 'POST') {
 				$sAuthorizationState = utils::ReadPostedParam('state', '', utils::ENUM_SANITIZATION_FILTER_STRING);
 			} else {
 				$sAuthorizationState = utils::ReadParam('state', '', false, utils::ENUM_SANITIZATION_FILTER_STRING);
@@ -183,10 +239,32 @@ class AdapterService
 		}
 	}
 
-	public function ListProviders() : array {
+	/**
+	 * @param string $name
+	 * @param mixed $value
+	 *
+	 * @return mixed
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
+	 */
+	public function storeData(string $name, $value = null): void
+	{
+		try {
+			/** @noinspection OneTimeUseVariablesInspection */
+			$oClass = new ReflectionClass($this->oAuth2);
+			$method = $oClass->getMethod('storeData');
+			$method->setAccessible(true);
+
+			$method->invokeArgs($this->oAuth2, [$name, $value]);
+		} catch (\Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
+	public function ListProviders(): array
+	{
 		$aList = [];
 
-		$sPath = __DIR__ . '/../../vendor/hybridauth/hybridauth/src/Provider/';
+		$sPath = __DIR__.'/../../vendor/hybridauth/hybridauth/src/Provider/';
 		$oFilesystemIterator = new \FilesystemIterator($sPath);
 		/** @var \SplFileInfo $file */
 		foreach ($oFilesystemIterator as $file) {
@@ -199,6 +277,35 @@ class AdapterService
 				}
 			}
 		}
+
+		foreach ($this->ListDatamodelDeclaredProviders() as $sShortNameClass => $sClass) {
+			if (! in_array($sShortNameClass, $aList)) {
+				$aList [] = $sShortNameClass;
+			}
+		}
+		return $aList;
+	}
+
+	public function ListDatamodelDeclaredProviders()
+	{
+		$aList = [];
+
+		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $oOauth2ClientClass) {
+			try {
+				$oOauth2Client = new $oOauth2ClientClass();
+				$sClass = $oOauth2Client->GetHybridauthProvider();
+				$oReflectionClass = new \ReflectionClass($sClass);
+				$aList[$oReflectionClass->getShortName()] = $sClass;
+			} catch (Exception $e) {
+				TokenAuthLog::Warning(
+					"Cannot load HybridauthProvider",
+					null,
+					[ "message" => $e->getMessage(), "HybridauthProvider" => $sClass, "Oauth2Client" => get_class($oOauth2Client)]
+				);
+			}
+		}
+
+		ksort($aList);
 		return $aList;
 	}
 }
