@@ -7,6 +7,8 @@ use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\HybridAuth\AdapterService;
 use Combodo\iTop\Oauth2Client\Model\Oauth2ClientService;
 use Exception;
+use Hybridauth\HttpClient\HttpClientInterface;
+use Hybridauth\Storage\StorageInterface;
 use Oauth2Client;
 
 /**
@@ -47,18 +49,20 @@ class Oauth2Service
 	 *
 	 * @param string $sName Registered entry name chosen for this connection
 	 * @param string $sProvider Provider name
+	 * @param ?HttpClientInterface $oHttpClient
+	 * @param ?StorageInterface $storage
 	 *
 	 * @return void
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function Init(string $sName, string $sProvider)
+	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient=null, ?StorageInterface $oStorage=null)
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 			$this->sName = $sName;
 			$this->sProvider = $sProvider;
 			Oauth2ClientService::GetInstance()->InitClient($this->sName, $this->sProvider);
-			AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
+			AdapterService::GetInstance()->Init($this->sName, $this->sProvider, $oHttpClient, $oStorage);
 		} catch (Oauth2ClientException $e) {
 			throw $e;
 		} catch (Exception $e) {
@@ -72,18 +76,20 @@ class Oauth2Service
 	 * @api
 	 *
 	 * @param \Oauth2Client $oOauth2Client
+	 * @param ?HttpClientInterface $oHttpClient
+	 * @param ?StorageInterface $storage
 	 *
 	 * @return void
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function InitByOauth2Client(Oauth2Client $oOauth2Client): void
+	public function InitByOauth2Client(Oauth2Client $oOauth2Client, ?HttpClientInterface $oHttpClient=null, ?StorageInterface $oStorage=null): void
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
 			$this->sName = $oOauth2Client->Get('name');
 			$this->sProvider = $oOauth2Client->Get('provider');
 			Oauth2ClientService::GetInstance()->InitClientByOauth2Client($oOauth2Client);
-			AdapterService::GetInstance()->Init($this->sName, $this->sProvider);
+			AdapterService::GetInstance()->Init($this->sName, $this->sProvider, $oHttpClient, $oStorage);
 		} catch (Oauth2ClientException $e) {
 			throw $e;
 		} catch (Exception $e) {
