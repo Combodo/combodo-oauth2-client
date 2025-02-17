@@ -7,5 +7,6 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Hybridauth\\' => array($baseDir . '/srcHybridauth', $vendorDir . '/hybridauth/hybridauth/src'),
+    'Combodo\\iTop\\Oauth2Client\\Test\\' => array($baseDir . '/tests/php-unit-tests'),
     'Combodo\\iTop\\Oauth2Client\\' => array($baseDir . '/src'),
 );

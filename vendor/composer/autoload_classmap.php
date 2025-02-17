@@ -71,6 +71,7 @@ return array(
     'Hybridauth\\Provider\\Google' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Google.php',
     'Hybridauth\\Provider\\HeadlessItop' => $baseDir . '/srcHybridauth/Provider/HeadlessItop.php',
     'Hybridauth\\Provider\\Instagram' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Instagram.php',
+    'Hybridauth\\Provider\\Itop' => $baseDir . '/srcHybridauth/Provider/Itop.php',
     'Hybridauth\\Provider\\Keycloak' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Keycloak.php',
     'Hybridauth\\Provider\\LinkedIn' => $vendorDir . '/hybridauth/hybridauth/src/Provider/LinkedIn.php',
     'Hybridauth\\Provider\\LinkedInOpenID' => $vendorDir . '/hybridauth/hybridauth/src/Provider/LinkedInOpenID.php',
