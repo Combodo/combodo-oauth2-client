@@ -263,6 +263,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 		$aRes = AdapterService::GetInstance()->ListProviders();
 		$this->assertContains("Google", $aRes, var_export($aRes, true));
 		$this->assertContains("MicrosoftGraph", $aRes, var_export($aRes, true));
-		//$this->assertContains("HeadlessItop", $aRes, var_export($aRes, true));
+		$this->assertContains("HeadlessItop", $aRes, var_export($aRes, true));
+		$this->assertContains("Itop", $aRes, var_export($aRes, true));
 	}
 }

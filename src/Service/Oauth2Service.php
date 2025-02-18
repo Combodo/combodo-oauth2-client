@@ -7,6 +7,7 @@ use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\HybridAuth\AdapterService;
 use Combodo\iTop\Oauth2Client\Model\Oauth2ClientService;
 use Exception;
+use Hybridauth\Data\Collection;
 use Hybridauth\HttpClient\HttpClientInterface;
 use Hybridauth\Storage\StorageInterface;
 use Oauth2Client;
@@ -158,16 +159,75 @@ class Oauth2Service
 			$sToken = Oauth2ClientService::GetInstance()->GetAccessToken();
 			if (is_null($sToken)) {
 				throw new Oauth2ClientException("Oauth2 never initialized");
-			}//expired token
+			}
+
 			if (!Oauth2ClientService::GetInstance()->IsExpired()) {
 				return $sToken;
 			}
+
 			$aConfig = Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration();
 			$aTokenResponse = AdapterService::GetInstance()->RefreshToken($aConfig);
 			$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
 			Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
 
 			return Oauth2ClientService::GetInstance()->GetAccessToken();
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
+	/**
+	 * Get the access token to use in communication with IdP
+	 *
+	 * @api
+	 * @return \Hybridauth\User\Profile
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
+	 */
+	public function GetUserProfile(): \Hybridauth\User\Profile
+	{
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
+
+			//refresh token if needed
+			$this->GetAccessToken();
+
+			$aConfig = Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration();
+
+			return AdapterService::GetInstance()->GetUserProfile($aConfig);
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
+	/**
+	 * Get the access token to use in communication with IdP
+	 *
+	 * @api
+	 *
+	 * @param string $sUrl
+	 * @param string $sMethod
+	 * @param array $aParameters
+	 * @param array $aHeaders
+	 * @param bool $bMultipart
+	 *
+	 * @return \Hybridauth\Data\Collection
+	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
+	 */
+	public function ApiRequest(string $sUrl, string $sMethod = 'GET', array $aParameters = [], array $aHeaders = [], bool $bMultipart = false): Collection
+	{
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
+
+			//refresh token if needed
+			$this->GetAccessToken();
+
+			$aConfig = Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration();
+
+			return AdapterService::GetInstance()->ApiRequest($aConfig, $sUrl, $sMethod, $aParameters, $aHeaders, $bMultipart);
 		} catch (Oauth2ClientException $e) {
 			throw $e;
 		} catch (Exception $e) {

@@ -8,6 +8,7 @@ use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Dict;
 use Exception;
 use Hybridauth\Adapter\AdapterInterface;
+use Hybridauth\Data\Collection;
 use Hybridauth\HttpClient\HttpClientInterface;
 use Hybridauth\Storage\StorageInterface;
 use ReflectionClass;
@@ -147,6 +148,44 @@ class AdapterService
 			Oauth2ClientLog::Debug(__FUNCTION__, null, $aTokens);
 
 			return $aTokens;
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
+	public function GetUserProfile(array $aConfig): \Hybridauth\User\Profile
+	{
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
+			$this->InitOauth2($aConfig);// refresh tokens if needed
+			return $this->oAuth2->getUserProfile();
+		} catch (Oauth2ClientException $e) {
+			throw $e;
+		} catch (Exception $e) {
+			throw new Oauth2ClientException(__FUNCTION__.': failed', 0, $e);
+		}
+	}
+
+	/**
+	 * @param array $aConfig
+	 * @param string $sUrl
+	 * @param string $sMethod
+	 * @param array $aParameters
+	 * @param array $aHeaders
+	 * @param bool $bMultipart
+	 *
+	 * @return Collection
+	 * @throws Oauth2ClientException
+	 */
+	public function ApiRequest(array $aConfig, string $sUrl, string $sMethod = 'GET', array $aParameters = [], array $aHeaders = [], bool $bMultipart = false) : Collection {
+		try {
+			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
+			$this->InitOauth2($aConfig);// refresh tokens if needed
+			$response = $this->oAuth2->apiRequest($sUrl, $sMethod, $aParameters, $aHeaders, $bMultipart);
+
+			return new Collection($response);
 		} catch (Oauth2ClientException $e) {
 			throw $e;
 		} catch (Exception $e) {
