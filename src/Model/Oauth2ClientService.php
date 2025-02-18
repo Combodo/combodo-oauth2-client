@@ -81,7 +81,7 @@ class Oauth2ClientService
 	public function InitClientByOauth2Client(Oauth2Client $oOauth2Client): void
 	{
 		try {
-			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client->GetKey()]);
 			$this->sName = $oOauth2Client->Get('name');
 			$this->sProvider = $oOauth2Client->Get('provider');
 			$this->oOauth2Client = $oOauth2Client;
@@ -148,6 +148,10 @@ class Oauth2ClientService
 			$sProviderName = Oauth2ClientHelper::GetProviderName($this->sProvider);
 			$aConf = ['providers' => [$sProviderName => $aData]];
 
+			$sAuthorizationState = $oOauth2Client->Get('authorization_state');
+			if (utils::IsNotNullOrEmptyString($sAuthorizationState)){
+				$aConf['authorization_state'] = $sAuthorizationState;
+			}
 			return $aConf;
 		} catch (Oauth2ClientException $e) {
 			throw $e;
@@ -263,10 +267,9 @@ class Oauth2ClientService
 		try {
 			$oOauth2Client = $this->GetOauth2Client();
 			$oAccessToken = $oOauth2Client->Get('access_token');
-			if (is_null($oAccessToken)) {
+			if (utils::IsNullOrEmptyString($oAccessToken)) {
 				return null;
 			}
-
 			return $oAccessToken->GetPassword();
 		} catch (Oauth2ClientException $e) {
 			throw $e;

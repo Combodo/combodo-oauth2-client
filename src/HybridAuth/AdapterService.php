@@ -161,7 +161,8 @@ class AdapterService
 	private function GetAuthorizationState(): string
 	{
 		try {
-			if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+			$sRequestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+			if ($sRequestMethod === 'POST') {
 				$sAuthorizationState = utils::ReadPostedParam('state', '', utils::ENUM_SANITIZATION_FILTER_STRING);
 			} else {
 				$sAuthorizationState = utils::ReadParam('state', '', false, utils::ENUM_SANITIZATION_FILTER_STRING);
