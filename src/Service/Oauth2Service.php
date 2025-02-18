@@ -85,7 +85,7 @@ class Oauth2Service
 	public function InitByOauth2Client(Oauth2Client $oOauth2Client, ?HttpClientInterface $oHttpClient=null, ?StorageInterface $oStorage=null): void
 	{
 		try {
-			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client]);
+			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client->GetKey()]);
 			$this->sName = $oOauth2Client->Get('name');
 			$this->sProvider = $oOauth2Client->Get('provider');
 			Oauth2ClientService::GetInstance()->InitClientByOauth2Client($oOauth2Client);

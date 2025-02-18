@@ -8,9 +8,11 @@
 namespace Hybridauth\Provider;
 
 use Hybridauth\Adapter\OAuth2;
+use Hybridauth\Data\Collection;
 use Hybridauth\Exception\Exception;
 use Hybridauth\Exception\InvalidApplicationCredentialsException;
 use Hybridauth\Exception\UnexpectedApiResponseException;
+use Hybridauth\User\Profile;
 
 /**
  * Itop Oauth2 Connect provider adapter.
@@ -42,6 +44,7 @@ class Itop extends OAuth2
 	private string $version = "1.3";
 	private string $environnement = "production";
 	protected $tokenExchangeMethod = 'POST';
+	protected string $getUserUrl;
 
 	/**
 	 * {@inheritdoc}
@@ -69,6 +72,7 @@ class Itop extends OAuth2
 		$sTokenBaseUrl = sprintf("%s/env-%s/%s/", $url, $this->environnement, "authent-token");
 		$this->authorizeUrl = $sTokenBaseUrl."authorize.php";
 		$this->accessTokenUrl = $sTokenBaseUrl.'token.php';
+		$this->getUserUrl = $sTokenBaseUrl.'get_user.php';
 	}
 
 	/**
@@ -92,23 +96,12 @@ class Itop extends OAuth2
 				'client_secret' => $this->clientSecret,
 				'grant_type' => 'refresh_token',
 				'refresh_token' => $refreshToken,
+				'redirect_uri' => $this->callback,
 			];
 		}
 
-		$this->apiRequestHeaders = [
-			'Content-Type' => 'application/json',
-		];
-
 		$this->apiRequestParameters = [
 			'version' => $this->version,
-		];
-
-		$this->tokenExchangeHeaders = [
-			'Content-Type' => 'application/json',
-		];
-
-		$this->tokenRefreshHeaders = [
-			'Content-Type' => 'application/json',
 		];
 	}
 
@@ -117,18 +110,17 @@ class Itop extends OAuth2
 	 */
 	public function getUserProfile()
 	{
+		$response = $this->apiRequest($this->getUserUrl, 'POST');
 
-		$response = $this->apiRequest('/pages/exec.php?exec_module=authent-token&exec_page=get_user.php');
+		$data = new Collection($response);
 
-		$data = new Data\Collection($response);
-
-		$userProfile = new User\Profile();
+		$userProfile = new Profile();
 
 		$userProfile->email = $data->get('email');
 		$userProfile->firstName = $data->get('firstName');
 		$userProfile->lastName = $data->get('lastName');
 		$userProfile->displayName = $data->get('displayName');
-		$userProfile->lastName = $data->get('identifier');
+		$userProfile->identifier = $data->get('identifier');
 		$userProfile->displayName = $data->get('language');
 
 		// Collect organization claim if provided in the IDToken
