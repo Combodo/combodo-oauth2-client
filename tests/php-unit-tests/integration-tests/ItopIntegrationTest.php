@@ -136,9 +136,8 @@ class ItopIntegrationTest extends ItopDataTestCase
 		$sClientSecret = $oOauth2Application->Get('client_secret')->GetPassword();
 
 		$oLnkOauth2ApplicationToUser = $oExpectedOauth2UserApplication->oLnkOauth2ApplicationToUser;
-		$sCode = "CODE-456";
 		$sAuthorizationState = "STATE-123";
-		Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sCode, $sAuthorizationState);
+		$sCode = Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sAuthorizationState);
 		$this->sToken = $oLnkOauth2ApplicationToUser->Get('access_token')->GetPassword();
 
 		$aParams = [
@@ -167,9 +166,8 @@ class ItopIntegrationTest extends ItopDataTestCase
 		$sClientSecret = $oOauth2Application->Get('client_secret')->GetPassword();
 
 		$oLnkOauth2ApplicationToUser = $oExpectedOauth2UserApplication->oLnkOauth2ApplicationToUser;
-		$sCode = "CODE-456";
 		$sAuthorizationState = "STATE-123";
-		Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sCode, $sAuthorizationState);
+		Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sAuthorizationState);
 
 		$sOldAccessToken = $oLnkOauth2ApplicationToUser->Get('access_token')->GetPassword();
 		$aParams = [
@@ -204,9 +202,8 @@ class ItopIntegrationTest extends ItopDataTestCase
 		);
 
 		$oLnkOauth2ApplicationToUser = $oExpectedOauth2UserApplication->oLnkOauth2ApplicationToUser;
-		$sCode = "CODE-456";
 		$sAuthorizationState = "STATE-123";
-		Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sCode, $sAuthorizationState);
+		Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sAuthorizationState);
 
 		$aParams = [
 			'client_id' => $sClientId,
@@ -240,9 +237,8 @@ class ItopIntegrationTest extends ItopDataTestCase
 		);
 
 		$oLnkOauth2ApplicationToUser = $oExpectedOauth2UserApplication->oLnkOauth2ApplicationToUser;
-		$sCode = "CODE-456";
 		$sAuthorizationState = "STATE-123";
-		Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sCode, $sAuthorizationState);
+		Oauth2ApplicationService::GetInstance()->SaveCode($oLnkOauth2ApplicationToUser, $sAuthorizationState);
 
 		$aParams = [
 			'client_id' => $sClientId,
