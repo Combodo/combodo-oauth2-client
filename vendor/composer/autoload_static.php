@@ -98,7 +98,7 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         'Hybridauth\\Provider\\GitHub' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/GitHub.php',
         'Hybridauth\\Provider\\GitLab' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/GitLab.php',
         'Hybridauth\\Provider\\Google' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Google.php',
-        'Hybridauth\\Provider\\HeadlessItop' => __DIR__ . '/../..' . '/srcHybridauth/Provider/HeadlessItop.php',
+        'Hybridauth\\Provider\\Headless' => __DIR__ . '/../..' . '/srcHybridauth/Provider/Headless.php',
         'Hybridauth\\Provider\\Instagram' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Instagram.php',
         'Hybridauth\\Provider\\Itop' => __DIR__ . '/../..' . '/srcHybridauth/Provider/Itop.php',
         'Hybridauth\\Provider\\Keycloak' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Keycloak.php',
