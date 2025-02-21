@@ -44,7 +44,7 @@ class Itop extends OAuth2
 	private string $version = "1.3";
 	private string $environnement = "production";
 	protected $tokenExchangeMethod = 'POST';
-	protected string $getUserUrl;
+	protected string $authentTokenBaseUrl;
 
 	/**
 	 * {@inheritdoc}
@@ -60,19 +60,24 @@ class Itop extends OAuth2
 		$url = $this->config->get('url');
 
 		if ($this->config->exists('version')) {
-			$this->version = $this->config->get('version');
+			$sVersion = $this->config->get('version');
+			if (strlen($sVersion) != 0){
+				$this->version = $sVersion;
+			}
 		}
 
 		if ($this->config->exists('environnement')) {
-			$this->environnement = $this->config->get('environnement');
+			$sVersion = $this->config->get('environnement');
+			if (strlen($sVersion) != 0){
+				$this->environnement = $sVersion;
+			}
 		}
 
 		$this->apiBaseUrl = $url;
 
-		$sTokenBaseUrl = sprintf("%s/env-%s/%s/", $url, $this->environnement, "authent-token");
-		$this->authorizeUrl = $sTokenBaseUrl."authorize.php";
-		$this->accessTokenUrl = $sTokenBaseUrl.'token.php';
-		$this->getUserUrl = $sTokenBaseUrl.'get_user.php';
+		$this->authentTokenBaseUrl = sprintf("%s/env-%s/%s/", $url, $this->environnement, "authent-token");
+		$this->authorizeUrl = $this->authentTokenBaseUrl."authorize.php";
+		$this->accessTokenUrl = $this->authentTokenBaseUrl.'token.php';
 	}
 
 	/**
@@ -110,7 +115,7 @@ class Itop extends OAuth2
 	 */
 	public function getUserProfile()
 	{
-		$response = $this->apiRequest($this->getUserUrl, 'POST');
+		$response = $this->apiRequest($this->authentTokenBaseUrl.'get_user.php', 'POST');
 
 		$data = new Collection($response);
 

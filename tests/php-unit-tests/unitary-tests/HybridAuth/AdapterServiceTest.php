@@ -202,7 +202,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 					],
 				],
 			],
-			'authorization_state' => $sAuthorizationState
+			'authorization_state' => $sAuthorizationState,
 		];
 
 		$this->oStorageInterface = $this->createMock(StorageInterface::class);
@@ -263,7 +263,21 @@ class AdapterServiceTest extends ItopDataTestCase {
 		$aRes = AdapterService::GetInstance()->ListProviders();
 		$this->assertContains("Google", $aRes, var_export($aRes, true));
 		$this->assertContains("MicrosoftGraph", $aRes, var_export($aRes, true));
-		$this->assertContains("HeadlessItop", $aRes, var_export($aRes, true));
 		$this->assertContains("Itop", $aRes, var_export($aRes, true));
+		$this->assertContains("Headless", $aRes, var_export($aRes, true));
+	}
+
+	public function testListDatamodelDeclaredProviders()
+	{
+		$aRes = AdapterService::GetInstance()->ListDatamodelDeclaredProviders();
+		$aExpected = [
+			'GitHub' => 'Hybridauth\Provider\GitHub',
+		    'Google' => 'Hybridauth\Provider\Google',
+			'Headless' => 'Hybridauth\Provider\Headless',
+			'Itop' => 'Hybridauth\Provider\Itop',
+			'Keycloak' => 'Hybridauth\Provider\Keycloak',
+			'MicrosoftGraph' => 'Hybridauth\Provider\MicrosoftGraph',
+		];
+		$this->assertEquals($aExpected, $aRes);
 	}
 }

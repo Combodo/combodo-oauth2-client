@@ -2,6 +2,7 @@
 
 namespace Combodo\iTop\Oauth2Client\HybridAuth;
 
+use Combodo\iTop\AuthentToken\Helper\TokenAuthLog;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
@@ -269,6 +270,34 @@ class AdapterService
 				}
 			}
 		}
+
+		foreach ($this->ListDatamodelDeclaredProviders() as $sShortNameClass => $sClass){
+			if (! in_array($sShortNameClass, $aList)){
+				$aList [] = $sShortNameClass;
+			}
+		}
+		return $aList;
+	}
+
+	public function ListDatamodelDeclaredProviders()
+	{
+		$aList=[];
+
+		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $oOauth2ClientClass){
+			try{
+				echo "$oOauth2ClientClass \n";
+				$oOauth2Client = new $oOauth2ClientClass();
+				$sClass = $oOauth2Client->GetHybridauthProvider();
+				$oReflectionClass = new \ReflectionClass($sClass);
+				$aList[$oReflectionClass->getShortName()]= $sClass;
+			} catch (Exception $e) {
+				var_dump($e);
+				TokenAuthLog::Warning("Cannot load HybridauthProvider", null,
+					[ "message" => $e->getMessage(), "HybridauthProvider" => $sClass, "Oauth2Client" => get_class($oOauth2Client)]);
+			}
+		}
+
+		ksort($aList);
 		return $aList;
 	}
 }
