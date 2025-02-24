@@ -62,9 +62,10 @@ class ItopIntegrationTest extends ItopDataTestCase
 		@chmod(MetaModel::GetConfig()->GetLoadedFile(), 0770);
 		$this->InitLoginMode(TokenLoginExtension::LOGIN_TYPE);
 
-		MetaModel::GetConfig()->Set('log_level_min', [Oauth2ClientLog::CHANNEL_DEFAULT => 'Debug'], 'auth-token');
-		MetaModel::GetConfig()->Set('secure_rest_services', true, 'auth-token');
-		MetaModel::GetConfig()->Set('allow_rest_services_via_tokens', true, 'auth-token');
+		MetaModel::GetConfig()->Set('login_debug', true, 'oauth2-client');
+		MetaModel::GetConfig()->Set('log_level_min', [Oauth2ClientLog::CHANNEL_DEFAULT => 'Debug'], 'oauth2-client');
+		MetaModel::GetConfig()->Set('secure_rest_services', true, 'oauth2-client');
+		MetaModel::GetConfig()->Set('allow_rest_services_via_tokens', true, 'oauth2-client');
 		MetaModel::GetConfig()->SetModuleSetting(TokenAuthHelper::MODULE_NAME, 'personal_tokens_allowed_profiles', ['Administrator', 'Service Desk Agent']);
 
 		MetaModel::GetConfig()->WriteToFile();
