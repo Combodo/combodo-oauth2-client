@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
+class ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01
 {
     public static $prefixLengthsPsr4 = array (
         'H' => 
@@ -48,6 +48,7 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         'Hybridauth\\Adapter\\AbstractAdapter' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/AbstractAdapter.php',
         'Hybridauth\\Adapter\\AdapterInterface' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/AdapterInterface.php',
         'Hybridauth\\Adapter\\DataStoreTrait' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/DataStoreTrait.php',
+        'Hybridauth\\Adapter\\FilterService' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/FilterService.php',
         'Hybridauth\\Adapter\\OAuth1' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/OAuth1.php',
         'Hybridauth\\Adapter\\OAuth2' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/OAuth2.php',
         'Hybridauth\\Adapter\\OpenID' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Adapter/OpenID.php',
@@ -148,9 +149,9 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit59806bb5fc710911a83fe4fe83d82535::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit59806bb5fc710911a83fe4fe83d82535::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit59806bb5fc710911a83fe4fe83d82535::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01::$classMap;
 
         }, null, ClassLoader::class);
     }
