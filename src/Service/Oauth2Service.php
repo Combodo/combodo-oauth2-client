@@ -157,9 +157,6 @@ class Oauth2Service
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
 			$sToken = Oauth2ClientService::GetInstance()->GetAccessToken();
-			if (is_null($sToken)) {
-				throw new Oauth2ClientException("Oauth2 never initialized");
-			}
 
 			if (!Oauth2ClientService::GetInstance()->IsExpired()) {
 				return $sToken;
