@@ -7,6 +7,7 @@ use Combodo\iTop\AuthentToken\Helper\TokenAuthHelper;
 use Combodo\iTop\AuthentToken\Hook\TokenLoginExtension;
 use Combodo\iTop\AuthentToken\Model\Oauth2UserApplication;
 use Combodo\iTop\AuthentToken\Service\Oauth2ApplicationService;
+use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
 use Combodo\iTop\Oauth2Client\Service\Oauth2Service;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
 use Config;
@@ -61,6 +62,7 @@ class ItopIntegrationTest extends ItopDataTestCase
 		@chmod(MetaModel::GetConfig()->GetLoadedFile(), 0770);
 		$this->InitLoginMode(TokenLoginExtension::LOGIN_TYPE);
 
+		MetaModel::GetConfig()->Set('log_level_min', [Oauth2ClientLog::CHANNEL_DEFAULT => 'Debug'], 'auth-token');
 		MetaModel::GetConfig()->Set('secure_rest_services', true, 'auth-token');
 		MetaModel::GetConfig()->Set('allow_rest_services_via_tokens', true, 'auth-token');
 		MetaModel::GetConfig()->SetModuleSetting(TokenAuthHelper::MODULE_NAME, 'personal_tokens_allowed_profiles', ['Administrator', 'Service Desk Agent']);
