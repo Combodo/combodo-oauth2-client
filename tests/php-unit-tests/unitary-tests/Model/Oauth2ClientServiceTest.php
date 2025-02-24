@@ -231,6 +231,15 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals('access_token1', Oauth2ClientService::GetInstance()->GetAccessToken());
 	}
 
+	public function testGetNotInitializedYet() {
+		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, []);
+
+		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
+
+		$this->expectExceptionMessage("Oauth2 never initialized");
+		Oauth2ClientService::GetInstance()->GetAccessToken();
+	}
+
 	public function testIsExpired_NoTokenYet() {
 		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));

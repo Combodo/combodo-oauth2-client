@@ -25,6 +25,8 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 
 	protected function tearDown(): void {
 		parent::tearDown();
+		AdapterService::SetInstance(null);
+		Oauth2ClientService::SetInstance(null);
 	}
 
 	public function CreateOauth2Client(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client {
@@ -171,28 +173,6 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 			->willReturn($sAccessToken);
 
 		$this->assertEquals($sAccessToken, Oauth2Service::GetInstance()->AuthenticateFinish());
-	}
-
-	public function testGetAccessTokenNoInitializedYet() {
-		$obj = $this->CreateOauth2Client();
-		$sName = $obj->Get('name');
-		$sProvider = $obj->Get('provider');
-
-		$this->oOauth2ClientService->expects($this->once())
-			->method('InitClient')
-			->with($sName, $sProvider);
-
-		$this->oAdapterService->expects($this->once())
-			->method('Init')
-			->with($sName, $sProvider);
-		Oauth2Service::GetInstance()->Init($sName, $sProvider);
-
-		$this->oOauth2ClientService->expects($this->once())
-			->method('GetAccessToken')
-			->willReturn(null);
-
-		$this->expectExceptionMessage("Oauth2 never initialized");
-		Oauth2Service::GetInstance()->GetAccessToken();
 	}
 
 	public function testGetAccessToken_UpToDateToken() {
