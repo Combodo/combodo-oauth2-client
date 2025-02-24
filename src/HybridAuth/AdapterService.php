@@ -285,13 +285,11 @@ class AdapterService
 
 		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $oOauth2ClientClass){
 			try{
-				echo "$oOauth2ClientClass \n";
 				$oOauth2Client = new $oOauth2ClientClass();
 				$sClass = $oOauth2Client->GetHybridauthProvider();
 				$oReflectionClass = new \ReflectionClass($sClass);
 				$aList[$oReflectionClass->getShortName()]= $sClass;
 			} catch (Exception $e) {
-				var_dump($e);
 				TokenAuthLog::Warning("Cannot load HybridauthProvider", null,
 					[ "message" => $e->getMessage(), "HybridauthProvider" => $sClass, "Oauth2Client" => get_class($oOauth2Client)]);
 			}
