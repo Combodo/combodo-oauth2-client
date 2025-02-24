@@ -10,6 +10,8 @@ use Combodo\iTop\AuthentToken\Service\Oauth2ApplicationService;
 use Combodo\iTop\Oauth2Client\Service\Oauth2Service;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
 use Config;
+use Hybridauth\Adapter\FilterService;
+use Hybridauth\Adapter\OAuth2;
 use Hybridauth\Storage\StorageImpl;
 use MetaModel;
 use Oauth2Application;
@@ -29,6 +31,7 @@ class ItopIntegrationTest extends ItopDataTestCase
 	protected $sOrgName;
 	protected $sOrgId;
 	protected string $sUniqId;
+	protected FilterService $oFilterService;
 
 	protected function setUp(): void
 	{
@@ -65,6 +68,8 @@ class ItopIntegrationTest extends ItopDataTestCase
 		MetaModel::GetConfig()->WriteToFile();
 		@chmod(MetaModel::GetConfig()->GetLoadedFile(), 0440);
 
+		$this->oFilterService = $this->createMock(FilterService::class);
+		OAuth2::setFilterService($this->oFilterService);
 		$this->sToken = null;
 	}
 
@@ -72,6 +77,7 @@ class ItopIntegrationTest extends ItopDataTestCase
 	{
 		parent::tearDown();
 
+		OAuth2::setFilterService(null);
 		if (!is_null($this->sConfigTmpBackupFile) && is_file($this->sConfigTmpBackupFile)) {
 			//put config back
 			$sConfigPath = MetaModel::GetConfig()->GetLoadedFile();
@@ -148,10 +154,21 @@ class ItopIntegrationTest extends ItopDataTestCase
 		$oItopOauth2Client = $this->CreateItopOauth2Client($aParams);
 		Oauth2Service::GetInstance()->InitByOauth2Client($oItopOauth2Client, null, new StorageImpl());
 
-		$_POST=[
+		$this->oFilterService->method('filter_input')
+			->willReturnCallback(function ($type, $var_name, $filter, $options) use ($sCode, $sAuthorizationState) {
+				if ($var_name === 'state'){
+					return $sAuthorizationState;
+				}
+				if ($var_name === 'code'){
+					return $sCode;
+				}
+				return null;
+			});
+
+		/*$_POST=[
 			'state' => $sAuthorizationState,
 			'code' => $sCode,
-		];
+		];*/
 		$_SERVER = ['REQUEST_METHOD' => 'POST'];
 
 		$_SERVER['REMOTE_ADDR']="127.0.0.1";
