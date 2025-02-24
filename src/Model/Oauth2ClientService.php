@@ -267,7 +267,7 @@ class Oauth2ClientService
 		try {
 			$oOauth2Client = $this->GetOauth2Client();
 			$oAccessToken = $oOauth2Client->Get('access_token');
-			if (utils::IsNullOrEmptyString($oAccessToken)) {
+			if (is_null($oAccessToken) || utils::IsNullOrEmptyString($oAccessToken->GetPassword())) {
 				throw new Oauth2ClientException("Oauth2 never initialized");
 			}
 			return $oAccessToken->GetPassword();

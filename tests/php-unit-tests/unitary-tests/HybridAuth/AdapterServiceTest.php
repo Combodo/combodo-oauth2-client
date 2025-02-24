@@ -25,6 +25,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 
 	protected function tearDown(): void {
 		parent::tearDown();
+		AdapterFactoryService::SetInstance(null);
 	}
 
 	private function MockAdapterFabrikService($sProviderName, array $aConfig, AdapterInterface $oAuth2, ?string $sExpectedAuthorizationState=null) {

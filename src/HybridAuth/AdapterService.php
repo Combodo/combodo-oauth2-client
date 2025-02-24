@@ -17,7 +17,7 @@ use utils;
 
 class AdapterService
 {
-	private static AdapterService $oInstance;
+	private static ?AdapterService $oInstance;
 	private string $sName;
 	private string $sProvider;
 	private string $sProviderName;
