@@ -262,7 +262,7 @@ class Oauth2ClientService
 	 * @return string|null
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetAccessToken(): ?string
+	public function GetAccessToken(): string
 	{
 		try {
 			$oOauth2Client = $this->GetOauth2Client();
