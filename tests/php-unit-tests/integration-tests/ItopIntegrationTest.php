@@ -168,14 +168,10 @@ class ItopIntegrationTest extends ItopDataTestCase
 				return null;
 			});
 
-		/*$_POST=[
-			'state' => $sAuthorizationState,
-			'code' => $sCode,
-		];*/
 		$_SERVER = ['REQUEST_METHOD' => 'POST'];
 
 		$_SERVER['REMOTE_ADDR']="127.0.0.1";
-		$this->assertEquals($this->sToken, Oauth2Service::GetInstance()->AuthenticateFinish());
+		$this->assertEquals($this->sToken, Oauth2Service::GetInstance()->AuthenticateFinish($sAuthorizationState));
 	}
 
 	public function testRefreshToken()

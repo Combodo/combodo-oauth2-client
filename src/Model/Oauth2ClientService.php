@@ -148,10 +148,6 @@ class Oauth2ClientService
 			$sProviderName = Oauth2ClientHelper::GetProviderName($this->sProvider);
 			$aConf = ['providers' => [$sProviderName => $aData]];
 
-			$sAuthorizationState = $oOauth2Client->Get('authorization_state');
-			if (utils::IsNotNullOrEmptyString($sAuthorizationState)){
-				$aConf['authorization_state'] = $sAuthorizationState;
-			}
 			return $aConf;
 		} catch (Oauth2ClientException $e) {
 			throw $e;

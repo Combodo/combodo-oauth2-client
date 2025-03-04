@@ -128,11 +128,16 @@ class Oauth2Service
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function AuthenticateFinish(): string
+	public function AuthenticateFinish(?string $sAuthorizationStateForTestingOnly=null): string
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
 			$aConfig = Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration();
+			if (! is_null($sAuthorizationStateForTestingOnly)){
+				//simulate below code when calling AuthenticateBegin()->getAuthorizeUrl()
+				//  $this->storeData('authorization_state', $this->AuthorizeUrlParameters['state']);
+				$aConfig['authorization_state'] = $sAuthorizationStateForTestingOnly;
+			}
 			$aTokenResponse = AdapterService::GetInstance()->AuthenticateFinish($aConfig);
 			$sDefaultScope = AdapterService::GetInstance()->GetDefaultScope();
 			Oauth2ClientService::GetInstance()->SaveTokens($aTokenResponse, $sDefaultScope);
