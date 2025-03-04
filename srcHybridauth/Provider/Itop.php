@@ -67,8 +67,8 @@ class Itop extends OAuth2
 		}
 
 		if ($this->config->exists('environnement')) {
-			$sVersion = $this->config->get('environnement');
-			if (strlen($sVersion) != 0){
+			$this->environnement = $this->config->get('environnement');
+			if (strlen($this->environnement) != 0){
 				$this->environnement = $sVersion;
 			}
 		}
