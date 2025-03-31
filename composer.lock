@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "949a463a1c97bddcae082bf0f7ba8d01",
+    "content-hash": "67013cdd7279e39c841c951091619648",
     "packages": [
         {
             "name": "hybridauth/hybridauth",
-            "version": "dev-master",
+            "version": "dev-itop-provider",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Combodo/hybridauth.git",
-                "reference": "14136d22122622e340aa2580b349a764cdc16909"
+                "reference": "b50751610e8af3b8b23fc8a2cad760912ae7958a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/14136d22122622e340aa2580b349a764cdc16909",
-                "reference": "14136d22122622e340aa2580b349a764cdc16909",
+                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/b50751610e8af3b8b23fc8a2cad760912ae7958a",
+                "reference": "b50751610e8af3b8b23fc8a2cad760912ae7958a",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,6 @@
                 "firebase/php-jwt": "Needed to support Apple provider",
                 "phpseclib/phpseclib": "Needed to support Apple provider"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -69,9 +68,9 @@
             "support": {
                 "issues": "https://github.com/hybridauth/hybridauth/issues",
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
-                "source": "https://github.com/Combodo/hybridauth/tree/master"
+                "source": "https://github.com/Combodo/hybridauth/tree/itop-provider"
             },
-            "time": "2025-02-24T09:21:59+00:00"
+            "time": "2025-03-31T12:14:36+00:00"
         }
     ],
     "packages-dev": [],

@@ -23,6 +23,6 @@
   }],
   "require": {
     "composer-runtime-api": "^2.0",
-    "hybridauth/hybridauth" : "dev-master"
+    "hybridauth/hybridauth" : "dev-itop-provider"
   }
 }
