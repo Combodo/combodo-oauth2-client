@@ -100,7 +100,7 @@ class ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01
         'Hybridauth\\Provider\\Google' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Google.php',
         'Hybridauth\\Provider\\Headless' => __DIR__ . '/../..' . '/srcHybridauth/Provider/Headless.php',
         'Hybridauth\\Provider\\Instagram' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Instagram.php',
-        'Hybridauth\\Provider\\Itop' => __DIR__ . '/../..' . '/srcHybridauth/Provider/Itop.php',
+        'Hybridauth\\Provider\\Itop' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Itop.php',
         'Hybridauth\\Provider\\Keycloak' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Keycloak.php',
         'Hybridauth\\Provider\\LinkedIn' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/LinkedIn.php',
         'Hybridauth\\Provider\\LinkedInOpenID' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/LinkedInOpenID.php',
