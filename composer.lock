@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Combodo/hybridauth.git",
-                "reference": "b50751610e8af3b8b23fc8a2cad760912ae7958a"
+                "reference": "76b3d4299c8f25f9c67a51b96cfc1c40250544ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/b50751610e8af3b8b23fc8a2cad760912ae7958a",
-                "reference": "b50751610e8af3b8b23fc8a2cad760912ae7958a",
+                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/76b3d4299c8f25f9c67a51b96cfc1c40250544ac",
+                "reference": "76b3d4299c8f25f9c67a51b96cfc1c40250544ac",
                 "shasum": ""
             },
             "require": {
@@ -70,7 +70,7 @@
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
                 "source": "https://github.com/Combodo/hybridauth/tree/itop-provider"
             },
-            "time": "2025-03-31T12:14:36+00:00"
+            "time": "2025-04-03T06:55:59+00:00"
         }
     ],
     "packages-dev": [],

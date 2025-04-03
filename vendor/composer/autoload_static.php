@@ -13,7 +13,6 @@ class ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01
         ),
         'C' => 
         array (
-            'Combodo\\iTop\\Oauth2Client\\Test\\' => 31,
             'Combodo\\iTop\\Oauth2Client\\' => 26,
         ),
     );
@@ -23,10 +22,6 @@ class ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01
         array (
             0 => __DIR__ . '/../..' . '/srcHybridauth',
             1 => __DIR__ . '/..' . '/hybridauth/hybridauth/src',
-        ),
-        'Combodo\\iTop\\Oauth2Client\\Test\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/tests/php-unit-tests',
         ),
         'Combodo\\iTop\\Oauth2Client\\' => 
         array (
@@ -98,7 +93,7 @@ class ComposerStaticInit949a463a1c97bddcae082bf0f7ba8d01
         'Hybridauth\\Provider\\GitHub' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/GitHub.php',
         'Hybridauth\\Provider\\GitLab' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/GitLab.php',
         'Hybridauth\\Provider\\Google' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Google.php',
-        'Hybridauth\\Provider\\Headless' => __DIR__ . '/../..' . '/srcHybridauth/Provider/Headless.php',
+        'Hybridauth\\Provider\\Headless' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Headless.php',
         'Hybridauth\\Provider\\Instagram' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Instagram.php',
         'Hybridauth\\Provider\\Itop' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Itop.php',
         'Hybridauth\\Provider\\Keycloak' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Keycloak.php',
