@@ -69,7 +69,7 @@ return array(
     'Hybridauth\\Provider\\GitHub' => $vendorDir . '/hybridauth/hybridauth/src/Provider/GitHub.php',
     'Hybridauth\\Provider\\GitLab' => $vendorDir . '/hybridauth/hybridauth/src/Provider/GitLab.php',
     'Hybridauth\\Provider\\Google' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Google.php',
-    'Hybridauth\\Provider\\Headless' => $baseDir . '/srcHybridauth/Provider/Headless.php',
+    'Hybridauth\\Provider\\Headless' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Headless.php',
     'Hybridauth\\Provider\\Instagram' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Instagram.php',
     'Hybridauth\\Provider\\Itop' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Itop.php',
     'Hybridauth\\Provider\\Keycloak' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Keycloak.php',
