@@ -102,6 +102,7 @@ class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
         'Hybridauth\\Provider\\Medium' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Medium.php',
         'Hybridauth\\Provider\\MicrosoftGraph' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/MicrosoftGraph.php',
         'Hybridauth\\Provider\\ORCID' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/ORCID.php',
+        'Hybridauth\\Provider\\OktaOIDC' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/OktaOIDC.php',
         'Hybridauth\\Provider\\OpenID' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/OpenID.php',
         'Hybridauth\\Provider\\Patreon' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Patreon.php',
         'Hybridauth\\Provider\\Paypal' => __DIR__ . '/..' . '/hybridauth/hybridauth/src/Provider/Paypal.php',

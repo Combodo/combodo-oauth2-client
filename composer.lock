@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "949a463a1c97bddcae082bf0f7ba8d01",
+    "content-hash": "411a3317034ab4451f9d56ed3cd5c002",
     "packages": [
         {
             "name": "hybridauth/hybridauth",
-            "version": "dev-master",
+            "version": "dev-8375-autoprovisioning",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Combodo/hybridauth.git",
-                "reference": "43fc827308a194e6fe9b7a68eb4bb22d601babb2"
+                "reference": "99c2e392ae0cafaeb30983750fdf4abc77c87e1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/43fc827308a194e6fe9b7a68eb4bb22d601babb2",
-                "reference": "43fc827308a194e6fe9b7a68eb4bb22d601babb2",
+                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/99c2e392ae0cafaeb30983750fdf4abc77c87e1f",
+                "reference": "99c2e392ae0cafaeb30983750fdf4abc77c87e1f",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,6 @@
                 "firebase/php-jwt": "Needed to support Apple provider",
                 "phpseclib/phpseclib": "Needed to support Apple provider"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -69,9 +68,9 @@
             "support": {
                 "issues": "https://github.com/hybridauth/hybridauth/issues",
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
-                "source": "https://github.com/Combodo/hybridauth/tree/master"
+                "source": "https://github.com/Combodo/hybridauth/tree/8375-autoprovisioning"
             },
-            "time": "2025-04-23T09:58:31+00:00"
+            "time": "2025-06-06T12:21:20+00:00"
         }
     ],
     "packages-dev": [],

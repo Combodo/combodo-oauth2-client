@@ -78,6 +78,7 @@ return array(
     'Hybridauth\\Provider\\Medium' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Medium.php',
     'Hybridauth\\Provider\\MicrosoftGraph' => $vendorDir . '/hybridauth/hybridauth/src/Provider/MicrosoftGraph.php',
     'Hybridauth\\Provider\\ORCID' => $vendorDir . '/hybridauth/hybridauth/src/Provider/ORCID.php',
+    'Hybridauth\\Provider\\OktaOIDC' => $vendorDir . '/hybridauth/hybridauth/src/Provider/OktaOIDC.php',
     'Hybridauth\\Provider\\OpenID' => $vendorDir . '/hybridauth/hybridauth/src/Provider/OpenID.php',
     'Hybridauth\\Provider\\Patreon' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Patreon.php',
     'Hybridauth\\Provider\\Paypal' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Paypal.php',

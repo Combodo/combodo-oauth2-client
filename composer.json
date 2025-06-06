@@ -18,6 +18,6 @@
   }],
   "require": {
     "composer-runtime-api": "^2.0",
-    "hybridauth/hybridauth" : "dev-master"
+    "hybridauth/hybridauth" : "dev-8375-autoprovisioning"
   }
 }
