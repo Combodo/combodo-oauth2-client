@@ -261,6 +261,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 	}
 
 	public function testListProviders() {
+		$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
 		$aRes = AdapterService::GetInstance()->ListProviders();
 		$this->assertContains("Google", $aRes, var_export($aRes, true));
 		$this->assertContains("MicrosoftGraph", $aRes, var_export($aRes, true));
@@ -270,6 +271,7 @@ class AdapterServiceTest extends ItopDataTestCase {
 
 	public function testListDatamodelDeclaredProviders()
 	{
+		$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
 		$aRes = AdapterService::GetInstance()->ListDatamodelDeclaredProviders();
 		$aExpected = [
 			'GitHub' => 'Hybridauth\Provider\GitHub',
