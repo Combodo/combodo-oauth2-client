@@ -8,11 +8,6 @@
       "Hybridauth\\": "srcHybridauth"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "Combodo\\iTop\\Oauth2Client\\Test\\": "tests/php-unit-tests"
-    }
-  },
   "name": "combodo/combodo-oauth2-client",
   "type": "itop-extension",
   "description": "Oauth2 Client",
