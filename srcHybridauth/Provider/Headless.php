@@ -15,7 +15,7 @@ use Hybridauth\Exception\InvalidApplicationCredentialsException;
  * Itop OAuth2 Identity Provider adapter.
  * This provider is not interactive, the User's credentials are given during the connection along with application credentials
  */
-class HeadlessItop extends OAuth2
+class Headless extends OAuth2
 {
 	/**
 	 * {@inheritdoc}
