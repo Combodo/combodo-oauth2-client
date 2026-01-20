@@ -20,22 +20,22 @@ class Headless extends OAuth2
 	/**
 	 * {@inheritdoc}
 	 */
-	protected $scope = 'account_info.read';
+	protected $scope = '';
 
 	/**
 	 * {@inheritdoc}
 	 */
+	//https://www.servicenow.com/community/developer-blog/oauth-2-0-with-inbound-rest/ba-p/2278926
 	protected $apiDocumentation = 'https://www.itophub.io/wiki/page?id=start';
-	private string $username;
-	private string $password;
-	private string $version = "1.3";
+	protected string $username;
+	protected string $password;
+	protected string $version = "";
 
 	/**
 	 * {@inheritdoc}
 	 */
 	protected function configure()
 	{
-
 		if (!$this->config->exists('url')) {
 			throw new InvalidApplicationCredentialsException(
 				'You must define a provider url'
@@ -64,9 +64,8 @@ class Headless extends OAuth2
 		}
 
 		$this->apiBaseUrl = $url;
-
-		$this->authorizeUrl = $url.'/pages/exec.php?exec_module=authent-oauth&exec_page=auth.php';
-		$this->accessTokenUrl = $this->authorizeUrl;
+		$this->authorizeUrl = $url;
+		$this->accessTokenUrl = $url;
 	}
 
 	/**

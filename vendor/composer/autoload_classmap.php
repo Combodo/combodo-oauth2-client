@@ -70,6 +70,7 @@ return array(
     'Hybridauth\\Provider\\GitLab' => $vendorDir . '/hybridauth/hybridauth/src/Provider/GitLab.php',
     'Hybridauth\\Provider\\Google' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Google.php',
     'Hybridauth\\Provider\\Headless' => $baseDir . '/srcHybridauth/Provider/Headless.php',
+    'Hybridauth\\Provider\\HeadlessItop' => $baseDir . '/srcHybridauth/Provider/HeadlessItop.php',
     'Hybridauth\\Provider\\Instagram' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Instagram.php',
     'Hybridauth\\Provider\\Keycloak' => $vendorDir . '/hybridauth/hybridauth/src/Provider/Keycloak.php',
     'Hybridauth\\Provider\\LinkedIn' => $vendorDir . '/hybridauth/hybridauth/src/Provider/LinkedIn.php',
