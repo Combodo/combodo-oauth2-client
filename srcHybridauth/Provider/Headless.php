@@ -135,6 +135,20 @@ class Headless extends OAuth2
 		return null;
 	}
 
+	protected function exchangeCodeForAccessToken($code)
+	{
+		$response = $this->httpClient->request(
+			$this->accessTokenUrl,
+			$this->tokenExchangeMethod,
+			$this->tokenExchangeParameters,
+			$this->tokenExchangeHeaders
+		);
+
+		$this->validateApiResponse('Unable to exchange code for API access token');
+
+		return $response;
+	}
+
 	/**
 	 * {@inheritdoc}
 	 */
