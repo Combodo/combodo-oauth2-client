@@ -93,7 +93,7 @@ class Headless extends OAuth2
 		}
 
 		$this->apiRequestHeaders = [
-			'Content-Type' => 'application/json',
+			'Content-Type' => 'application/x-www-form-urlencoded',
 		];
 
 		$this->apiRequestParameters = [
@@ -101,11 +101,11 @@ class Headless extends OAuth2
 		];
 
 		$this->tokenExchangeHeaders = [
-			'Content-Type' => 'application/json',
+			'Content-Type' => 'application/x-www-form-urlencoded',
 		];
 
 		$this->tokenRefreshHeaders = [
-			'Content-Type' => 'application/json',
+			'Content-Type' => 'application/x-www-form-urlencoded',
 		];
 	}
 
