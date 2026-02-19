@@ -192,7 +192,7 @@ class Oauth2ClientService
 	 * @throws \Combodo\iTop\ItopAttributeEncryptedPassword\Helper\AttributeEncryptedPasswordException
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	private function MapAttCodesToConf(Oauth2Client $oOauth2Client, array $aHybridToAttCodeMapping, array &$aData = null): void
+	private function MapAttCodesToConf(Oauth2Client $oOauth2Client, array $aHybridToAttCodeMapping, ?array &$aData = null): void
 	{
 		try {
 			if (is_null($aData)) {
