@@ -7,23 +7,23 @@ namespace Composer\Autoload;
 class ComposerStaticInit59806bb5fc710911a83fe4fe83d82535
 {
     public static $prefixLengthsPsr4 = array (
-        'H' => 
+        'H' =>
         array (
             'Hybridauth\\' => 11,
         ),
-        'C' => 
+        'C' =>
         array (
             'Combodo\\iTop\\Oauth2Client\\' => 26,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Hybridauth\\' => 
+        'Hybridauth\\' =>
         array (
             0 => __DIR__ . '/../..' . '/srcHybridauth',
             1 => __DIR__ . '/..' . '/hybridauth/hybridauth/src',
         ),
-        'Combodo\\iTop\\Oauth2Client\\' => 
+        'Combodo\\iTop\\Oauth2Client\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

@@ -7,12 +7,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Combodo/hybridauth.git",
-                "reference": "a09eb0d8a7855232a9f6cd68ffb66d9f39e43d5d"
+                "reference": "da3cd2132dead3078b61dba80ae2c45226b53dd6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/a09eb0d8a7855232a9f6cd68ffb66d9f39e43d5d",
-                "reference": "a09eb0d8a7855232a9f6cd68ffb66d9f39e43d5d",
+                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/da3cd2132dead3078b61dba80ae2c45226b53dd6",
+                "reference": "da3cd2132dead3078b61dba80ae2c45226b53dd6",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
                 "firebase/php-jwt": "Needed to support Apple provider",
                 "phpseclib/phpseclib": "Needed to support Apple provider"
             },
-            "time": "2025-10-08T06:38:25+00:00",
+            "time": "2026-03-30T08:52:02+00:00",
             "default-branch": true,
             "type": "library",
             "installation-source": "dist",
