@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "949a463a1c97bddcae082bf0f7ba8d01",
+    "content-hash": "fc52b38cab7855f09f1ca2c9f883a657",
     "packages": [
         {
             "name": "hybridauth/hybridauth",
-            "version": "dev-master",
+            "version": "3.12.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Combodo/hybridauth.git",
-                "reference": "da3cd2132dead3078b61dba80ae2c45226b53dd6"
+                "reference": "e71cbf7fd76310f9a3953a19302722309425655a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/da3cd2132dead3078b61dba80ae2c45226b53dd6",
-                "reference": "da3cd2132dead3078b61dba80ae2c45226b53dd6",
+                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/e71cbf7fd76310f9a3953a19302722309425655a",
+                "reference": "e71cbf7fd76310f9a3953a19302722309425655a",
                 "shasum": ""
             },
             "require": {
@@ -31,7 +31,6 @@
                 "firebase/php-jwt": "Needed to support Apple provider",
                 "phpseclib/phpseclib": "Needed to support Apple provider"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -69,22 +68,20 @@
             "support": {
                 "issues": "https://github.com/hybridauth/hybridauth/issues",
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
-                "source": "https://github.com/Combodo/hybridauth/tree/master"
+                "source": "https://github.com/Combodo/hybridauth/tree/3.12.1.1"
             },
-            "time": "2026-03-30T08:52:02+00:00"
+            "time": "2026-05-12T12:52:06+00:00"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "RC",
-    "stability-flags": {
-        "hybridauth/hybridauth": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "composer-runtime-api": "^2.0"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

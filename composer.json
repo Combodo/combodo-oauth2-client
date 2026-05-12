@@ -18,6 +18,6 @@
   }],
   "require": {
     "composer-runtime-api": "^2.0",
-    "hybridauth/hybridauth" : "dev-master"
+    "hybridauth/hybridauth" : "3.12.1.1"
   }
 }

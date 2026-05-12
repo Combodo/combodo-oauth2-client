@@ -2,17 +2,17 @@
     "packages": [
         {
             "name": "hybridauth/hybridauth",
-            "version": "dev-master",
-            "version_normalized": "dev-master",
+            "version": "3.12.1.1",
+            "version_normalized": "3.12.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Combodo/hybridauth.git",
-                "reference": "da3cd2132dead3078b61dba80ae2c45226b53dd6"
+                "reference": "e71cbf7fd76310f9a3953a19302722309425655a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/da3cd2132dead3078b61dba80ae2c45226b53dd6",
-                "reference": "da3cd2132dead3078b61dba80ae2c45226b53dd6",
+                "url": "https://api.github.com/repos/Combodo/hybridauth/zipball/e71cbf7fd76310f9a3953a19302722309425655a",
+                "reference": "e71cbf7fd76310f9a3953a19302722309425655a",
                 "shasum": ""
             },
             "require": {
@@ -26,8 +26,7 @@
                 "firebase/php-jwt": "Needed to support Apple provider",
                 "phpseclib/phpseclib": "Needed to support Apple provider"
             },
-            "time": "2026-03-30T08:52:02+00:00",
-            "default-branch": true,
+            "time": "2026-05-12T12:52:06+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -66,7 +65,7 @@
             "support": {
                 "issues": "https://github.com/hybridauth/hybridauth/issues",
                 "gitter": "https://gitter.im/hybridauth/hybridauth",
-                "source": "https://github.com/Combodo/hybridauth/tree/master"
+                "source": "https://github.com/Combodo/hybridauth/tree/v3.12.1_1.0.10"
             },
             "install-path": "../hybridauth/hybridauth"
         }
