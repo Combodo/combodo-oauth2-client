@@ -43,9 +43,13 @@ class AdapterFactoryService
 	 * @return \Hybridauth\Adapter\AdapterInterface
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function GetAdapterInterface(string $sProviderName, array $aConfig, ?Logger $oLogger = null,
-		?HttpClientInterface $httpClient = null, ?StorageInterface $storage = null): AdapterInterface
-	{
+	public function GetAdapterInterface(
+		string $sProviderName,
+		array $aConfig,
+		?Logger $oLogger = null,
+		?HttpClientInterface $httpClient = null,
+		?StorageInterface $storage = null
+	): AdapterInterface {
 		try {
 			if (is_null($oLogger)) {
 				$oLogger = new Logger(Oauth2ClientLog::GetHybridauthDebugMode(), APPROOT.'log/hybridauth.log');

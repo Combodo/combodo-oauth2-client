@@ -105,8 +105,12 @@ class Oauth2ClientService
 			$oSearch = DBSearch::FromOQL("SELECT Oauth2Client WHERE name=:name AND provider=:provider");
 			$oSet = new DBObjectSet($oSearch, [], ['name' => $this->sName, 'provider' => $this->sProvider]);
 			if ($oSet->Count() != 1) {
-				throw new Oauth2ClientException("Missing configuration", 0, null,
-					['name' => $this->sName, 'provider' => $this->sProvider]);
+				throw new Oauth2ClientException(
+					"Missing configuration",
+					0,
+					null,
+					['name' => $this->sName, 'provider' => $this->sProvider]
+				);
 			}
 
 			/** @var Oauth2Client $oDBObject */

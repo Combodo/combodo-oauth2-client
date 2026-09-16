@@ -1,6 +1,7 @@
 <?php
 
 namespace Combodo\iTop\Oauth2Client\Test\Model;
+
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
@@ -8,17 +9,21 @@ use Combodo\iTop\Oauth2Client\Model\Oauth2ClientService;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
 use Oauth2Client;
 
-class Oauth2ClientServiceTest extends ItopDataTestCase {
-	protected function setUp(): void {
+class Oauth2ClientServiceTest extends ItopDataTestCase
+{
+	protected function setUp(): void
+	{
 		parent::setUp();
 		$this->RequireOnceItopFile('env-production/combodo-oauth2-client/vendor/autoload.php');
 	}
 
-	protected function tearDown(): void {
+	protected function tearDown(): void
+	{
 		parent::tearDown();
 	}
 
-	public function CreateOauth2Client(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client {
+	public function CreateOauth2Client(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client
+	{
 		$aCurrentFields = [
 			'name' => 'webhook',
 			'client_id' => 'client_123',
@@ -28,14 +33,16 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$aCurrentFields = array_merge($aCurrentFields, $aFields);
 
 		/** @var \Oauth2Client $oOauth2Client */
-		$oOauth2Client = $this->createObject($sClassName,
+		$oOauth2Client = $this->createObject(
+			$sClassName,
 			$aCurrentFields
 		);
 
 		return $oOauth2Client;
 	}
 
-	public function CreateOauth2ClientWithTokens(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client {
+	public function CreateOauth2ClientWithTokens(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client
+	{
 		$aCurrentFields = [
 			'access_token' => 'access_token1',
 			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
@@ -49,30 +56,40 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		return $this->CreateOauth2Client($sClassName, $aCurrentFields);
 	}
 
-	public function testGetHybridauthProvider() {
+	public function testGetHybridauthProvider()
+	{
 		$oObj = $this->CreateOauth2Client();
 		$this->assertEquals("Hybridauth\\Provider\\GitHub", Oauth2ClientService::GetHybridauthProvider($oObj));
 	}
 
-	public function testInitClient() {
+	public function testInitClient()
+	{
 		$oObj = $this->CreateOauth2Client();
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
-		$oInitiatedOauth2Client = $this->InvokeNonPublicMethod(Oauth2ClientService::class, 'GetOauth2Client',
-			Oauth2ClientService::GetInstance());
+		$oInitiatedOauth2Client = $this->InvokeNonPublicMethod(
+			Oauth2ClientService::class,
+			'GetOauth2Client',
+			Oauth2ClientService::GetInstance()
+		);
 		$this->assertEquals($oObj->GetKey(), $oInitiatedOauth2Client->GetKey());
 	}
 
-	public function testInitClientByOauth2Client() {
+	public function testInitClientByOauth2Client()
+	{
 		$oObj = $this->CreateOauth2Client();
 		Oauth2ClientService::GetInstance()->InitClientByOauth2Client($oObj);
 
-		$oInitiatedOauth2Client = $this->InvokeNonPublicMethod(Oauth2ClientService::class, 'GetOauth2Client',
-			Oauth2ClientService::GetInstance());
+		$oInitiatedOauth2Client = $this->InvokeNonPublicMethod(
+			Oauth2ClientService::class,
+			'GetOauth2Client',
+			Oauth2ClientService::GetInstance()
+		);
 		$this->assertEquals($oObj->GetKey(), $oInitiatedOauth2Client->GetKey());
 	}
 
-	public function testGetAuthenticateConfigurationWithoutScopeFilledIn() {
+	public function testGetAuthenticateConfigurationWithoutScopeFilledIn()
+	{
 		$oObj = $this->CreateOauth2Client();
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -93,7 +110,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpected, Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration());
 	}
 
-	public function testGetAuthenticateConfigurationWithScope() {
+	public function testGetAuthenticateConfigurationWithScope()
+	{
 		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -115,7 +133,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpected, Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration());
 	}
 
-	public function testGetAuthenticateConfigurationWithAdditionalCustomMappingField_MSGraph_Tenant() {
+	public function testGetAuthenticateConfigurationWithAdditionalCustomMappingField_MSGraph_Tenant()
+	{
 		$oObj = $this->CreateOauth2Client(\MicrosoftGraphOauth2Client::class, ['tenant' => 'tenant321']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -137,7 +156,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpected, Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration());
 	}
 
-	public function testGetRefreshTokenConfiguration_NoTokenSetYet() {
+	public function testGetRefreshTokenConfiguration_NoTokenSetYet()
+	{
 		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -160,7 +180,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpected, Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration());
 	}
 
-	public function testGetRefreshTokenConfiguration_nominalcase() {
+	public function testGetRefreshTokenConfiguration_nominalcase()
+	{
 		$oObj = $this->CreateOauth2ClientWithTokens(\GitHubOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -189,7 +210,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpected, Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration());
 	}
 
-	public function testGetRefreshTokenConfiguration_WithAdditionalCustomMappingField_MSGraph_Tenant() {
+	public function testGetRefreshTokenConfiguration_WithAdditionalCustomMappingField_MSGraph_Tenant()
+	{
 		$oObj = $this->CreateOauth2ClientWithTokens(\MicrosoftGraphOauth2Client::class, ['scope' => 'scope789', 'tenant' => 'tenant321']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -219,20 +241,23 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals($aExpected, Oauth2ClientService::GetInstance()->GetRefreshTokenConfiguration());
 	}
 
-	public function testGetAccessToken_NoTokenYet() {
+	public function testGetAccessToken_NoTokenYet()
+	{
 		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 		$this->expectExceptionMessage("Oauth2 never initialized");
 		Oauth2ClientService::GetInstance()->GetAccessToken();
 	}
 
-	public function testGetAccessToken() {
+	public function testGetAccessToken()
+	{
 		$oObj = $this->CreateOauth2ClientWithTokens(\GoogleOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 		$this->assertEquals('access_token1', Oauth2ClientService::GetInstance()->GetAccessToken());
 	}
 
-	public function testGetNotInitializedYet() {
+	public function testGetNotInitializedYet()
+	{
 		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, []);
 
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
@@ -241,7 +266,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		Oauth2ClientService::GetInstance()->GetAccessToken();
 	}
 
-	public function testIsExpired_NoTokenYet() {
+	public function testIsExpired_NoTokenYet()
+	{
 		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 		$this->expectException(Oauth2ClientException::class);
@@ -249,27 +275,38 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		Oauth2ClientService::GetInstance()->IsExpired();
 	}
 
-	public function testIsExpired_TokenUpToDate() {
+	public function testIsExpired_TokenUpToDate()
+	{
 		$sDateInTheFuture = date(\AttributeDateTime::GetSQLFormat(), strtotime('+1 HOURS'));
 		$now = new \DateTime();
-		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class,
-			['scope' => 'scope789', 'access_token_expiration' => $sDateInTheFuture]);
+		$oObj = $this->CreateOauth2Client(
+			\GoogleOauth2Client::class,
+			['scope' => 'scope789', 'access_token_expiration' => $sDateInTheFuture]
+		);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
-		$this->assertFalse(Oauth2ClientService::GetInstance()->IsExpired(),
-			"expiration: $sDateInTheFuture now: ".$now->format(\AttributeDateTime::GetSQLFormat()));
+		$this->assertFalse(
+			Oauth2ClientService::GetInstance()->IsExpired(),
+			"expiration: $sDateInTheFuture now: ".$now->format(\AttributeDateTime::GetSQLFormat())
+		);
 	}
 
-	public function testIsExpired_TokenExpired() {
+	public function testIsExpired_TokenExpired()
+	{
 		$sDateInTheFuture = date(\AttributeDateTime::GetSQLFormat(), strtotime('-1 HOURS'));
 		$now = new \DateTime();
-		$oObj = $this->CreateOauth2Client(\GoogleOauth2Client::class,
-			['scope' => 'scope789', 'access_token_expiration' => $sDateInTheFuture]);
+		$oObj = $this->CreateOauth2Client(
+			\GoogleOauth2Client::class,
+			['scope' => 'scope789', 'access_token_expiration' => $sDateInTheFuture]
+		);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
-		$this->assertTrue(Oauth2ClientService::GetInstance()->IsExpired(),
-			"expiration: $sDateInTheFuture now: ".$now->format(\AttributeDateTime::GetSQLFormat()));
+		$this->assertTrue(
+			Oauth2ClientService::GetInstance()->IsExpired(),
+			"expiration: $sDateInTheFuture now: ".$now->format(\AttributeDateTime::GetSQLFormat())
+		);
 	}
 
-	public function testSaveTokens() {
+	public function testSaveTokens()
+	{
 		$oObj = $this->CreateOauth2Client(\GitHubOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -292,7 +329,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', $oObj->Get('authorization_state'));
 	}
 
-	public function testSaveTokens_OverrideWithDefaultScopeWhenNotFilledIn() {
+	public function testSaveTokens_OverrideWithDefaultScopeWhenNotFilledIn()
+	{
 		$oObj = $this->CreateOauth2Client(\GitHubOauth2Client::class, []);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -315,7 +353,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', $oObj->Get('authorization_state'));
 	}
 
-	public function testSaveTokens_NoRefreshParamsReturnedByIDP() {
+	public function testSaveTokens_NoRefreshParamsReturnedByIDP()
+	{
 		$oObj = $this->CreateOauth2Client(\GitHubOauth2Client::class, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 
@@ -336,7 +375,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 		$this->assertEquals('HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V', $oObj->Get('authorization_state'));
 	}
 
-	public function SaveTokensWithCustomFieldsProvider() {
+	public function SaveTokensWithCustomFieldsProvider()
+	{
 		return [
 			'MicrosoftGraphOauth2Client' => ['MicrosoftGraphOauth2Client', 'scope789 offline_access'],
 			'GoogleOauth2Client' => ['GoogleOauth2Client', 'scope789'],
@@ -346,7 +386,8 @@ class Oauth2ClientServiceTest extends ItopDataTestCase {
 	/**
 	 * @dataProvider SaveTokensWithCustomFieldsProvider
 	 */
-	public function testSaveTokensWithCustomFields($sProviderClass, $sExpectedScope) {
+	public function testSaveTokensWithCustomFields($sProviderClass, $sExpectedScope)
+	{
 		$oObj = $this->CreateOauth2Client($sProviderClass, ['scope' => 'scope789']);
 		Oauth2ClientService::GetInstance()->InitClient($oObj->Get('name'), $oObj->Get('provider'));
 

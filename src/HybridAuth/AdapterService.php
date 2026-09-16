@@ -52,7 +52,7 @@ class AdapterService
 	 *
 	 * @return void
 	 */
-	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient=null, ?StorageInterface $oStorage=null): void
+	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient = null, ?StorageInterface $oStorage = null): void
 	{
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
 		$this->sName = $sName;
@@ -71,8 +71,13 @@ class AdapterService
 	public function InitOauth2(array $aConfig): void
 	{
 		try {
-			$this->oAuth2 = AdapterFactoryService::GetInstance()->GetAdapterInterface($this->sProviderName, $aConfig,
-				null, $this->oHttpClient, $this->oStorage);
+			$this->oAuth2 = AdapterFactoryService::GetInstance()->GetAdapterInterface(
+				$this->sProviderName,
+				$aConfig,
+				null,
+				$this->oHttpClient,
+				$this->oStorage
+			);
 			$sAuthorizationState = $aConfig['authorization_state'] ?? null;
 			if (utils::IsNotNullOrEmptyString($sAuthorizationState)) {
 				$this->storeData('authorization_state', $sAuthorizationState);
@@ -180,7 +185,8 @@ class AdapterService
 	 * @return Collection
 	 * @throws Oauth2ClientException
 	 */
-	public function ApiRequest(array $aConfig, string $sUrl, string $sMethod = 'GET', array $aParameters = [], array $aHeaders = [], bool $bMultipart = false) : Collection {
+	public function ApiRequest(array $aConfig, string $sUrl, string $sMethod = 'GET', array $aParameters = [], array $aHeaders = [], bool $bMultipart = false): Collection
+	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
 			$this->InitOauth2($aConfig);// refresh tokens if needed
@@ -240,7 +246,7 @@ class AdapterService
 	 * @return mixed
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function storeData(string $name, $value = null) : void
+	public function storeData(string $name, $value = null): void
 	{
 		try {
 			/** @noinspection OneTimeUseVariablesInspection */
@@ -254,10 +260,11 @@ class AdapterService
 		}
 	}
 
-	public function ListProviders() : array {
+	public function ListProviders(): array
+	{
 		$aList = [];
 
-		$sPath = __DIR__ . '/../../vendor/hybridauth/hybridauth/src/Provider/';
+		$sPath = __DIR__.'/../../vendor/hybridauth/hybridauth/src/Provider/';
 		$oFilesystemIterator = new \FilesystemIterator($sPath);
 		/** @var \SplFileInfo $file */
 		foreach ($oFilesystemIterator as $file) {
@@ -271,8 +278,8 @@ class AdapterService
 			}
 		}
 
-		foreach ($this->ListDatamodelDeclaredProviders() as $sShortNameClass => $sClass){
-			if (! in_array($sShortNameClass, $aList)){
+		foreach ($this->ListDatamodelDeclaredProviders() as $sShortNameClass => $sClass) {
+			if (! in_array($sShortNameClass, $aList)) {
 				$aList [] = $sShortNameClass;
 			}
 		}
@@ -281,17 +288,20 @@ class AdapterService
 
 	public function ListDatamodelDeclaredProviders()
 	{
-		$aList=[];
+		$aList = [];
 
-		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $oOauth2ClientClass){
-			try{
+		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $oOauth2ClientClass) {
+			try {
 				$oOauth2Client = new $oOauth2ClientClass();
 				$sClass = $oOauth2Client->GetHybridauthProvider();
 				$oReflectionClass = new \ReflectionClass($sClass);
-				$aList[$oReflectionClass->getShortName()]= $sClass;
+				$aList[$oReflectionClass->getShortName()] = $sClass;
 			} catch (Exception $e) {
-				TokenAuthLog::Warning("Cannot load HybridauthProvider", null,
-					[ "message" => $e->getMessage(), "HybridauthProvider" => $sClass, "Oauth2Client" => get_class($oOauth2Client)]);
+				TokenAuthLog::Warning(
+					"Cannot load HybridauthProvider",
+					null,
+					[ "message" => $e->getMessage(), "HybridauthProvider" => $sClass, "Oauth2Client" => get_class($oOauth2Client)]
+				);
 			}
 		}
 

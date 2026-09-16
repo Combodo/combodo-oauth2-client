@@ -56,7 +56,7 @@ class Oauth2Service
 	 * @return void
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient=null, ?StorageInterface $oStorage=null)
+	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient = null, ?StorageInterface $oStorage = null)
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
@@ -83,7 +83,7 @@ class Oauth2Service
 	 * @return void
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function InitByOauth2Client(Oauth2Client $oOauth2Client, ?HttpClientInterface $oHttpClient=null, ?StorageInterface $oStorage=null): void
+	public function InitByOauth2Client(Oauth2Client $oOauth2Client, ?HttpClientInterface $oHttpClient = null, ?StorageInterface $oStorage = null): void
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$oOauth2Client->GetKey()]);
@@ -128,12 +128,12 @@ class Oauth2Service
 	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
-	public function AuthenticateFinish(?string $sAuthorizationStateForTestingOnly=null): string
+	public function AuthenticateFinish(?string $sAuthorizationStateForTestingOnly = null): string
 	{
 		try {
 			Oauth2ClientLog::Debug(__FUNCTION__, null, [$this->sName, $this->sProvider]);
 			$aConfig = Oauth2ClientService::GetInstance()->GetAuthenticateConfiguration();
-			if (! is_null($sAuthorizationStateForTestingOnly)){
+			if (! is_null($sAuthorizationStateForTestingOnly)) {
 				//simulate below code when calling AuthenticateBegin()->getAuthorizeUrl()
 				//  $this->storeData('authorization_state', $this->AuthorizeUrlParameters['state']);
 				$aConfig['authorization_state'] = $sAuthorizationStateForTestingOnly;

@@ -9,11 +9,13 @@ use Combodo\iTop\Oauth2Client\Service\Oauth2Service;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
 use Oauth2Client;
 
-class Oauth2ServiceTest extends ItopDataTestCase {
+class Oauth2ServiceTest extends ItopDataTestCase
+{
 	private Oauth2ClientService $oOauth2ClientService;
 	private AdapterService $oAdapterService;
 
-	protected function setUp(): void {
+	protected function setUp(): void
+	{
 		parent::setUp();
 		$this->RequireOnceItopFile('env-production/combodo-oauth2-client/vendor/autoload.php');
 
@@ -23,13 +25,15 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 		Oauth2ClientService::SetInstance($this->oOauth2ClientService);
 	}
 
-	protected function tearDown(): void {
+	protected function tearDown(): void
+	{
 		parent::tearDown();
 		AdapterService::SetInstance(null);
 		Oauth2ClientService::SetInstance(null);
 	}
 
-	public function CreateOauth2Client(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client {
+	public function CreateOauth2Client(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client
+	{
 		$aCurrentFields = [
 			'name' => 'webhook',
 			'client_id' => 'client_123',
@@ -39,14 +43,16 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 		$aCurrentFields = array_merge($aCurrentFields, $aFields);
 
 		/** @var \Oauth2Client $oOauth2Client */
-		$oOauth2Client = $this->createObject($sClassName,
+		$oOauth2Client = $this->createObject(
+			$sClassName,
 			$aCurrentFields
 		);
 
 		return $oOauth2Client;
 	}
 
-	public function CreateOauth2ClientWithTokens(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client {
+	public function CreateOauth2ClientWithTokens(string $sClassName = \GitHubOauth2Client::class, array $aFields = []): Oauth2Client
+	{
 		$aCurrentFields = [
 			'access_token' => 'access_token1',
 			'authorization_state' => 'HA-JYXSNR41K0D8BQHMGAOU6LI2C7TZP9FE5W3V',
@@ -60,8 +66,8 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 		return $this->CreateOauth2Client($sClassName, $aCurrentFields);
 	}
 
-
-	public function testAuthenticate_SimulateIDPRedirectionViaAnException() {
+	public function testAuthenticate_SimulateIDPRedirectionViaAnException()
+	{
 		$obj = $this->CreateOauth2Client();
 		$sName = $obj->Get('name');
 		$sProvider = $obj->Get('provider');
@@ -89,7 +95,8 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 		Oauth2Service::GetInstance()->Authenticate();
 	}
 
-	public function testAuthenticate_HeadlessIDP() {
+	public function testAuthenticate_HeadlessIDP()
+	{
 		$obj = $this->CreateOauth2Client();
 		$sName = $obj->Get('name');
 		$sProvider = $obj->Get('provider');
@@ -112,12 +119,12 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 			->method('Authenticate')
 			->with($aConfig);
 
-		$aTokenResponse = ["a"=> "b"];
+		$aTokenResponse = ["a" => "b"];
 		$this->oAdapterService->expects($this->once())
 			->method('AuthenticateFinish')
 			->willReturn($aTokenResponse);
 
-		$sDefaultScope="defaultScope";
+		$sDefaultScope = "defaultScope";
 		$this->oAdapterService->expects($this->once())
 			->method('GetDefaultScope')
 			->willReturn($sDefaultScope);
@@ -134,7 +141,8 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 		$this->assertEquals($sAccessToken, Oauth2Service::GetInstance()->Authenticate());
 	}
 
-	public function testAuthenticateFinish() {
+	public function testAuthenticateFinish()
+	{
 		$obj = $this->CreateOauth2Client();
 		$sName = $obj->Get('name');
 		$sProvider = $obj->Get('provider');
@@ -153,12 +161,12 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 			->method('GetAuthenticateConfiguration')
 			->willReturn($aConfig);
 
-		$aTokenResponse = ["a"=> "b"];
+		$aTokenResponse = ["a" => "b"];
 		$this->oAdapterService->expects($this->once())
 			->method('AuthenticateFinish')
 			->willReturn($aTokenResponse);
 
-		$sDefaultScope="defaultScope";
+		$sDefaultScope = "defaultScope";
 		$this->oAdapterService->expects($this->once())
 			->method('GetDefaultScope')
 			->willReturn($sDefaultScope);
@@ -175,7 +183,8 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 		$this->assertEquals($sAccessToken, Oauth2Service::GetInstance()->AuthenticateFinish());
 	}
 
-	public function testGetAccessToken_UpToDateToken() {
+	public function testGetAccessToken_UpToDateToken()
+	{
 		$obj = $this->CreateOauth2Client();
 		$sName = $obj->Get('name');
 		$sProvider = $obj->Get('provider');
@@ -201,7 +210,8 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 		$this->assertEquals($sToken, Oauth2Service::GetInstance()->GetAccessToken());
 	}
 
-	public function testGetAccessToken_ExpiredToken() {
+	public function testGetAccessToken_ExpiredToken()
+	{
 
 		$obj = $this->CreateOauth2Client();
 		$sName = $obj->Get('name');
@@ -229,12 +239,12 @@ class Oauth2ServiceTest extends ItopDataTestCase {
 			->method('GetRefreshTokenConfiguration')
 			->willReturn($aConfig);
 
-		$aTokenResponse = ["a"=> "b"];
+		$aTokenResponse = ["a" => "b"];
 		$this->oAdapterService->expects($this->once())
 			->method('RefreshToken')
 			->willReturn($aTokenResponse);
 
-		$sDefaultScope="defaultScope";
+		$sDefaultScope = "defaultScope";
 		$this->oAdapterService->expects($this->once())
 			->method('GetDefaultScope')
 			->willReturn($sDefaultScope);
