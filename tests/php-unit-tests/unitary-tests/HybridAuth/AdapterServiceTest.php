@@ -290,6 +290,7 @@ class AdapterServiceTest extends ItopDataTestCase
 			'Itop' => 'Hybridauth\Provider\Itop',
 			'Keycloak' => 'Hybridauth\Provider\Keycloak',
 			'MicrosoftGraph' => 'Hybridauth\Provider\MicrosoftGraph',
+			'OktaOIDC' => 'Hybridauth\Provider\OktaOIDC'
 		];
 		$this->assertEquals($aExpected, $aRes);
 	}
