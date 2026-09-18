@@ -12,6 +12,7 @@ use Hybridauth\Adapter\AdapterInterface;
 use Hybridauth\Data\Collection;
 use Hybridauth\HttpClient\HttpClientInterface;
 use Hybridauth\Storage\StorageInterface;
+use Oauth2Client;
 use ReflectionClass;
 use utils;
 
@@ -290,9 +291,9 @@ class AdapterService
 	{
 		$aList = [];
 
-		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $oOauth2ClientClass) {
+		foreach (\MetaModel::EnumChildClasses(Oauth2Client::class) as $sOauth2ClientClass) {
 			try {
-				$oOauth2Client = new $oOauth2ClientClass();
+				$oOauth2Client = new $sOauth2ClientClass();
 				$sClass = $oOauth2Client->GetHybridauthProvider();
 				$oReflectionClass = new \ReflectionClass($sClass);
 				$aList[$oReflectionClass->getShortName()] = $sClass;
@@ -307,5 +308,17 @@ class AdapterService
 
 		ksort($aList);
 		return $aList;
+	}
+
+	public function GetOauth2ClientClass(string $sAdapterClass) : ?Oauth2Client
+	{
+		foreach (\MetaModel::EnumChildClasses(Oauth2Client::class) as $sOauth2ClientClass) {
+			$sProviderClassName = str_replace('Oauth2Client', '', $sOauth2ClientClass);
+			if ($sAdapterClass === $sProviderClassName){
+				return new $sOauth2ClientClass;
+			}
+		}
+
+		return null;
 	}
 }
