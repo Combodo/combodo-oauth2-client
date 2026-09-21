@@ -21,10 +21,10 @@ SetupWebPage::AddModule(
 		// Setup
 		//
 		'dependencies' => [
-			'itop-attribute-encrypted-password/1.0.0',
+			'itop-attribute-encrypted-password/1.1.1',
 		],
 		'mandatory' => false,
-		'visible' => false,
+		'visible' => true,
 
 		// Components
 		//
@@ -46,11 +46,11 @@ SetupWebPage::AddModule(
 		'doc.manual_setup' => '', // hyperlink to manual setup documentation, if any
 		'doc.more_information' => '', // hyperlink to more information, if any
 
-        // Security
-        'delegated_authentication_endpoints' => [
-            'connect.php',
-            'landing.php'
-        ],
+		// Security
+		'delegated_authentication_endpoints' => [
+			'connect.php',
+			'landing.php',
+		],
 
 		// Default settings
 		//
