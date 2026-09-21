@@ -2,7 +2,6 @@
 
 namespace Combodo\iTop\Oauth2Client\HybridAuth;
 
-use Combodo\iTop\AuthentToken\Helper\TokenAuthLog;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientHelper;
 use Combodo\iTop\Oauth2Client\Helper\Oauth2ClientLog;
@@ -133,7 +132,7 @@ class AdapterService
 	{
 		try {
 			$oReflectionClass = new ReflectionClass(get_class($this->oAuth2));
-			if (! $oReflectionClass->hasMethod('hasAccessTokenExpired')){
+			if (! $oReflectionClass->hasMethod('hasAccessTokenExpired')) {
 				throw new Oauth2ClientException(Dict::S('Oauth2Client:UI:Error:RefreshTokenNotAvailable'));
 			}
 
@@ -301,7 +300,7 @@ class AdapterService
 				$oReflectionClass = new \ReflectionClass($sClass);
 				$aList[$oReflectionClass->getShortName()] = $sClass;
 			} catch (Exception $e) {
-				TokenAuthLog::Warning(
+				Oauth2ClientLog::Warning(
 					"Cannot load HybridauthProvider",
 					null,
 					[ "message" => $e->getMessage(), "HybridauthProvider" => $sClass, "Oauth2Client" => get_class($oOauth2Client)]
@@ -313,12 +312,12 @@ class AdapterService
 		return $aList;
 	}
 
-	public function GetOauth2ClientClass(string $sAdapterClass) : ?Oauth2Client
+	public function GetOauth2ClientClass(string $sAdapterClass): ?Oauth2Client
 	{
 		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $sOauth2ClientClass) {
 			$sProviderClassName = str_replace('Oauth2Client', '', $sOauth2ClientClass);
-			if ($sAdapterClass === $sProviderClassName){
-				return new $sOauth2ClientClass;
+			if ($sAdapterClass === $sProviderClassName) {
+				return new $sOauth2ClientClass();
 			}
 		}
 
