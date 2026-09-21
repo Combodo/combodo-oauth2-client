@@ -31,16 +31,16 @@ class Oauth2Service
 
 	final public static function GetInstance(): Oauth2Service
 	{
-		if (!isset(static::$oInstance)) {
-			static::$oInstance = new static();
+		if (!isset(self::$oInstance)) {
+			self::$oInstance = new Oauth2Service();
 		}
 
-		return static::$oInstance;
+		return self::$oInstance;
 	}
 
 	final public static function SetInstance(?Oauth2Service $oInstance): void
 	{
-		static::$oInstance = $oInstance;
+		self::$oInstance = $oInstance;
 	}
 
 	/**
@@ -51,7 +51,7 @@ class Oauth2Service
 	 * @param string $sName Registered entry name chosen for this connection
 	 * @param string $sProvider Provider name
 	 * @param ?HttpClientInterface $oHttpClient
-	 * @param ?StorageInterface $storage
+	 * @param ?StorageInterface $oStorage
 	 *
 	 * @return void
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
@@ -78,7 +78,7 @@ class Oauth2Service
 	 *
 	 * @param \Oauth2Client $oOauth2Client
 	 * @param ?HttpClientInterface $oHttpClient
-	 * @param ?StorageInterface $storage
+	 * @param ?StorageInterface $oStorage
 	 *
 	 * @return void
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException

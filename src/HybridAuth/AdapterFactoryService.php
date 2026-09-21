@@ -21,16 +21,16 @@ class AdapterFactoryService
 
 	final public static function GetInstance(): AdapterFactoryService
 	{
-		if (!isset(static::$oInstance)) {
-			static::$oInstance = new static();
+		if (!isset(self::$oInstance)) {
+			self::$oInstance = new AdapterFactoryService();
 		}
 
-		return static::$oInstance;
+		return self::$oInstance;
 	}
 
 	final public static function SetInstance(?AdapterFactoryService $oInstance): void
 	{
-		static::$oInstance = $oInstance;
+		self::$oInstance = $oInstance;
 	}
 
 	/**

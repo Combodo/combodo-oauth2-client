@@ -19,8 +19,6 @@ use utils;
 class AdapterService
 {
 	private static ?AdapterService $oInstance;
-	private string $sName;
-	private string $sProvider;
 	private string $sProviderName;
 	private AdapterInterface $oAuth2;
 	private ?HttpClientInterface $oHttpClient;
@@ -33,31 +31,29 @@ class AdapterService
 
 	final public static function GetInstance(): AdapterService
 	{
-		if (!isset(static::$oInstance)) {
-			static::$oInstance = new static();
+		if (!isset(self::$oInstance)) {
+			self::$oInstance = new AdapterService();
 		}
 
-		return static::$oInstance;
+		return self::$oInstance;
 	}
 
 	final public static function SetInstance(?AdapterService $oInstance): void
 	{
-		static::$oInstance = $oInstance;
+		self::$oInstance = $oInstance;
 	}
 
 	/**
 	 * @param string $sName
 	 * @param string $sProvider provider class fqdn
 	 * @param ?HttpClientInterface $oHttpClient
-	 * @param ?StorageInterface $storage
+	 * @param ?StorageInterface $oStorage
 	 *
 	 * @return void
 	 */
 	public function Init(string $sName, string $sProvider, ?HttpClientInterface $oHttpClient = null, ?StorageInterface $oStorage = null): void
 	{
 		Oauth2ClientLog::Debug(__FUNCTION__, null, [$sName, $sProvider]);
-		$this->sName = $sName;
-		$this->sProvider = $sProvider;
 		$this->sProviderName = Oauth2ClientHelper::GetProviderName($sProvider);
 		$this->oHttpClient = $oHttpClient;
 		$this->oStorage = $oStorage;
@@ -136,13 +132,20 @@ class AdapterService
 	public function RefreshToken(array $aConfig): array
 	{
 		try {
+			$oReflectionClass = new ReflectionClass(get_class($this->oAuth2));
+			if (! $oReflectionClass->hasMethod('hasAccessTokenExpired')){
+				throw new Oauth2ClientException(Dict::S('Oauth2Client:UI:Error:RefreshTokenNotAvailable'));
+			}
+
 			Oauth2ClientLog::Debug(__FUNCTION__, null, $aConfig);
 			$this->InitOauth2($aConfig);// refresh tokens if needed
 			$this->oAuth2->maintainToken();
+
 			$hasAccessTokenExpired = $this->oAuth2->hasAccessTokenExpired();
 			Oauth2ClientLog::Debug(__FUNCTION__, null, ['hasAccessTokenExpired' => $hasAccessTokenExpired]);
 			if ($hasAccessTokenExpired === true) {
 				Oauth2ClientLog::Debug(__FUNCTION__, null, ['isRefreshTokenAvailable' => $this->oAuth2->isRefreshTokenAvailable()]);
+
 				$sResponse = $this->oAuth2->refreshAccessToken();
 				if (is_null($sResponse)) {
 					throw new Oauth2ClientException(Dict::S('Oauth2Client:UI:Error:RefreshTokenNotAvailable'));
@@ -244,7 +247,7 @@ class AdapterService
 	 * @param string $name
 	 * @param mixed $value
 	 *
-	 * @return mixed
+	 * @return void
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
 	public function storeData(string $name, $value = null): void
@@ -312,7 +315,7 @@ class AdapterService
 
 	public function GetOauth2ClientClass(string $sAdapterClass) : ?Oauth2Client
 	{
-		foreach (\MetaModel::EnumChildClasses(Oauth2Client::class) as $sOauth2ClientClass) {
+		foreach (\MetaModel::EnumChildClasses(\Oauth2Client::class) as $sOauth2ClientClass) {
 			$sProviderClassName = str_replace('Oauth2Client', '', $sOauth2ClientClass);
 			if ($sAdapterClass === $sProviderClassName){
 				return new $sOauth2ClientClass;
