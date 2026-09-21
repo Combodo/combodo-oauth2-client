@@ -30,16 +30,16 @@ class Oauth2ClientService
 
 	final public static function GetInstance(): Oauth2ClientService
 	{
-		if (!isset(static::$oInstance)) {
-			static::$oInstance = new static();
+		if (!isset(self::$oInstance)) {
+			self::$oInstance = new Oauth2ClientService();
 		}
 
-		return static::$oInstance;
+		return self::$oInstance;
 	}
 
 	final public static function SetInstance(?Oauth2ClientService $oInstance): void
 	{
-		static::$oInstance = $oInstance;
+		self::$oInstance = $oInstance;
 	}
 
 	public static function GetHybridauthProvider(Oauth2Client $oObj): string
@@ -125,7 +125,7 @@ class Oauth2ClientService
 	}
 
 	/**
-	 * @return \array[][]
+	 * @return array
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
 	public function GetAuthenticateConfiguration(): array
@@ -161,7 +161,7 @@ class Oauth2ClientService
 	}
 
 	/**
-	 * @return \array[][]
+	 * @return array
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
 	public function GetRefreshTokenConfiguration(): array
@@ -172,6 +172,7 @@ class Oauth2ClientService
 			$aConf = $this->GetAuthenticateConfiguration();
 			$aData = $aConf['providers'][$sProviderName];
 			$aTokenMapping = $oOauth2Client->GetTokenModelToHybridauthMapping();
+			$aTokens = [];
 			$this->MapAttCodesToConf($oOauth2Client, $aTokenMapping, $aTokens);
 			if (count($aTokens) > 0) {
 				$aData['tokens'] = $aTokens;
@@ -190,7 +191,7 @@ class Oauth2ClientService
 	/**
 	 * @param \Oauth2Client $oOauth2Client
 	 * @param array $aHybridToAttCodeMapping
-	 * @param array|null $aData
+	 * @param array $aData
 	 *
 	 * @return void
 	 * @throws \Combodo\iTop\ItopAttributeEncryptedPassword\Helper\AttributeEncryptedPasswordException
@@ -199,9 +200,6 @@ class Oauth2ClientService
 	private function MapAttCodesToConf(Oauth2Client $oOauth2Client, array $aHybridToAttCodeMapping, ?array &$aData = null): void
 	{
 		try {
-			if (is_null($aData)) {
-				$aData = [];
-			}
 			foreach ($aHybridToAttCodeMapping as $sHybridauthId => $sAttCode) {
 				$val = $oOauth2Client->Get($sAttCode);
 				if ($val instanceof ormEncryptedPassword) {
@@ -259,7 +257,7 @@ class Oauth2ClientService
 	}
 
 	/**
-	 * @return string|null
+	 * @return string
 	 * @throws \Combodo\iTop\Oauth2Client\Helper\Oauth2ClientException
 	 */
 	public function GetAccessToken(): string
