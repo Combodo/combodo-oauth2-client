@@ -4,8 +4,7 @@
   },
   "autoload": {
     "psr-4": {
-      "Combodo\\iTop\\Oauth2Client\\": "src",
-      "Hybridauth\\": "srcHybridauth"
+      "Combodo\\iTop\\Oauth2Client\\": "src"
     }
   },
   "name": "combodo/combodo-oauth2-client",
