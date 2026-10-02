@@ -933,7 +933,19 @@
         </reconciliation>
       </properties>
       <fields/>
-      <methods/>
+      <methods>
+        <method id="GetHybridauthProvider">
+          <static>false</static>
+          <access>public</access>
+          <type>Overload-DBObject</type>
+          <code><![CDATA[
+        public function GetHybridauthProvider() : string
+        {
+          return "Hybridauth\\Provider\\Headless";
+        }
+]]></code>
+        </method>
+      </methods>
       <presentation/>
     </class>
     <class id="KeycloakOauth2Client" _delta="define">
