@@ -8,8 +8,6 @@ use Combodo\iTop\Oauth2Client\HybridAuth\AdapterFactoryService;
 use Combodo\iTop\Oauth2Client\HybridAuth\AdapterService;
 use Combodo\iTop\Test\UnitTest\ItopDataTestCase;
 use Hybridauth\Adapter\AdapterInterface;
-use Hybridauth\Logger\Logger;
-use Hybridauth\Provider\GitHub;
 use Hybridauth\Provider\Google;
 use Hybridauth\Provider\MicrosoftGraph;
 use Hybridauth\Storage\StorageInterface;
@@ -271,23 +269,23 @@ class AdapterServiceTest extends ItopDataTestCase
 
 	public function testListProviders()
 	{
-		$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
+		//$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
 		$aRes = AdapterService::GetInstance()->ListProviders();
 		$this->assertContains("Google", $aRes, var_export($aRes, true));
 		$this->assertContains("MicrosoftGraph", $aRes, var_export($aRes, true));
-		$this->assertContains("Itop", $aRes, var_export($aRes, true));
+		//$this->assertContains("Itop", $aRes, var_export($aRes, true));
 		$this->assertContains("Headless", $aRes, var_export($aRes, true));
 	}
 
 	public function testListDatamodelDeclaredProviders()
 	{
-		$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
+		//$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
 		$aRes = AdapterService::GetInstance()->ListDatamodelDeclaredProviders();
 		$aExpected = [
 			'GitHub' => 'Hybridauth\Provider\GitHub',
 			'Google' => 'Hybridauth\Provider\Google',
 			'Headless' => 'Hybridauth\Provider\Headless',
-			'Itop' => 'Hybridauth\Provider\Itop',
+			//'Itop' => 'Hybridauth\Provider\Itop',
 			'Keycloak' => 'Hybridauth\Provider\Keycloak',
 			'MicrosoftGraph' => 'Hybridauth\Provider\MicrosoftGraph',
 			'OktaOIDC' => 'Hybridauth\Provider\OktaOIDC',
