@@ -279,17 +279,22 @@ class AdapterServiceTest extends ItopDataTestCase
 
 	public function testListDatamodelDeclaredProviders()
 	{
-		//$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
-		$aRes = AdapterService::GetInstance()->ListDatamodelDeclaredProviders();
 		$aExpected = [
 			'GitHub' => 'Hybridauth\Provider\GitHub',
 			'Google' => 'Hybridauth\Provider\Google',
 			'Headless' => 'Hybridauth\Provider\Headless',
-			//'Itop' => 'Hybridauth\Provider\Itop',
 			'Keycloak' => 'Hybridauth\Provider\Keycloak',
 			'MicrosoftGraph' => 'Hybridauth\Provider\MicrosoftGraph',
 			'OktaOIDC' => 'Hybridauth\Provider\OktaOIDC',
 		];
+
+		if (is_file(APPROOT.'env-production/combodo-oauth2-client-itop/vendor/autoload.php')) {
+			$this->RequireOnceItopFile('env-production/combodo-oauth2-client-itop/vendor/autoload.php');
+			$aExpected['Itop'] = 'Hybridauth\Provider\Itop';
+		}
+
+		$aRes = AdapterService::GetInstance()->ListDatamodelDeclaredProviders();
+
 		$this->assertEquals($aExpected, $aRes);
 	}
 }
