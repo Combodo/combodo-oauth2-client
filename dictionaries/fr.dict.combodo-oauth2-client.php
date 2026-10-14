@@ -43,7 +43,7 @@ Dict::Add('FR FR', 'French', 'Français', [
 	'Class:Oauth2Client/Attribute:access_token' => 'Jeton d\'accès',
 	'Class:Oauth2Client/Attribute:access_token+' => '',
 	'Class:Oauth2Client/Attribute:refresh_token_expiration' => 'Expiration du Jeton de rafraîchissement',
-	'Class:Oauth2Client/Attribute:refresh_token_expiration+' => 'Date après laquelle aucun jeton d\'accès expiré ne peut être renouvelé. Il faut re-valider le client Oauth2 avec votre fournisseur d\'identité.',
+	'Class:Oauth2Client/Attribute:refresh_token_expiration+' => 'Date après laquelle aucun jeton d\'accès expiré ne peut être renouvelé. Il faut re-valider le client OAuth2 avec votre fournisseur d\'identité.',
 	'Class:Oauth2Client/Attribute:access_token_expiration' => 'Expiration du Jeton d\'accès',
 	'Class:Oauth2Client/Attribute:access_token_expiration+' => 'Date après laquelle le jeton d\'accès expire. iTop va le renouveler automatiquement avec le fournisseur d\'identité (si c\'est supporté par l\'application et l\'Idp)',
 	'Class:Oauth2Client/Attribute:scope' => 'Scope',
